@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+{% block title %}Ana Sayfa{% endblock %}
+
+{% block content %}
+    <h1>Anime Listesi</h1>
+    <div class="row">
+        {% for anime in animes %}
+            <div class="col-md-4">
+                <div class="card mb-4 bg-dark text-light" style="max-width: 250px; min-width: 250px;">
+                    <img src="{{ anime.cover_image }}" class="card-img-top" alt="{{ anime.name }}">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ anime.name }}</h5>
+                        <a href="{{ url_for('anime', anime_id=anime.id) }}" class="btn btn-primary btn-mor">İzle</a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

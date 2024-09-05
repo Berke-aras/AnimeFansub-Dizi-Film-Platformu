@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block title %}Anime Streaming{% endblock %}
+<style>
+    body {
+        background-color: #121212;
+        color: #d1c4e9;
+    }
+    .container {
+        background-color: #1e1e1e;
+        border-radius: 8px;
+        padding: 20px;
+    }
+    h1, h5 {
+        color: #d1c4e9;
+    }
+    .video-player iframe {
+        border: 2px solid #6f42c1;
+        border-radius: 8px;
+    }
+    .btn-secondary {
+        background-color: #6f42c1;
+        border-color: #6f42c1;
+        color: #d1c4e9;
+    }
+    .btn-secondary:hover {
+        background-color: #5a3791;
+        border-color: #5a3791;
+    }
+    .btn-link {
+        color: #d1c4e9;
+    }
+    .btn-link:hover {
+        color: #b39ddb;
+    }
+    .link-group a {
+        font-size: 0.8rem; /* Daha küçük font boyutu */
+    }
+    .fnt {
+        font-size: 1rem; /* Daha büyük yazı boyutu */
+    }
+    @media (max-width: 576px) {
+        .video-player iframe {
+            height: 300px; /* Mobil cihazlar için daha küçük video yüksekliği */
+        }
+    }
+</style>
+{% block content %}
+<div class="container mt-4">
+    <h1>{{ episode.anime.name }} - Bölüm {{ episode.number }}</h1>
+    <div class="video-player mb-4">
+        <iframe src="{{ sources[0] }}" frameborder="0" allowfullscreen class="w-100" style="height: 500px;"></iframe>
+    </div>
+    <div class="btn-group mb-3 d-flex justify-content-center flex-wrap">
+        {% for source in sources %}
+            <button class="btn btn-secondary mx-1" onclick="document.querySelector('iframe').src='{{ source }}'">Kaynak {{ loop.index }}</button>
+        {% endfor %}
+    </div>
+    
+    <!-- Aşağıdaki linkleri daha küçük hale getirdik ve en alta taşıdık -->
+    <div class="link-group text-center mt-5 fnt h6">
+        <h5>Açılmayan videolar için</h5>
+        <div class="d-flex justify-content-center flex-wrap fnt h6">
+            {% for source in sources %}
+                <a href="{{ source }}" target="_blank" class="btn btn-link p-1 mx-1 small fnt h6">Kaynak {{ loop.index }}</a>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
