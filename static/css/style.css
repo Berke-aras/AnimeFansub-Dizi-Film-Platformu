@@ -15,14 +15,14 @@ body {
     object-fit: fill; /* Resimleri kesmeden sığdır */
 }
 
-.btn-mor {
-    background-color: #6f42c1;
-    border-color: #6f42c1;
+.btn-izle {
+    background-color: #b71c1c !important;
+    border-color: #b71c1c !important;
 }
 
-.btn-mor:hover {
-    background-color: #5a3791;
-    border-color: #5a3791;
+.btn-izle:hover {
+    background-color: #b71c1c8f !important;
+    border-color: #b71c1c67 !important;
 }
 
 h1, h2 {
