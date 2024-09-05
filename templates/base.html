@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9669448014683960"
-     crossorigin="anonymous"></script>
+    crossorigin="anonymous"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Humat Fansub - Anime İzleme Platformu{% endblock %}</title>
@@ -12,36 +12,19 @@
     <meta name="description" content="Humat Fansub, Hacettepe Üniversitesi'ne ait bir topluluk olup, anime çevirileri ve izleme hizmeti sunar.">
     <meta name="keywords" content="Humat Fansub, anime izle, anime çevirileri, Hacettepe Üniversitesi, anime topluluğu">
     <meta name="author" content="Humat Fansub">
-    
+
     <!-- Open Graph Etiketleri -->
     <meta property="og:title" content="Humat Fansub - Anime İzleme Platformu">
     <meta property="og:description" content="Humat Fansub, Hacettepe Üniversitesi'ne ait bir topluluk olup, anime çevirileri ve izleme hizmeti sunar.">
     <meta property="og:image" content="{{ url_for('static', filename='images/logo.png') }}">
     <meta property="og:url" content="https://www.humatfansub.com">
     <meta property="og:type" content="website">
-     crossorigin="anonymous"></script>
-    <!-- Schema.org Yapısal Veriler -->
-    <script type="application/ld+json">
-    {
-      "@context": "http://schema.org",
-      "@type": "Organization",
-      "name": "Humat Fansub",
-      "url": "https://www.humatfansub.com",
-      "logo": "{{ url_for('static', filename='images/logo.png') }}",
-      "sameAs": [
-        "https://www.facebook.com/humatfansub",
-        "https://www.twitter.com/humatfansub",
-        "https://www.instagram.com/humatfansub"
-      ],
-      "description": "Humat Fansub, Hacettepe Üniversitesi'ne ait bir topluluk olup, anime çevirileri ve izleme hizmeti sunar."
-    }
-    </script>
     
     <!-- CSS Bağlantıları -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Kaushan+Script&display=swap" rel="stylesheet">
-    
+
     <style>
         .navbar-brand-logo {
             display: flex;
@@ -86,30 +69,32 @@
                         <a class="nav-link" href="{{ url_for('index') }}">Ana Sayfa</a>
                     </li>
                     {% if current_user.is_authenticated %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('admin') }}">Admin Paneli</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('logout') }}">Çıkış Yap</a>
-                        </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('admin') }}">Admin Paneli</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('logout') }}">Çıkış Yap</a>
+                    </li>
                     {% else %}
-                        <!-- <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('login') }}">Admin Giriş</a>
-                        </li> -->
                     {% endif %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="#footer">İletişim</a>
+                    </li>
                 </ul>
             </div>
         </nav>
     </header>
 
-    
-
     <main class="container mt-4">
         {% block content %}{% endblock %}
     </main>
 
-    
-    
+    <footer id="footer" class="text-center mt-4">
+        <p>&copy; 2023 Humat Fansub. All rights reserved.</p>
+        <p>İletişim: <a href="mailto:humat.fansub@gmail.com">humat.fansub@gmail.com</a></p>
+        <p>&copy; 2023 Humat Fansub. Tüm hakları saklıdır.</p>
+        <p>İletişim: <a href="mailto:humat.fansub@gmail.com">humat.fansub@gmail.com</a></p>
+    </footer>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
