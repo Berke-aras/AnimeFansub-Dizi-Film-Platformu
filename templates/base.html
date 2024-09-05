@@ -16,8 +16,6 @@
     <meta property="og:image" content="{{ url_for('static', filename='images/logo.png') }}">
     <meta property="og:url" content="https://www.humatfansub.com">
     <meta property="og:type" content="website">
-    <meta name="google-adsense-account" content="ca-pub-9669448014683960">
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9669448014683960"
      crossorigin="anonymous"></script>
     <!-- Schema.org Yapısal Veriler -->
     <script type="application/ld+json">
@@ -101,43 +99,14 @@
         </nav>
     </header>
 
-    <!-- AdSense reklam kodu navbarın hemen altında -->
-    <div class="container mt-2">
-        <div class="row">
-            <div class="col-12 text-center">
-                <!-- AdSense reklam kodu -->
-                <ins class="adsbygoogle"
-                     style="display:block"
-                     data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
-                     data-ad-slot="XXXXXXXXXX"
-                     data-ad-format="auto"></ins>
-                <script>
-                     (adsbygoogle = window.adsbygoogle || []).push({});
-                </script>
-            </div>
-        </div>
-    </div>
+    
 
     <main class="container mt-4">
         {% block content %}{% endblock %}
     </main>
 
-    <!-- AdSense reklam kodu sayfanın en altında -->
-    <footer class="container mt-4">
-        <div class="row">
-            <div class="col-12 text-center">
-                <!-- AdSense reklam kodu -->
-                <ins class="adsbygoogle"
-                     style="display:block"
-                     data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
-                     data-ad-slot="XXXXXXXXXX"
-                     data-ad-format="auto"></ins>
-                <script>
-                     (adsbygoogle = window.adsbygoogle || []).push({});
-                </script>
-            </div>
-        </div>
-    </footer>
+    
+    
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>

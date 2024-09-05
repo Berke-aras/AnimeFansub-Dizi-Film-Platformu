@@ -66,33 +66,11 @@
                 max-width: 100%; /* Yazının tam genişlikte olmasını sağla */
             }
         }
-        .ads-container {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 30px;
-        }
-        .ads-container .ad {
-            background-color: #2c2c2c;
-            border: 1px solid #6f42c1;
-            padding: 10px;
-            width: 250px;
-            height: 600px;
-        }
+
     </style>
 </head>
 <body class="bg-dark text-light">
-    <div class="ads-container">
-        <!-- Sağ taraftaki AdSense reklamı -->
-        <div class="ad">
-            <ins class="adsbygoogle"
-                 style="display:block"
-                 data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
-                 data-ad-slot="XXXXXXXXXX"
-                 data-ad-format="auto"></ins>
-            <script>
-                 (adsbygoogle = window.adsbygoogle || []).push({});
-            </script>
-        </div>
+    
         
         <div class="container mt-4">
             <h1>{{ anime.name }}</h1>
@@ -115,17 +93,7 @@
             </ul>
         </div>
         
-        <!-- Sol taraftaki AdSense reklamı -->
-        <div class="ad">
-            <ins class="adsbygoogle"
-                 style="display:block"
-                 data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
-                 data-ad-slot="XXXXXXXXXX"
-                 data-ad-format="auto"></ins>
-            <script>
-                 (adsbygoogle = window.adsbygoogle || []).push({});
-            </script>
-        </div>
+        
     </div>
 </body>
 </html>
