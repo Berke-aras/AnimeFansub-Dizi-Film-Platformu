@@ -38,6 +38,11 @@
     .fnt {
         font-size: 1rem; /* Daha büyük yazı boyutu */
     }
+    .orta{
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
     @media (max-width: 576px) {
         .video-player iframe {
             height: 300px; /* Mobil cihazlar için daha küçük video yüksekliği */
@@ -45,7 +50,11 @@
     }
 </style>
 {% block content %}
+
+
+
 <!-- adsss  -->
+ <div class="text-center orta">
 <script type="text/javascript">
 	atOptions = {
 		'key' : '50745bd4ab15563ac4b0e73152a2afd1',
@@ -56,8 +65,11 @@
 	};
 </script>
 <script type="text/javascript" src="//www.topcreativeformat.com/50745bd4ab15563ac4b0e73152a2afd1/invoke.js"></script>
-
+</div>
     <!--  -->
+
+
+
     <h1>{{ episode.anime.name }} - Bölüm {{ episode.number }}</h1>
     <div class="video-player mb-4">
         <iframe src="{{ sources[0] }}" frameborder="0" allowfullscreen class="w-100" style="height: 500px;"></iframe>
