@@ -1,0 +1,71 @@
+Veritabanını Sıfırlama ve Kullanıcı Ekleme Adımları:
+1. Veritabanını Sıfırdan Oluşturma
+Öncelikle veritabanı dosyasını sıfırlamak için eski veritabanı dosyasını silebilirsiniz (örneğin sqlite:///anime_site.db dosyasını silin) ve ardından veritabanını yeniden oluşturacağız.
+
+bash
+Kodu kopyala
+# Terminalde, eski SQLite dosyasını silin
+rm anime_site.db
+Daha sonra, flask shell veya bir Python betiği aracılığıyla veritabanını yeniden oluşturabilirsiniz.
+
+2. Veritabanı Tablo Şemalarını Oluşturma
+Veritabanı tablolarını oluşturmak için aşağıdaki komutları kullanın:
+
+python
+Kodu kopyala
+from app import db  # Veritabanı nesnesini içe aktarın
+db.create_all()     # Tüm tabloları oluşturun
+Bu komut, SQLAlchemy tarafından tanımlanan modellerinizi temel alarak veritabanınızdaki tabloları sıfırdan oluşturacaktır.
+
+3. Yeni Kullanıcı Ekleme
+Veritabanı oluşturulduktan sonra bir kullanıcı ekleyebiliriz. Bu işlem için yeni bir rota tanımlayabiliriz veya flask shell üzerinden kullanıcı ekleyebiliriz.
+
+flask shell kullanarak kullanıcı ekleme:
+Veritabanına yeni bir kullanıcı eklemek için flask shell'e giriş yapın ve kullanıcıyı ekleyin:
+
+Terminalde Flask shell başlatın:
+
+bash
+Kodu kopyala
+flask shell
+Shell üzerinden kullanıcı ekleyin:
+
+python
+Kodu kopyala
+from app import db, User  # Modellerinizi ve veritabanını içe aktarın
+
+# Yeni kullanıcı oluşturun
+new_user = User(username="your_username")
+new_user.set_password("your_password")  # Şifreyi güvenli şekilde ayarla
+
+# Kullanıcıyı veritabanına kaydedin
+db.session.add(new_user)
+db.session.commit()
+Bu işlemler sonucunda kullanıcı adı ve şifrenizle yeni bir kullanıcı veritabanına eklenmiş olacak.
+
+4. Otomatik Kullanıcı Ekleyen Bir Rota Oluşturma
+İsterseniz, aşağıdaki gibi bir rota tanımlayarak bir kullanıcı ekleme işlemi gerçekleştirebilirsiniz.
+
+python
+Kodu kopyala
+@app.route('/create_user', methods=['POST'])
+def create_user():
+    # Kullanıcı adı ve şifre POST isteği ile gönderilir
+    username = request.form.get('username')
+    password = request.form.get('password')
+
+    # Yeni kullanıcı oluştur
+    new_user = User(username=username)
+    new_user.set_password(password)
+
+    # Kullanıcıyı veritabanına ekle
+    db.session.add(new_user)
+    db.session.commit()
+
+    return 'User created successfully!', 200
+Bu rota ile, POST isteği yaparak kullanıcı ekleyebilirsiniz.
+
+Özet:
+Veritabanını sıfırlamak için rm anime_site.db komutunu kullanarak eski veritabanı dosyasını silebilir ve db.create_all() ile yeni tablo oluşturabilirsiniz.
+Kullanıcı eklemek için flask shell kullanarak manuel olarak kullanıcı ekleyebilir veya bir rota tanımlayarak form üzerinden kullanıcı ekleme işlemi yapabilirsiniz.
+Bu adımlarla veritabanınızı sıfırdan oluşturup, istediğiniz kullanıcıyı ekleyebilirsiniz.
