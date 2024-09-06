@@ -113,6 +113,22 @@ def edit_episode(episode_id):
     form.sources.data = episode.sources
     return render_template('edit_episode.html', form=form, episode=episode)
 
+@app.route('/edit_anime/<int:anime_id>', methods=['GET', 'POST'])
+@login_required
+def edit_anime(anime_id):
+    anime = Anime.query.get_or_404(anime_id)
+    form = AnimeForm(obj=anime)
+    
+    if form.validate_on_submit():
+        anime.name = form.name.data
+        anime.description = form.description.data
+        anime.cover_image = form.cover_image.data
+        db.session.commit()
+        flash('Anime başarıyla güncellendi.', 'success')
+        return redirect(url_for('admin'))
+    
+    return render_template('edit_anime.html', form=form, anime=anime)
+
 @app.route('/logout')
 @login_required
 def logout():

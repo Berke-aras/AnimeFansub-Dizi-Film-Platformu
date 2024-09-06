@@ -11,6 +11,7 @@
             <li class="list-group-item bg-secondary text-light">
                 <a href="{{ url_for('anime', anime_id=anime.id) }}" class="text-light">{{ anime.name }}</a>
                 <a href="{{ url_for('add_episode', anime_id=anime.id) }}" class="btn btn-success btn-sm ml-2">Bölüm Ekle</a>
+                <a href="{{ url_for('edit_anime', anime_id=anime.id) }}" class="btn btn-warning btn-sm ml-2">Düzenle</a>
                 {% if current_user.is_authenticated %}
                 <form action="{{ url_for('delete_anime', anime_id=anime.id) }}" method="post" class="d-inline">
                     <button type="submit" class="btn btn-danger btn-sm">Sil</button>
