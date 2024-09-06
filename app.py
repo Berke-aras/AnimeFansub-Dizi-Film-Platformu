@@ -9,8 +9,8 @@ import re
 app = Flask(__name__)
 application = app
 app.config['SECRET_KEY'] = 'your_secret_key'
-app.config['SESSION_COOKIE_SECURE'] = True
-app.config['SESSION_COOKIE_HTTPONLY'] = True
+app.config['SESSION_COOKIE_SECURE'] = False #https bağlantısı yoksa sorun çıkartıyor dikkat et
+app.config['SESSION_COOKIE_HTTPONLY'] = False
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///anime_site.db'
 db.init_app(app)
 
