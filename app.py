@@ -129,6 +129,17 @@ def edit_anime(anime_id):
     
     return render_template('edit_anime.html', form=form, anime=anime)
 
+@app.route('/search', methods=['GET'])
+def search():
+    query = request.args.get('query', '')
+    if query:
+        # Veritabanında anime ismine göre arama yapıyoruz.
+        results = Anime.query.filter(Anime.name.ilike(f'%{query}%')).all()
+    else:
+        results = []
+    return render_template('search_results.html', query=query, results=results)
+
+
 @app.route('/logout')
 @login_required
 def logout():

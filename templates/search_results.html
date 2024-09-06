@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Arama Sonuçları: "{{ query }}"</h2>
+    {% if results %}
+        <div class="row mt-3">
+        {% for anime in results %}
+            <div class="col-md-4" style="max-width: 220px ; min-width: 220px;">
+                <div class="card mb-4">
+                    <img class="card-img-top" src="{{ anime.cover_image }}" alt="{{ anime.name }}" style="max-width: 220px ; min-width: 220px;">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ anime.name }}</h5>
+                        <p class="card-text">{{ anime.description[:30] }}...</p>
+                        <a href="{{ url_for('anime', anime_id=anime.id) }}" class="btn btn-primary">İzle</a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+        </div>
+    {% else %}
+        <p class="mt-3">Aradığınız kriterlere uygun sonuç bulunamadı.</p>
+    {% endif %}
+</div>
+{% endblock %}
