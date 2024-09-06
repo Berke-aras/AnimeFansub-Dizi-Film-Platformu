@@ -62,7 +62,7 @@
     </div>
     <div class="btn-group mb-3 d-flex justify-content-center flex-wrap">
         {% for source in sources %}
-            <button class="btn btn-secondary mx-1" onclick="document.querySelector('iframe').src='{{ source }}'">Kaynak {{ loop.index }}</button>
+            <button class="btn btn-secondary mx-1 m-1" onclick="document.querySelector('iframe').src='{{ source }}'">Kaynak {{ loop.index }}</button>
         {% endfor %}
     </div>
     
