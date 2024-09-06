@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Episode{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Edit Episode {{ episode.number }}</h1>
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        <div class="form-group">
+            <label for="number">Episode Number</label>
+            {{ form.number(class="form-control", id="number") }}
+        </div>
+        <div class="form-group">
+            <label for="sources">Sources (Comma separated iframe URLs)</label>
+            {{ form.sources(class="form-control", id="sources") }}
+        </div>
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+    </form>
+</div>
+{% endblock %}

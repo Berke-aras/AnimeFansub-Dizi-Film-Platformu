@@ -95,6 +95,24 @@ def delete_episode(episode_id):
     db.session.commit()
     return redirect(url_for('anime', anime_id=anime_id))
 
+
+@app.route('/edit_episode/<int:episode_id>', methods=['GET', 'POST'])
+@login_required
+def edit_episode(episode_id):
+    episode = Episode.query.get_or_404(episode_id)
+    form = EpisodeForm()
+
+    if form.validate_on_submit():
+        episode.number = form.number.data
+        episode.sources = form.sources.data
+        db.session.commit()
+        flash('Episode updated successfully', 'success')
+        return redirect(url_for('anime', anime_id=episode.anime_id))
+
+    form.number.data = episode.number
+    form.sources.data = episode.sources
+    return render_template('edit_episode.html', form=form, episode=episode)
+
 @app.route('/logout')
 @login_required
 def logout():
