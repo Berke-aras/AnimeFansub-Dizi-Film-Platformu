@@ -4,10 +4,12 @@ from flask_login import LoginManager, login_user, logout_user, login_required, c
 from werkzeug.security import generate_password_hash, check_password_hash
 from forms import LoginForm, AnimeForm, EpisodeForm
 from models import db, User, Anime, Episode
-
+import re
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your_secret_key'
+app.config['SESSION_COOKIE_SECURE'] = True
+app.config['SESSION_COOKIE_HTTPONLY'] = True
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///anime_site.db'
 db.init_app(app)
 
@@ -129,16 +131,18 @@ def edit_anime(anime_id):
     
     return render_template('edit_anime.html', form=form, anime=anime)
 
-@app.route('/search', methods=['GET'])
-def search():
-    query = request.args.get('query', '')
-    if query:
-        # Veritabanında anime ismine göre arama yapıyoruz.
-        results = Anime.query.filter(Anime.name.ilike(f'%{query}%')).all()
-    else:
-        results = []
-    return render_template('search_results.html', query=query, results=results)
 
+@app.route('/search')
+def search():
+    query = request.args.get('query', '').strip()
+    # Basic input validation, for example, restricting certain special characters.
+    if not re.match("^[A-Za-z0-9 ]*$", query):
+        flash('Invalid search query', 'danger')
+        return redirect(url_for('index'))
+
+    # Use ORM to prevent SQL injection
+    results = Anime.query.filter(Anime.name.like(f"%{query}%")).all()
+    return render_template('search_results.html', query=query, results=results)
 
 @app.route('/logout')
 @login_required
