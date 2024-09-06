@@ -7,6 +7,7 @@ from models import db, User, Anime, Episode
 import re
 
 app = Flask(__name__)
+application = app
 app.config['SECRET_KEY'] = 'your_secret_key'
 app.config['SESSION_COOKIE_SECURE'] = True
 app.config['SESSION_COOKIE_HTTPONLY'] = True
@@ -97,7 +98,6 @@ def delete_episode(episode_id):
     db.session.commit()
     return redirect(url_for('anime', anime_id=anime_id))
 
-
 @app.route('/edit_episode/<int:episode_id>', methods=['GET', 'POST'])
 @login_required
 def edit_episode(episode_id):
@@ -143,6 +143,7 @@ def search():
     # Use ORM to prevent SQL injection
     results = Anime.query.filter(Anime.name.like(f"%{query}%")).all()
     return render_template('search_results.html', query=query, results=results)
+
 
 @app.route('/logout')
 @login_required

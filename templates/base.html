@@ -31,8 +31,9 @@
 
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9669448014683960"
     crossorigin="anonymous"></script>
-
-    <link rel="icon" href="{{ url_for('static', filename='images/ico.ico') }}" type="image/x-icon">
+    
+    
+        <link rel="icon" href="{{ url_for('static', filename='images/ico.ico') }}" type="image/x-icon">
 
 
     <style>
@@ -84,38 +85,38 @@
 <body class="bg-dark text-light">
     <header>
         <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-            <a class="navbar-brand navbar-brand-logo" href="{{ url_for('index') }}">
-                <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo">
-                <span>Humat Fansub</span>
-            </a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ml-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('index') }}">Ana Sayfa</a>
-                    </li>
-                    {% if current_user.is_authenticated %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('admin') }}">Admin Paneli</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('logout') }}">Çıkış Yap</a>
-                    </li>
-                    {% else %}
-                    {% endif %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="#footer">Contact</a>
-                    </li>
-                </ul>
-                <!-- Arama Formu -->
-                <form class="form-inline my-2 my-lg-0" action="{{ url_for('search') }}" method="GET">
-                    <input class="form-control mr-sm-2" type="search" name="query" placeholder="Arama" aria-label="Search">
-                    <button class="btn btn-outline-light my-2 my-sm-0" type="submit">Ara</button>
-                </form>
-            </div>
-        </nav>
+        <a class="navbar-brand navbar-brand-logo" href="{{ url_for('index') }}">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo">
+            <span>Humat Fansub</span>
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('index') }}">Ana Sayfa</a>
+                </li>
+                {% if current_user.is_authenticated %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('admin') }}">Admin Paneli</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('logout') }}">Çıkış Yap</a>
+                </li>
+                {% else %}
+                {% endif %}
+                <li class="nav-item">
+                    <a class="nav-link" href="#footer">Contact</a>
+                </li>
+            </ul>
+            <!-- Arama Formu -->
+            <form class="form-inline my-2 my-lg-0" action="{{ url_for('search') }}" method="GET">
+                <input class="form-control mr-sm-2" type="search" name="query" placeholder="Arama" aria-label="Search">
+                <button class="btn btn-outline-light my-2 my-sm-0" type="submit">Ara</button>
+            </form>
+        </div>
+    </nav>
     </header>
 
     <main class="container mt-4">
@@ -126,7 +127,6 @@
         <p>Contact: <a href="mailto:humat.fansub@gmail.com">humat.fansub@gmail.com</a></p>
         <p><a href="https://discord.gg/SaKSmuZkAf ">Discord</a></p>
     </footer>
-
 
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
