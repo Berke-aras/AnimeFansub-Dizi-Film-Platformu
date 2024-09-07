@@ -50,3 +50,10 @@ Projeyi geliştirirken karşılaştığınız sorunları çözebilir, yeni özel
 > **Katkı:** DMCA tarafı için animewho ekibine teşekkürler(sitelerinden kopya çektim).
 
 <p align="center"> <img src="https://media1.tenor.com/m/w5EFZpYKe8MAAAAC/anime-anime-funny.gif" alt="Anime Fansub GIF" width="400" /> </p>
+
+
+## Bilinen Sorunlar!
+
+-   **IFrame:** Gdrive,Mega,Okru sitelerindeki linkler iframeye dönüştürülemiyor(site bağlantı reddi veriyor)
+
+
