@@ -1,5 +1,4 @@
-![centered gif](![image](https://github.com/user-attachments/assets/b2d4850b-29e9-410c-a09f-f9be5c830fe2)
-")
+![centered gif](https://github.com/user-attachments/assets/b2d4850b-29e9-410c-a09f-f9be5c830fe2)
 # AnimeFansub-Dizi-Film Platformu
 
 Anime-Dizi-Film tutkunları için basit ama gerekli özellikleri barındıran bir fansub platformudur. Kullanıcılar, anime serilerini izleyebilir ve bölümler arasında gezinebilirler. Platformda yer alan admin paneli ile yöneticiler yeni anime serileri ve bölümleri ekleyebilir, platformu kolayca yönetebilir.
