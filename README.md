@@ -19,7 +19,7 @@ Anime-Dizi-Film tutkunları için basit ama gerekli özellikleri barındıran bi
 
 > **Dikkat:** Vercel üzerinde barındırılan örnekte herhangi bir veritabanı işlemi yapamazsınız. Vercel, sunucu taraflı veritabanı işlemlerine izin vermemektedir.
 
-> **Dikkat:** Çalışan Hümat Fansuba air versiyon:
+> **Dikkat:** Çalışan Hümat Fansuba ait versiyon:
 > [www.humatfansub.com.tr](https://www.humatfansub.com.tr)
 
 ## Güvenlik
