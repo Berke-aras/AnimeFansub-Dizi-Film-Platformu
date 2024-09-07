@@ -1,53 +1,39 @@
-Veritabanını Sıfırlama ve Kullanıcı Ekleme Adımları:
+Veritabanını Sıfırlama ve Kullanıcı Ekleme Adımları
 1. Veritabanını Sıfırdan Oluşturma
-Öncelikle veritabanı dosyasını sıfırlamak için eski veritabanı dosyasını silebilirsiniz (örneğin sqlite:///anime_site.db dosyasını silin) ve ardından veritabanını yeniden oluşturacağız.
+Eski veritabanını silerek yeni bir veritabanı oluşturabilirsiniz. Örneğin, sqlite:///anime_site.db dosyasını aşağıdaki komutla silebilirsiniz:
 
-bash
-Kodu kopyala
 # Terminalde, eski SQLite dosyasını silin
 rm anime_site.db
-Daha sonra, flask shell veya bir Python betiği aracılığıyla veritabanını yeniden oluşturabilirsiniz.
+Daha sonra, Flask shell veya bir Python betiği ile veritabanını yeniden oluşturabilirsiniz.
 
 2. Veritabanı Tablo Şemalarını Oluşturma
-Veritabanı tablolarını oluşturmak için aşağıdaki komutları kullanın:
+Veritabanındaki tabloları yeniden oluşturmak için aşağıdaki komutları çalıştırın:
 
-python
-Kodu kopyala
 from app import db  # Veritabanı nesnesini içe aktarın
 db.create_all()     # Tüm tabloları oluşturun
-Bu komut, SQLAlchemy tarafından tanımlanan modellerinizi temel alarak veritabanınızdaki tabloları sıfırdan oluşturacaktır.
+Bu komut, SQLAlchemy tarafından tanımlanan modellerinizi temel alarak veritabanı tablolarını sıfırdan oluşturur.
 
 3. Yeni Kullanıcı Ekleme
-Veritabanı oluşturulduktan sonra bir kullanıcı ekleyebiliriz. Bu işlem için yeni bir rota tanımlayabiliriz veya flask shell üzerinden kullanıcı ekleyebiliriz.
+Veritabanı oluşturulduktan sonra bir kullanıcı ekleyebilirsiniz. Flask shell üzerinden kullanıcı eklemek için:
 
-flask shell kullanarak kullanıcı ekleme:
-Veritabanına yeni bir kullanıcı eklemek için flask shell'e giriş yapın ve kullanıcıyı ekleyin:
 
-Terminalde Flask shell başlatın:
-
-bash
-Kodu kopyala
+Flask shell'i başlatın:
 flask shell
-Shell üzerinden kullanıcı ekleyin:
+Aşağıdaki komutları kullanarak yeni bir kullanıcı ekleyin:
 
-python
-Kodu kopyala
 from app import db, User  # Modellerinizi ve veritabanını içe aktarın
 
 # Yeni kullanıcı oluşturun
-new_user = User(username="your_username")
-new_user.set_password("your_password")  # Şifreyi güvenli şekilde ayarla
+new_user = User(username="admin")
+new_user.set_password("adminpsw")  # Şifreyi güvenli şekilde ayarlayın
 
 # Kullanıcıyı veritabanına kaydedin
 db.session.add(new_user)
 db.session.commit()
-Bu işlemler sonucunda kullanıcı adı ve şifrenizle yeni bir kullanıcı veritabanına eklenmiş olacak.
+Bu adımlar, veritabanına yeni bir kullanıcı ekleyecektir.
 
 4. Otomatik Kullanıcı Ekleyen Bir Rota Oluşturma
-İsterseniz, aşağıdaki gibi bir rota tanımlayarak bir kullanıcı ekleme işlemi gerçekleştirebilirsiniz.
-
-python
-Kodu kopyala
+Bir kullanıcı ekleme rotası oluşturmak isterseniz, aşağıdaki gibi bir yol tanımlayabilirsiniz:
 @app.route('/create_user', methods=['POST'])
 def create_user():
     # Kullanıcı adı ve şifre POST isteği ile gönderilir
@@ -55,17 +41,17 @@ def create_user():
     password = request.form.get('password')
 
     # Yeni kullanıcı oluştur
-    new_user = User(username=username)
-    new_user.set_password(password)
+    new_user = User(username=admin)
+    new_user.set_password(admin)
 
     # Kullanıcıyı veritabanına ekle
     db.session.add(new_user)
     db.session.commit()
 
     return 'User created successfully!', 200
-Bu rota ile, POST isteği yaparak kullanıcı ekleyebilirsiniz.
+Bu rota sayesinde POST isteği yaparak kullanıcı ekleyebilirsiniz.
 
 Özet:
-Veritabanını sıfırlamak için rm anime_site.db komutunu kullanarak eski veritabanı dosyasını silebilir ve db.create_all() ile yeni tablo oluşturabilirsiniz.
-Kullanıcı eklemek için flask shell kullanarak manuel olarak kullanıcı ekleyebilir veya bir rota tanımlayarak form üzerinden kullanıcı ekleme işlemi yapabilirsiniz.
-Bu adımlarla veritabanınızı sıfırdan oluşturup, istediğiniz kullanıcıyı ekleyebilirsiniz.
+Veritabanını sıfırlamak için rm anime_site.db komutunu kullanarak eski veritabanını silin.
+db.create_all() ile yeni tablo şemalarını oluşturun.
+Flask shell veya bir rota aracılığıyla kullanıcı ekleyebilirsiniz.
