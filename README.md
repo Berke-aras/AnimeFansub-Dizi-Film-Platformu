@@ -46,6 +46,6 @@ Projeyi geliştirirken karşılaştığınız sorunları çözebilir, yeni özel
 5. Bir Pull Request oluşturun.
 6. Depoyu yıldızlayın.
 
-> **Katkı:** DMCA tarafı için animewho ekibine teşekkürler.(sitelerinden kopya çektim)
+> **Katkı:** DMCA tarafı için animewho ekibine teşekkürler(sitelerinden kopya çektim).
 
 <p align="center"> <img src="https://media1.tenor.com/m/w5EFZpYKe8MAAAAC/anime-anime-funny.gif" alt="Anime Fansub GIF" width="400" /> </p>
