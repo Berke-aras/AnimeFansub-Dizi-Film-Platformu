@@ -1,4 +1,4 @@
-![centered gif](https://tenor.com/tr/view/veronica-gif-25718682" alt="Anime Fansub GIF" width="400)
+![centered gif](https://tenor.com/tr/view/veronica-gif-25718682")
 # AnimeFansub-Dizi-Film Platformu
 
 Anime-Dizi-Film tutkunları için basit ama gerekli özellikleri barındıran bir fansub platformudur. Kullanıcılar, anime serilerini izleyebilir ve bölümler arasında gezinebilirler. Platformda yer alan admin paneli ile yöneticiler yeni anime serileri ve bölümleri ekleyebilir, platformu kolayca yönetebilir.
@@ -49,4 +49,11 @@ Projeyi geliştirirken karşılaştığınız sorunları çözebilir, yeni özel
 5. Bir Pull Request oluşturun.
 6. Depoyu yıldızlayın.
 
-<p align="center"> <img src="https://tenor.com/tr/view/anime-anime-funny-anime-computer-kawaii-gif-15735770" alt="Anime Fansub GIF" width="400" /> </p>
+
+ <p align="center">
+    ![centered gif](https://tenor.com/tr/view/veronica-gif-25718682")
+</p>
+
+<p align="center"> <img src="https://tenor.com/tr/view/anime-anime-funny-anime-computer-kawaii-gif-15735770" /> </p>
+
+
