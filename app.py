@@ -30,6 +30,11 @@ def index():
     animes = Anime.query.order_by().paginate(page=page, per_page=15)  # 18 animeyi getir
     return render_template('index.html', animes=animes)
 
+
+@app.route('/copyright')
+def copyright():
+    return render_template('copyright.html')
+
 @app.route('/anime/<int:anime_id>')
 def anime(anime_id):
     anime = Anime.query.get_or_404(anime_id)
