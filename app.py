@@ -7,10 +7,12 @@ from models import db, User, Anime, Episode
 import re
 
 app = Flask(__name__)
-application = app
-app.config['SECRET_KEY'] = 'your_secret_key' # Burayı Düzenlemeyi unutma
-app.config['SESSION_COOKIE_SECURE'] = False # https bağlantısı yoksa sorun çıkartıyor dikkat et
-app.config['SESSION_COOKIE_HTTPONLY'] = False
+# application = app
+# Burayı Düzenlemeyi unutma
+app.config['SECRET_KEY'] = 'your_secret_key' 
+# https bağlantısı yoksa sorun çıkartıyor dikkat et
+# app.config['SESSION_COOKIE_SECURE'] = True 
+# app.config['SESSION_COOKIE_HTTPONLY'] = True
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///anime_site.db'
 db.init_app(app)
 
@@ -156,14 +158,15 @@ def logout():
     logout_user()
     return redirect(url_for('index'))
 
-@app.after_request
-def add_security_headers(response):
-    response.headers['X-Frame-Options'] = 'DENY'
-    response.headers['X-Content-Type-Options'] = 'nosniff'
-    return response
+# @app.after_request
+# def add_security_headers(response):
+#     response.headers['X-Frame-Options'] = 'DENY'
+#     response.headers['X-Content-Type-Options'] = 'nosniff'
+#     return response
 
-import os
-app.secret_key = os.urandom(24)  # Rastgele güçlü bir anahtar
+# import os
+# app.secret_key = os.urandom(24)  
+# Rastgele güçlü bir anahtar
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)

@@ -1,6 +1,6 @@
-{% extends "base.html" %} {% block title %}Bölüm Düzenle{% endblock %} {% block
+{% extends "base.html" %} {% block title %}Anime Düzenle{% endblock %} {% block
 content %}
-<h1>Bölüm Düzenle: {{ anime.name }}</h1>
+<h1>Anime Düzenle: {{ anime.name }}</h1>
 <form method="POST" action="{{ url_for('edit_anime', anime_id=anime.id) }}">
     {{ form.hidden_tag() }}
     <div class="form-group">
