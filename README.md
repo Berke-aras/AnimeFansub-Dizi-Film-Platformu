@@ -54,6 +54,6 @@ Projeyi geliştirirken karşılaştığınız sorunları çözebilir, yeni özel
 
 ## Bilinen Sorunlar!
 
--   **IFrame:** Gdrive,Mega,Okru sitelerindeki linkler iframeye dönüştürülemiyor(site bağlantı reddi veriyor)
+-   **iFrame:** Gdrive,Mega,Okru sitelerindeki linkler, iframe'ye dönüştürülemiyor(site bağlantı reddi veriyor).
 
 
