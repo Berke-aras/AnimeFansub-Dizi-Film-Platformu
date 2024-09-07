@@ -26,9 +26,11 @@ class Anime(db.Model):
     description = db.Column(db.Text, nullable=False)
     cover_image = db.Column(db.String(150), nullable=False)
     episodes = db.relationship('Episode', backref='anime', lazy=True)
+    genres = db.Column(db.String(250), nullable=False)  # Türler virgülle ayrılacak
 
 class Episode(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     number = db.Column(db.Integer, nullable=False)
     sources = db.Column(db.Text, nullable=False)
     anime_id = db.Column(db.Integer, db.ForeignKey('anime.id'), nullable=False)
+

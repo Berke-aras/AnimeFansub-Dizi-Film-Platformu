@@ -18,6 +18,11 @@
         {{ form.cover_image.label(class="form-control-label") }}
         {{ form.cover_image(class="form-control") }}
     </div>
+    <!-- Türler (Genres) alanı -->
+    <div class="form-group">
+        {{ form.genres.label(class="form-control-label") }} <!-- Genres alanının etiketi -->
+        {{ form.genres(class="form-control") }} <!-- Genres input alanı -->
+    </div>
     <button type="submit" class="btn btn-success">Kaydet</button>
     <a href="{{ url_for('admin') }}" class="btn btn-secondary">İptal</a>
 </form>

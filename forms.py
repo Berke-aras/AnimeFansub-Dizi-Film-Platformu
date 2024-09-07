@@ -17,3 +17,11 @@ class EpisodeForm(FlaskForm):
     number = StringField('Episode Number', validators=[DataRequired()])
     sources = TextAreaField('Sources (comma separated URLs)', validators=[DataRequired()])
     submit = SubmitField('Add Episode')
+
+
+class AnimeForm(FlaskForm):
+    name = StringField('Anime Name', validators=[DataRequired(), Length(min=1, max=150)])
+    description = TextAreaField('Description', validators=[DataRequired()])
+    cover_image = StringField('Cover Image URL', validators=[DataRequired()])
+    genres = StringField('Genres (comma separated)', validators=[DataRequired()])  # Yeni alan
+    submit = SubmitField('Add/Update Anime')

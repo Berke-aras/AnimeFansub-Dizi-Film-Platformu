@@ -6,16 +6,16 @@
     {% if results %}
         <div class="row mt-3">
         {% for anime in results %}
-            <div class="col-md-4" style="max-width: 220px ; min-width: 220px;">
-                <div class="card mb-4">
-                    <img class="card-img-top" src="{{ anime.cover_image }}" alt="{{ anime.name }}" style="max-width: 220px ; min-width: 220px;">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ anime.name }}</h5>
-                        <p class="card-text">{{ anime.description[:30] }}...</p>
-                        <a href="{{ url_for('anime', anime_id=anime.id) }}" class="btn btn-primary">İzle</a>
-                    </div>
+        <div class=" col-md-4 col-sm-6 d-flex justify-content-center ">
+            <div class="card mb-4 bg-dark text-light card-fixed-height" style="max-width: 275px; min-width: 275px;">
+                <img src="{{ anime.cover_image }}" class="card-img-top" alt="{{ anime.name }}">
+                <div class="card-body">
+                    <h5 class="card-title">{{ anime.name }}</h5>
+                    <p>Tür: {{ anime.genres.split(',')[:3] | join(', ') }} ...</p>
+                    <a href="{{ url_for('anime', anime_id=anime.id) }}" class="btn btn-primary btn-izle">İzle</a>
                 </div>
             </div>
+        </div>
         {% endfor %}
         </div>
     {% else %}
@@ -23,3 +23,5 @@
     {% endif %}
 </div>
 {% endblock %}
+
+

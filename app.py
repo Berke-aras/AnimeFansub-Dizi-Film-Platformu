@@ -24,7 +24,8 @@ def load_user(user_id):
 
 @app.route('/')
 def index():
-    animes = Anime.query.all()
+    page = request.args.get('page', 1, type=int)  # URL'den sayfa numarasını al
+    animes = Anime.query.order_by().paginate(page=page, per_page=15)  # 18 animeyi getir
     return render_template('index.html', animes=animes)
 
 @app.route('/anime/<int:anime_id>')
@@ -61,11 +62,13 @@ def admin():
 def add_anime():
     form = AnimeForm()
     if form.validate_on_submit():
-        anime = Anime(name=form.name.data, description=form.description.data, cover_image=form.cover_image.data)
+        genres = form.genres.data if form.genres.data else 'Unknown'  # Boşsa varsayılan bir değer ata
+        anime = Anime(name=form.name.data, description=form.description.data, cover_image=form.cover_image.data, genres=genres)
         db.session.add(anime)
         db.session.commit()
         return redirect(url_for('admin'))
     return render_template('add_anime.html', form=form)
+
 
 @app.route('/add_episode/<int:anime_id>', methods=['GET', 'POST'])
 @login_required
@@ -119,17 +122,19 @@ def edit_episode(episode_id):
 @login_required
 def edit_anime(anime_id):
     anime = Anime.query.get_or_404(anime_id)
-    form = AnimeForm(obj=anime)
+    form = AnimeForm(obj=anime)  # Formu anime objesi ile başlat
     
     if form.validate_on_submit():
         anime.name = form.name.data
         anime.description = form.description.data
         anime.cover_image = form.cover_image.data
-        db.session.commit()
+        anime.genres = form.genres.data  # Genres alanını da güncelle
+        db.session.commit()  # Değişiklikleri veritabanına kaydet
         flash('Anime başarıyla güncellendi.', 'success')
         return redirect(url_for('admin'))
     
     return render_template('edit_anime.html', form=form, anime=anime)
+
 
 
 @app.route('/search')
@@ -151,5 +156,14 @@ def logout():
     logout_user()
     return redirect(url_for('index'))
 
+@app.after_request
+def add_security_headers(response):
+    response.headers['X-Frame-Options'] = 'DENY'
+    response.headers['X-Content-Type-Options'] = 'nosniff'
+    return response
+
+import os
+app.secret_key = os.urandom(24)  # Rastgele güçlü bir anahtar
+
 if __name__ == '__main__':
-    app.run(debug=False, host='0.0.0.0', port=5000)
+    app.run(debug=True, host='0.0.0.0', port=5000)

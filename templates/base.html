@@ -5,6 +5,9 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700&display=swap" rel="stylesheet">
+
     <title>{% block title %}Humat Fansub - Anime İzleme Platformu{% endblock %}</title>
     <meta name="google-adsense-account" content="ca-pub-9669448014683960">
 
@@ -36,50 +39,120 @@
         <link rel="icon" href="{{ url_for('static', filename='images/ico.ico') }}" type="image/x-icon">
 
 
-    <style>
-        .navbar-brand-logo {
+        <style>
+            html, body {
+            height: 100%;
+            margin: 0;
             display: flex;
-            align-items: center;
-        }
-        .navbar-brand-logo img {
-            max-width: 60px;
-            max-height: 60px;
-            margin-right: 10px;
-            border-radius: 50%; /* Yuvarlak yapar */
-        }
-        .navbar-brand-logo span {
-            font-family: 'Kaushan Script', cursive; /* Anime sitesine uygun güzel bir font */
-            font-size: 1.4em; /* Boyutunu küçülttük */
-            color: #fff;
-        }
-        body.bg-dark {
-            background-color: #121212 !important;
-        }
-        .navbar {
-            background-color: #b71c1c !important; /* Koyu kırmızı */
-        }
-        .nav-link {
-            color: #fff !important;
-        }
-        .nav-link:hover {
-            color: #ffccbc !important; /* Açık kırmızı tonları */
-        }
-        footer {
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            flex-wrap: wrap;
-            padding: 1rem;
-            background-color: #b71c1c; /* Koyu kırmızı */
-        }
-        footer p {
-            margin: 0.5rem;
-            color: #fff;
-        }
-        footer a {
-            color: #ffccbc; /* Açık kırmızı tonları */
-        }
-    </style>
+            flex-direction: column;
+}
+            body{
+                font-family: 'Noto Sans JP', sans-serif;
+                font-size: 16px;
+                color: #333;
+            }
+            @keyframes glow {
+                0% {
+                    box-shadow: 0 0 5px #ffccbc, 0 0 10px #ffccbc, 0 0 15px #ffccbc, 0 0 20px #ffccbc, 0 0 25px #ffccbc, 0 0 30px #ffccbc, 0 0 35px #ffccbc;
+                }
+                100% {
+                    box-shadow: 0 0 0px #ffccbc, 0 0 0px #ffccbc, 0 0 0px #ffccbc, 0 0 0px #ffccbc, 0 0 0px #ffccbc, 0 0 0px #ffccbc, 0 0 0px #ffccbc;
+                }
+            }
+        
+            .glow {
+                animation: glow 1s ease-in-out;
+            }
+        
+            .navbar-brand-logo {
+                display: flex;
+                align-items: center;
+            }
+            .navbar-brand-logo img {
+                max-width: 60px;
+                max-height: 60px;
+                margin-right: 10px;
+                border-radius: 50%; /* Yuvarlak yapar */
+            }
+            .navbar-brand-logo span {
+                font-family: 'Kaushan Script', cursive; /* Anime sitesine uygun güzel bir font */
+                font-size: 1.4em; /* Boyutunu küçülttük */
+                color: #fff;
+            }
+            body.bg-dark {
+                background-color: #190019 !important;
+                
+            }
+            .navbar {
+                background-color: #872341 !important; /* Koyu kırmızı */
+            }
+            .nav-link {
+                color: #fff !important;
+            }
+            .nav-link:hover {
+                color: #ffccbc !important; /* Açık kırmızı tonları */
+            }
+            footer {
+                display: flex;
+                justify-content: space-around;
+                align-items: center;
+                flex-wrap: wrap;
+                padding: 1rem;
+                background-color: #872341; /* Koyu kırmızı */
+                position: relative;
+                bottom: 0;
+                width: 100%;
+            }
+            footer p {
+                margin: 0.5rem;
+                color: #fff;
+            }
+            footer a {
+                color: #ffccbc; /* Açık kırmızı tonları */
+            }
+
+            footer a:hover {
+                color: #ffffff; /* Açık kırmızı tonları */
+            }
+
+            .card-fixed-height {
+    height: 500px; /* Increased the height for more space */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.card-body {
+    background-color: #BE3144;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 15px; /* Added padding for better spacing */
+}
+
+.card-title {
+    font-size: 1.2rem; /* Increased the title size */
+    margin-bottom: 10px;
+}
+
+.card p {
+    flex-grow: 1;
+    font-size: 1rem; /* Increased font size for paragraph */
+}
+
+.btn-izle {
+    margin-top: auto;
+    font-size: 1rem; /* Increased button font size */
+    padding: 10px 20px; /* Increased button size */
+}
+
+main {
+    flex: 1; /* Sayfanın geri kalan kısmını kaplar */
+}
+
+
+        </style>
 </head>
 
 <body class="bg-dark text-light">
@@ -107,7 +180,7 @@
                 {% else %}
                 {% endif %}
                 <li class="nav-item">
-                    <a class="nav-link" href="#footer">Contact</a>
+                    <a class="nav-link" href="#footer" onclick="highlightFooter()">Contact</a>
                 </li>
             </ul>
             <!-- Arama Formu -->
@@ -124,11 +197,19 @@
     </main>
 
     <footer id="footer" class="text-center mt-4">
-        <p>Contact: <a href="mailto:humat.fansub@gmail.com">humat.fansub@gmail.com</a></p>
+        <p><a href="mailto:humat.fansub@gmail.com" onclick="highlightFooter()">humat.fansub@gmail.com</a></p>
         <p><a href="https://discord.gg/SaKSmuZkAf ">Discord</a></p>
     </footer>
 
-
+    <script>
+        function highlightFooter() {
+            const footer = document.getElementById('footer');
+            footer.classList.add('glow');
+            setTimeout(() => {
+                footer.classList.remove('glow');
+            }, 1000); // Animasyon süresi ile aynı olmalı
+        }
+    </script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>

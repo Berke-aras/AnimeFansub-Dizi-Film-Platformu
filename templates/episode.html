@@ -43,6 +43,8 @@
             margin-left: auto;
             margin-right: auto;
         }
+
+
     @media (max-width: 576px) {
         .video-player iframe {
             height: 300px; /* Mobil cihazlar için daha küçük video yüksekliği */
@@ -55,14 +57,18 @@
 
 
 
-
+    <div class="link-group text-center mt-5 fnt h6 ">
+        </div>
+            <h5 class="flex-wrap d-flex justify-content-center flex-wrap fnt h6">Site ve Videolar hakkındaki sorunlarınız için Mail veya Discord üzerinden bize ulaşabilirsiniz.<pre> <a href="#footer" onclick="highlightFooter()" style="color: #d38a8a;">Mail & Discord.</a></pre></h5>
+        </div>
+    </div>
     <h1>{{ episode.anime.name }} - Bölüm {{ episode.number }}</h1>
     <div class="video-player mb-4">
         <iframe src="{{ sources[0] }}" frameborder="0" allowfullscreen class="w-100" style="height: 500px;"></iframe>
     </div>
     <div class="btn-group mb-3 d-flex justify-content-center flex-wrap">
         {% for source in sources %}
-            <button class="btn btn-secondary mx-1 m-1" onclick="document.querySelector('iframe').src='{{ source }}'">Kaynak {{ loop.index }}</button>
+            <button class="btn btn-secondary mx-1 m-1" onclick="document.querySelector('iframe').src='{{ source }}'" style="background-color: #ca476e !important;">Kaynak {{ loop.index }}</button>
         {% endfor %}
     </div>
     
@@ -75,5 +81,7 @@
             {% endfor %}
         </div>
     </div>
+
+    
 </div>
 {% endblock %}

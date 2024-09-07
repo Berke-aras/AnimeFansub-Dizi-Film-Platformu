@@ -1,10 +1,8 @@
 body {
-    background-color: #121212;
     color: #d1c4e9;
 }
 
 .card {
-    background-color: #1e1e1e;
     border-radius: 8px;
     overflow: hidden;
 }
@@ -16,13 +14,13 @@ body {
 }
 
 .btn-izle {
-    background-color: #b71c1c !important;
-    border-color: #b71c1c !important;
+    background-color: #1b1b1b !important;
+    border-color: #242424 !important;
 }
 
 .btn-izle:hover {
-    background-color: #b71c1c8f !important;
-    border-color: #b71c1c67 !important;
+    background-color: #8585858f !important;
+    border-color: #a8a8a867 !important;
 }
 
 h1, h2 {
@@ -50,4 +48,65 @@ h1, h2 {
 .btn-danger:hover {
     background-color: #5a3791;
     border-color: #5a3791;
+}
+
+ Make sure the row uses flexbox properly */
+.anime-list {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+/* Fix overlapping issue */
+@media (min-width: 768px) and (max-width: 990px) {
+    .col-md-4 {
+        flex: 0 0 33.33%;  /* Set 3 columns per row */
+        max-width: 33.33%;  /* Adjust the max-width for columns */
+    }
+    .col-sm-6 {
+        flex: 0 0 50%;  /* Set 2 columns per row */
+        max-width: 50%;
+    }
+}
+
+@media (max-width: 767px) {
+    .col-sm-6 {
+        flex: 0 0 100%;  /* Full width on small screens */
+        max-width: 100%;
+    }
+}
+
+/* Optional: Adjust card margins to avoid any possible overlap */
+.card {
+    margin-bottom: 20px;
+}
+
+
+.pagination {
+    display: flex;
+    justify-content: center; /* Sayfa numaralarını ortala */
+    align-items: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.pagination a, .pagination span {
+    color: #d1c4e9; /* Sayfa numaralarının rengi */
+    background-color: #2c2c2c; /* Sayfa numaralarının arka plan rengi */
+    border: 1px solid #BE3144; /* Çerçeve rengi */
+    padding: 10px 15px;
+    margin: 0 5px; /* Sayfa numaraları arasındaki boşluk */
+    text-decoration: none; /* Alt çizgiyi kaldır */
+    border-radius: 5px; /* Köşeleri yuvarla */
+    transition: background-color 0.3s, color 0.3s; /* Geçiş animasyonu */
+}
+
+.pagination a:hover {
+    background-color: #ce4a5ba2; /* Üzerine gelindiğinde arka plan değişimi */
+    color: #fff; /* Üzerine gelindiğinde yazı rengi */
+}
+
+.pagination .current {
+    background-color: #BE3144; /* Aktif sayfa rengi */
+    color: #fff; /* Aktif sayfa yazı rengi */
+    cursor: default;
 }
