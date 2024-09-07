@@ -35,7 +35,7 @@ Bu proje MIT Lisansı altında lisanslanmıştır. Daha fazla bilgi için `LICEN
 
 ## Açık Kaynak Felsefesi
 
-Bu proje, açık kaynak topluluğunun gücüne inanılarak geliştirilmiştir. Herkesin katkıda bulunabileceği ve kodun şeffaf bir şekilde paylaşılmasının yazılım dünyasına önemli bir katkı sağladığına inanıyoruz. Eğer bu projeye katkıda bulunmak istiyorsanız, önerilerinizi ve geliştirmelerinizi paylaşabilirsiniz.
+Bu proje, açık kaynak topluluğunun gücüne inanılarak geliştirilmiştir. Eğer bu projeye katkıda bulunmak istiyorsanız, önerilerinizi ve geliştirmelerinizi paylaşabilirsiniz.
 
 Projeyi geliştirirken karşılaştığınız sorunları çözebilir, yeni özellikler ekleyebilir veya mevcut olanları iyileştirebilirsiniz. Ayrıca, topluluğa yardımcı olmak amacıyla belgeleri geliştirerek veya çeviriler yaparak katkıda bulunabilirsiniz.
 
@@ -46,3 +46,4 @@ Projeyi geliştirirken karşılaştığınız sorunları çözebilir, yeni özel
 3. Yaptığınız değişiklikleri commitleyin: `git commit -m 'Yeni özellik eklendi'`
 4. Branch'inizi push edin: `git push origin yeni-ozellik`
 5. Bir Pull Request oluşturun.
+6. Depoyu yıldızlayın.
