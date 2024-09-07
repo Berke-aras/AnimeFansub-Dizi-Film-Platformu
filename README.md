@@ -1,6 +1,6 @@
 # AnimeFansub-Dizi-Film Platformu
 
-Humat Fansub, anime tutkunları için basit ama gerekli özellikleri barındıran bir fansub platformudur. Kullanıcılar, anime serilerini izleyebilir ve bölümler arasında gezinebilirler. Platformda yer alan admin paneli ile yöneticiler yeni anime serileri ve bölümleri ekleyebilir, platformu kolayca yönetebilir.
+Anime-Dizi-Film tutkunları için basit ama gerekli özellikleri barındıran bir fansub platformudur. Kullanıcılar, anime serilerini izleyebilir ve bölümler arasında gezinebilirler. Platformda yer alan admin paneli ile yöneticiler yeni anime serileri ve bölümleri ekleyebilir, platformu kolayca yönetebilir.
 
 > **Not:** Bu projeyi hayata geçirmeden önce **secret key** değerini değiştirmeyi ve veritabanını yeniden oluşturmayı unutmayın(veritabanı.txt, dosyasından kopya çekebilirsiniz). Kodları inceleyerek güvenlik önlemlerini almanız önerilir. Ayrıca Meta etiketlerini vs değiştirmeyi unutmayın!!!
 
@@ -10,17 +10,20 @@ Humat Fansub, anime tutkunları için basit ama gerekli özellikleri barındıra
 -   **Bölüm Seçimi:** Her anime serisi için uygun bölümler listelenir ve kullanıcılar istedikleri bölümü izleyebilirler.
 -   **Video Embed:** Videolar, iframe ile dış kaynaklardan platforma eklenmiştir.
 -   **Admin Panel:** Yöneticiler anime serileri ve bölümlerini ekleyebilir, silebilir, düzenleyebilir.
+-   **Arama Çubuğu:** Kullanıcılar animeleri aratıp ulasabilirler.
 
-3. **Admin Girişi:**
-    - Kullanıcı Adı: `admin`
-    - Şifre: `adminpsw`
+
 
 ## Canlı Demo
 
 > **Dikkat:** Vercel üzerinde barındırılan örnekte herhangi bir veritabanı işlemi yapamazsınız. Vercel, sunucu taraflı veritabanı işlemlerine izin vermemektedir.
 
-> **Dikkat:** Çalışan Hümat Fansuba air versiyon:
+> **Dikkat:** Çalışan Hümat Fansuba ait versiyon:
 > [www.humatfansub.com.tr](https://www.humatfansub.com.tr)
+
+**Admin Girişi:**
+    - Kullanıcı Adı: `admin`
+    - Şifre: `adminpsw`
 
 ## Güvenlik
 
