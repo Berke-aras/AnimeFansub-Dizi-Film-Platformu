@@ -1,6 +1,6 @@
 # AnimeFansub-Dizi-Film Platformu
 
-Humat Fansub, anime tutkunları için basit ama gerekli özellikleri barındıran bir fansub platformudur. Kullanıcılar, anime serilerini izleyebilir ve bölümler arasında gezinebilirler. Platformda yer alan admin paneli ile yöneticiler yeni anime serileri ve bölümleri ekleyebilir, platformu kolayca yönetebilir.
+Anime-Dizi-Film tutkunları için basit ama gerekli özellikleri barındıran bir fansub platformudur. Kullanıcılar, anime serilerini izleyebilir ve bölümler arasında gezinebilirler. Platformda yer alan admin paneli ile yöneticiler yeni anime serileri ve bölümleri ekleyebilir, platformu kolayca yönetebilir.
 
 > **Not:** Bu projeyi hayata geçirmeden önce **secret key** değerini değiştirmeyi ve veritabanını yeniden oluşturmayı unutmayın(veritabanı.txt, dosyasından kopya çekebilirsiniz). Kodları inceleyerek güvenlik önlemlerini almanız önerilir. Ayrıca Meta etiketlerini vs değiştirmeyi unutmayın!!!
 
