@@ -1,4 +1,4 @@
-#  Anime Fansub Platformu
+#  AnimeFansub-Dizi-Film Platformu
 
 Humat Fansub, anime tutkunları için basit ama gerekli özellikleri barındıran bir fansub platformudur. Kullanıcılar, anime serilerini izleyebilir ve bölümler arasında gezinebilirler. Platformda yer alan admin paneli ile yöneticiler yeni anime serileri ve bölümleri ekleyebilir, platformu kolayca yönetebilir.
 
