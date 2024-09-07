@@ -1,4 +1,4 @@
-![centered gif](https://github.com/user-attachments/assets/b2d4850b-29e9-410c-a09f-f9be5c830fe2)
+<p align="center"> <img src="https://github.com/user-attachments/assets/b2d4850b-29e9-410c-a09f-f9be5c830fe2" alt="Anime Fansub GIF" width="400" /> </p>
 # AnimeFansub-Dizi-Film Platformu
 
 Anime-Dizi-Film tutkunları için basit ama gerekli özellikleri barındıran bir fansub platformudur. Kullanıcılar, anime serilerini izleyebilir ve bölümler arasında gezinebilirler. Platformda yer alan admin paneli ile yöneticiler yeni anime serileri ve bölümleri ekleyebilir, platformu kolayca yönetebilir.
@@ -13,8 +13,6 @@ Anime-Dizi-Film tutkunları için basit ama gerekli özellikleri barındıran bi
 -   **Admin Panel:** Yöneticiler anime serileri ve bölümlerini ekleyebilir, silebilir, düzenleyebilir.
 -   **Arama Çubuğu:** Kullanıcılar animeleri aratıp ulasabilirler.
 
-
-
 ## Canlı Demo
 
 > **Dikkat:** Vercel üzerinde barındırılan örnekte herhangi bir veritabanı işlemi yapamazsınız. Vercel, sunucu taraflı veritabanı işlemlerine izin vermemektedir ve admin panelinden sizi atmakta vercel üzerinde.
@@ -22,9 +20,7 @@ Anime-Dizi-Film tutkunları için basit ama gerekli özellikleri barındıran bi
 > **Dikkat:** Çalışan Hümat Fansuba ait versiyon:
 > [www.humatfansub.com.tr](https://www.humatfansub.com.tr)
 
-**Admin Girişi:**
-    - Kullanıcı Adı: `admin`
-    - Şifre: `adminpsw`
+**Admin Girişi:** - Kullanıcı Adı: `admin` - Şifre: `adminpsw`
 
 ## Güvenlik
 
@@ -49,11 +45,4 @@ Projeyi geliştirirken karşılaştığınız sorunları çözebilir, yeni özel
 5. Bir Pull Request oluşturun.
 6. Depoyu yıldızlayın.
 
-
- <p align="center">
-    ![centered gif](https://tenor.com/tr/view/veronica-gif-25718682")
-</p>
-
-<p align="center"> <img src="https://tenor.com/tr/view/anime-anime-funny-anime-computer-kawaii-gif-15735770" /> </p>
-
-
+<p align="center"> <img src="https://github.com/user-attachments/assets/b9c0d50a-38ab-4345-959a-64daa212d407" alt="Anime Fansub GIF" width="400" /> </p>
