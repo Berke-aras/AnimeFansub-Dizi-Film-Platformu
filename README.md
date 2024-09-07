@@ -10,10 +10,9 @@ Anime-Dizi-Film tutkunları için basit ama gerekli özellikleri barındıran bi
 -   **Bölüm Seçimi:** Her anime serisi için uygun bölümler listelenir ve kullanıcılar istedikleri bölümü izleyebilirler.
 -   **Video Embed:** Videolar, iframe ile dış kaynaklardan platforma eklenmiştir.
 -   **Admin Panel:** Yöneticiler anime serileri ve bölümlerini ekleyebilir, silebilir, düzenleyebilir.
+-   **Arama Çubuğu:** Kullanıcılar animeleri aratıp ulasabilirler.
 
-3. **Admin Girişi:**
-    - Kullanıcı Adı: `admin`
-    - Şifre: `adminpsw`
+
 
 ## Canlı Demo
 
@@ -21,6 +20,10 @@ Anime-Dizi-Film tutkunları için basit ama gerekli özellikleri barındıran bi
 
 > **Dikkat:** Çalışan Hümat Fansuba ait versiyon:
 > [www.humatfansub.com.tr](https://www.humatfansub.com.tr)
+
+**Admin Girişi:**
+    - Kullanıcı Adı: `admin`
+    - Şifre: `adminpsw`
 
 ## Güvenlik
 
