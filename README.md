@@ -1,4 +1,4 @@
-#  AnimeFansub-Dizi-Film Platformu
+# AnimeFansub-Dizi-Film Platformu
 
 Humat Fansub, anime tutkunları için basit ama gerekli özellikleri barındıran bir fansub platformudur. Kullanıcılar, anime serilerini izleyebilir ve bölümler arasında gezinebilirler. Platformda yer alan admin paneli ile yöneticiler yeni anime serileri ve bölümleri ekleyebilir, platformu kolayca yönetebilir.
 
@@ -6,33 +6,29 @@ Humat Fansub, anime tutkunları için basit ama gerekli özellikleri barındıra
 
 ## Özellikler
 
-- **Anime Seçimi:** Kullanıcılar, mevcut anime serilerini seçip izleyebilirler.
-- **Bölüm Seçimi:** Her anime serisi için uygun bölümler listelenir ve kullanıcılar istedikleri bölümü izleyebilirler.
-- **Video Embed:** Videolar, iframe ile dış kaynaklardan platforma eklenmiştir.
-- **Admin Panel:** Yöneticiler anime serileri ve bölümlerini ekleyebilir, silebilir, düzenleyebilir.
-
+-   **Anime Seçimi:** Kullanıcılar, mevcut anime serilerini seçip izleyebilirler.
+-   **Bölüm Seçimi:** Her anime serisi için uygun bölümler listelenir ve kullanıcılar istedikleri bölümü izleyebilirler.
+-   **Video Embed:** Videolar, iframe ile dış kaynaklardan platforma eklenmiştir.
+-   **Admin Panel:** Yöneticiler anime serileri ve bölümlerini ekleyebilir, silebilir, düzenleyebilir.
 
 3. **Admin Girişi:**
-   - Kullanıcı Adı: `admin`
-   - Şifre: `adminpsw`
+    - Kullanıcı Adı: `admin`
+    - Şifre: `adminpsw`
 
 ## Canlı Demo
 
 > **Dikkat:** Vercel üzerinde barındırılan örnekte herhangi bir veritabanı işlemi yapamazsınız. Vercel, sunucu taraflı veritabanı işlemlerine izin vermemektedir.
 
 > **Dikkat:** Çalışan Hümat Fansuba air versiyon:
-[www.humatfansub.com.tr](https://www.humatfansub.com.tr)
-
+> [www.humatfansub.com.tr](https://www.humatfansub.com.tr)
 
 ## Güvenlik
 
-Projeyi kullanmadan önce mutlaka güvenlik önlemlerini gözden geçirin. Secret key'i güncelleyip güçlü bir şifre kullanmayı unutmayın. Admin paneli ve veritabanı işlemleri için ek güvenlik katmanları ekleyebilirsiniz. 
+Projeyi kullanmadan önce mutlaka güvenlik önlemlerini gözden geçirin. Secret key'i güncelleyip güçlü bir şifre kullanmayı unutmayın. Admin paneli ve veritabanı işlemleri için ek güvenlik katmanları ekleyebilirsiniz.
 
 ## Lisans
 
 Bu proje MIT Lisansı altında lisanslanmıştır. Daha fazla bilgi için `LICENSE` dosyasına göz atın.
-
-
 
 ## Açık Kaynak Felsefesi
 

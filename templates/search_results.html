@@ -1,27 +1,36 @@
-{% extends "base.html" %}
-
-{% block content %}
+{% extends "base.html" %} {% block content %}
 <div class="container mt-4">
     <h2>Arama Sonuçları: "{{ query }}"</h2>
     {% if results %}
-        <div class="row mt-3">
+    <div class="row mt-3">
         {% for anime in results %}
-        <div class=" col-md-4 col-sm-6 d-flex justify-content-center ">
-            <div class="card mb-4 bg-dark text-light card-fixed-height" style="max-width: 275px; min-width: 275px;">
-                <img src="{{ anime.cover_image }}" class="card-img-top" alt="{{ anime.name }}">
+        <div class="col-md-4 col-sm-6 d-flex justify-content-center">
+            <div
+                class="card mb-4 bg-dark text-light card-fixed-height"
+                style="max-width: 275px; min-width: 275px"
+            >
+                <img
+                    src="{{ anime.cover_image }}"
+                    class="card-img-top"
+                    alt="{{ anime.name }}"
+                />
                 <div class="card-body">
                     <h5 class="card-title">{{ anime.name }}</h5>
-                    <p>Tür: {{ anime.genres.split(',')[:3] | join(', ') }} ...</p>
-                    <a href="{{ url_for('anime', anime_id=anime.id) }}" class="btn btn-primary btn-izle">İzle</a>
+                    <p>
+                        Tür: {{ anime.genres.split(',')[:3] | join(', ') }} ...
+                    </p>
+                    <a
+                        href="{{ url_for('anime', anime_id=anime.id) }}"
+                        class="btn btn-primary btn-izle"
+                        >İzle</a
+                    >
                 </div>
             </div>
         </div>
         {% endfor %}
-        </div>
+    </div>
     {% else %}
-        <p class="mt-3">Aradığınız kriterlere uygun sonuç bulunamadı.</p>
+    <p class="mt-3">Aradığınız kriterlere uygun sonuç bulunamadı.</p>
     {% endif %}
 </div>
 {% endblock %}
-
-

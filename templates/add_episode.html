@@ -1,19 +1,15 @@
-{% extends "base.html" %}
-
-{% block title %}Yeni Bölüm Ekle{% endblock %}
-
-{% block content %}
-    <h1>Yeni Bölüm Ekle</h1>
-    <form method="POST">
-        {{ form.hidden_tag() }}
-        <div class="form-group">
-            {{ form.number.label }} {{ form.number(class="form-control", size=32) }}
-        </div>
-        <div class="form-group">
-            {{ form.sources.label }} {{ form.sources(class="form-control", rows=5) }}
-        </div>
-        <div class="form-group">
-            {{ form.submit(class="btn btn-primary") }}
-        </div>
-    </form>
+{% extends "base.html" %} {% block title %}Yeni Bölüm Ekle{% endblock %} {%
+block content %}
+<h1>Yeni Bölüm Ekle</h1>
+<form method="POST">
+    {{ form.hidden_tag() }}
+    <div class="form-group">
+        {{ form.number.label }} {{ form.number(class="form-control", size=32) }}
+    </div>
+    <div class="form-group">
+        {{ form.sources.label }} {{ form.sources(class="form-control", rows=5)
+        }}
+    </div>
+    <div class="form-group">{{ form.submit(class="btn btn-primary") }}</div>
+</form>
 {% endblock %}

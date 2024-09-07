@@ -1,19 +1,16 @@
-{% extends "base.html" %}
-
-{% block title %}Giriş Yap{% endblock %}
-
-{% block content %}
-    <h1>Giriş Yap</h1>
-    <form method="POST">
-        {{ form.hidden_tag() }}
-        <div class="form-group">
-            {{ form.username.label }} {{ form.username(class="form-control", size=32) }}
-        </div>
-        <div class="form-group">
-            {{ form.password.label }} {{ form.password(class="form-control", size=32) }}
-        </div>
-        <div class="form-group">
-            {{ form.submit(class="btn btn-primary") }}
-        </div>
-    </form>
+{% extends "base.html" %} {% block title %}Giriş Yap{% endblock %} {% block
+content %}
+<h1>Giriş Yap</h1>
+<form method="POST">
+    {{ form.hidden_tag() }}
+    <div class="form-group">
+        {{ form.username.label }} {{ form.username(class="form-control",
+        size=32) }}
+    </div>
+    <div class="form-group">
+        {{ form.password.label }} {{ form.password(class="form-control",
+        size=32) }}
+    </div>
+    <div class="form-group">{{ form.submit(class="btn btn-primary") }}</div>
+</form>
 {% endblock %}
