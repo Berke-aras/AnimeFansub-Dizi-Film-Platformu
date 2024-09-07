@@ -1,119 +1,149 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="icon" href="{{ url_for('static', filename='images/ico.ico') }}" type="image/x-icon">
-     crossorigin="anonymous"></script>
-    <meta charset="UTF-8">
-    <title>{{ anime.name }}</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <style>
-        body {
-            font-family: 'Noto Sans JP', sans-serif;
-            font-size: 16px;
-            color: #ffffff;
-        }
-        body.bg-dark {
-            background-color: #190019 !important;
-        }
-        .container {
-            background-color: #610924;
-            border-radius: 8px;
-            padding: 20px;
-            max-width: 800px; /* Konteyner genişliğini sınırla */
-            margin: 0 auto; /* Ortala */
-        }
-        h1, h2, h5 {
-            color: #ffffff;
-        }
-        .list-group-item {
-            background-color: #2c2c2c;
-            border: 1px solid #ffffff !important;
-        }
-        .list-group-item a {
-            color: #d1c4e9;
-            display: block;
-            padding: 5px;
-            text-align:left;
-            border-radius: 5px;
-            background-color: #ffffff00;
-        }
-        .list-group-item a:hover {
-            color: #ffffff;
-            background-color: #b39ddb00;
-        }
-        .btn-danger {
-            background-color: #6f42c1;
-            border-color: #6f42c1;
-        }
-        .btn-danger:hover {
-            background-color: #5a3791;
-            border-color: #5a3791;
-        }
-        .anime-info {
-            display: flex;
-            align-items: center;
-            flex-wrap: wrap; /* Mobil uyumluluk için */
-        }
-        .anime-info img {
-            margin-right: 20px;
-            max-width: 100%; /* Mobil uyumluluk için */
-            height: auto; /* Mobil uyumluluk için */
-        }
-        .anime-info p {
-            flex: 1;
-            word-wrap: break-word; /* Yazıların taşmasını engeller */
-            max-width: calc(100% - 320px); /* Görselin genişliğini hesaba kat */
-            margin-top: 0; /* Mobil uyumluluk için */
-        }
-        .orta {
-            display: block;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        @media (max-width: 600px) {
+    <head>
+        <link
+            href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap"
+            rel="stylesheet"
+        />
+        <link
+            rel="icon"
+            href="{{ url_for('static', filename='images/ico.ico') }}"
+            type="image/x-icon"
+        />
+
+        <meta charset="UTF-8" />
+        <title>{{ anime.name }}</title>
+        <link
+            rel="stylesheet"
+            href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+        />
+        <style>
+            body {
+                font-family: "Noto Sans JP", sans-serif;
+                font-size: 16px;
+                color: #ffffff;
+            }
+            body.bg-dark {
+                background-color: #190019 !important;
+            }
+            .container {
+                background-color: #610924;
+                border-radius: 8px;
+                padding: 20px;
+                max-width: 800px; /* Konteyner genişliğini sınırla */
+                margin: 0 auto; /* Ortala */
+            }
+            h1,
+            h2,
+            h5 {
+                color: #ffffff;
+            }
+            .list-group-item {
+                background-color: #2c2c2c;
+                border: 1px solid #ffffff !important;
+            }
+            .list-group-item a {
+                color: #d1c4e9;
+                display: block;
+                padding: 5px;
+                text-align: left;
+                border-radius: 5px;
+                background-color: #ffffff00;
+            }
+            .list-group-item a:hover {
+                color: #ffffff;
+                background-color: #b39ddb00;
+            }
+            .btn-danger {
+                background-color: #6f42c1;
+                border-color: #6f42c1;
+            }
+            .btn-danger:hover {
+                background-color: #5a3791;
+                border-color: #5a3791;
+            }
             .anime-info {
-                flex-direction: column; /* Mobilde dikey hizalama */
-                align-items:center;
-                justify-content: center; /* Sol hizalama */
+                display: flex;
+                align-items: center;
+                flex-wrap: wrap; /* Mobil uyumluluk için */
             }
             .anime-info img {
-                margin-right: 0;
-                margin-bottom: 20px; /* Resim ve yazı arasına boşluk ekle */
+                margin-right: 20px;
+                max-width: 100%; /* Mobil uyumluluk için */
+                height: auto; /* Mobil uyumluluk için */
             }
             .anime-info p {
-                max-width: 100%; /* Yazının tam genişlikte olmasını sağla */
+                flex: 1;
+                word-wrap: break-word; /* Yazıların taşmasını engeller */
+                max-width: calc(
+                    100% - 320px
+                ); /* Görselin genişliğini hesaba kat */
+                margin-top: 0; /* Mobil uyumluluk için */
             }
-        }
-        li.bg-secondary {
-            background-color: #ca476e !important;
-        }
-    </style>
-</head>
-<body class="bg-dark text-light">
-    <div class="container mt-4">
-        <h1>{{ anime.name }}</h1>
-        <div class="anime-info">
-            <img src="{{ anime.cover_image }}" alt="{{ anime.name }}" class="img-fluid" style="max-width: 300px; min-width: 280px;">
-            <p>{{ anime.description }}</p>
-        <h5 class="mt-4">Tür: {{ anime.genres.split(',') | join(', ') }}</h5>
-    </div>
-        <h2 class="mt-4">Bölümler</h2>
-        <ul class="list-group">
-            {% for episode in anime.episodes %}
-            <li class="list-group-item bg-secondary text-light">
-                <div class="bolum">
-                    <a href="{{ url_for('episode', episode_id=episode.id) }}" class="text-light">Bölüm {{ episode.number }}</a>
-                </div>
-                {% if current_user.is_authenticated %}
-                    <a href="{{ url_for('edit_episode', episode_id=episode.id) }}" class="btn btn-info btn-sm">Düzenle</a>
-                    <form action="{{ url_for('delete_episode', episode_id=episode.id) }}" method="post" class="d-inline">
-                        <button type="submit" class="btn btn-danger btn-sm">Sil</button>
+            @media (max-width: 600px) {
+                .anime-info {
+                    flex-direction: column; /* Mobilde dikey hizalama */
+                    align-items: center;
+                    justify-content: center; /* Sol hizalama */
+                }
+                .anime-info img {
+                    margin-right: 0;
+                    margin-bottom: 20px; /* Resim ve yazı arasına boşluk ekle */
+                }
+                .anime-info p {
+                    max-width: 100%; /* Yazının tam genişlikte olmasını sağla */
+                }
+            }
+            li.bg-secondary {
+                background-color: #ca476e !important;
+            }
+        </style>
+    </head>
+    <body class="bg-dark text-light">
+        <div class="container mt-4">
+            <h1>{{ anime.name }}</h1>
+            <div class="anime-info">
+                <img
+                    src="{{ anime.cover_image }}"
+                    alt="{{ anime.name }}"
+                    class="img-fluid"
+                    style="max-width: 300px; min-width: 280px"
+                />
+                <p>{{ anime.description }}</p>
+                <h5 class="mt-4">
+                    Tür: {{ anime.genres.split(',') | join(', ') }}
+                </h5>
+            </div>
+            <h2 class="mt-4">Bölümler</h2>
+            <ul class="list-group">
+                {% for episode in anime.episodes %}
+                <li class="list-group-item bg-secondary text-light">
+                    <div class="bolum">
+                        <a
+                            href="{{ url_for('episode', episode_id=episode.id) }}"
+                            class="text-light"
+                            >Bölüm {{ episode.number }}</a
+                        >
+                    </div>
+                    {% if current_user.is_authenticated %}
+                    <a
+                        href="{{ url_for('edit_episode', episode_id=episode.id) }}"
+                        class="btn btn-info btn-sm"
+                        >Düzenle</a
+                    >
+                    <form
+                        action="{{ url_for('delete_episode', episode_id=episode.id) }}"
+                        method="post"
+                        class="d-inline"
+                    >
+                        <button type="submit" class="btn btn-danger btn-sm">
+                            Sil
+                        </button>
                     </form>
-                {% endif %}
-            </li>
-            {% endfor %}
-        </ul>
-    </div>
-</body>
+                    {% endif %}
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </body>
 </html>

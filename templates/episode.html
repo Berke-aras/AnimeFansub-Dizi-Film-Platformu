@@ -1,61 +1,52 @@
 {% extends "base.html" %}
 {% block title %}Anime Streaming{% endblock %}
+
+{% block content %}
+
 <style>
-    body {
-        background-color: #121212;
-        color: #d1c4e9;
-    }
-    .container {
-        background-color: #1e1e1e;
-        border-radius: 8px;
-        padding: 20px;
-    }
     h1, h5 {
-        color: #e9c4c4;
-    }
-    .video-player iframe {
-        border: 2px solid #6f42c1;
-        border-radius: 8px;
-    }
-    .btn-secondary {
+            color: #ffffff;
+        }
+        .btn-link {
+            color: #d1c4e9;
+        }
+        .btn-link:hover {
+            color: #b39ddb;
+        }
+        .link-group a {
+            font-size: 0.8rem; /* Daha küçük font boyutu */
+        }
+        .fnt {
+            font-size: 1rem; /* Daha büyük yazı boyutu */
+        }
+
+        .video-player iframe {
+            border: 2px solid #6f42c1;
+            border-radius: 8px;
+        }
+
+        .cc {
+            background-color: #6f42c1;
+            border-color: #6f42c1;
+            color: #d1c4e9;
+        }
+        .btn-secondary:hover {
+            background-color: #5a3791;
+            border-color: #5a3791;
+        }
+        .btn-secondary {
         background-color: #6f42c1;
         border-color: #6f42c1;
         color: #d1c4e9;
     }
-    .btn-secondary:hover {
-        background-color: #5a3791;
-        border-color: #5a3791;
-    }
-    .btn-link {
-        color: #d1c4e9;
-    }
-    .btn-link:hover {
-        color: #b39ddb;
-    }
-    .link-group a {
-        font-size: 0.8rem; /* Daha küçük font boyutu */
-    }
-    .fnt {
-        font-size: 1rem; /* Daha büyük yazı boyutu */
-    }
-    .orta{
-            display: block;
-            margin-left: auto;
-            margin-right: auto;
+
+    
+        @media (max-width: 576px) {
+            .video-player iframe {
+                height: 300px; /* Mobil cihazlar için daha küçük video yüksekliği */
+            }
         }
-
-
-    @media (max-width: 576px) {
-        .video-player iframe {
-            height: 300px; /* Mobil cihazlar için daha küçük video yüksekliği */
-        }
-    }
-</style>
-{% block content %}
-
-
-
-
+    </style>
 
     <div class="link-group text-center mt-5 fnt h6 ">
         </div>
