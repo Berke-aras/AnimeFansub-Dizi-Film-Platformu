@@ -28,6 +28,10 @@ Anime-Dizi-Film tutkunları için basit ama gerekli özellikleri barındıran bi
 
 Projeyi kullanmadan önce mutlaka güvenlik önlemlerini gözden geçirin. Secret key'i güncelleyip güçlü bir şifre kullanmayı unutmayın. Admin paneli ve veritabanı işlemleri için ek güvenlik katmanları ekleyebilirsiniz.
 
+## Bilinen Sorunlar!
+
+-   **iFrame:** Gdrive,Mega,Okru sitelerindeki linkler, iframe'ye dönüştürülemiyor(site bağlantı reddi veriyor).
+
 ## Lisans
 
 Bu proje MIT Lisansı altında lisanslanmıştır. Daha fazla bilgi için `LICENSE` dosyasına göz atın.
@@ -50,10 +54,5 @@ Projeyi geliştirirken karşılaştığınız sorunları çözebilir, yeni özel
 > **Katkı:** DMCA tarafı için animewho ekibine teşekkürler(sitelerinden kopya çektim).
 
 <p align="center"> <img src="https://media1.tenor.com/m/w5EFZpYKe8MAAAAC/anime-anime-funny.gif" alt="Anime Fansub GIF" width="400" /> </p>
-
-
-## Bilinen Sorunlar!
-
--   **iFrame:** Gdrive,Mega,Okru sitelerindeki linkler, iframe'ye dönüştürülemiyor(site bağlantı reddi veriyor).
 
 
