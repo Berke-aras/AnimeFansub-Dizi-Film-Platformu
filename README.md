@@ -39,7 +39,7 @@ Bu proje MIT Lisansı altında lisanslanmıştır. Daha fazla bilgi için `LICEN
 
 ## Açık Kaynak Felsefesi
 
-Bu proje, açık kaynak topluluğunun gücüne inanılarak geliştirilip paylaşılmıştır. Eğer bu projeye katkıda bulunmak istiyorsanız, önerilerinizi ve geliştirmelerinizi paylaşabilirsiniz.
+Eğer bu projeye katkıda bulunmak istiyorsanız, önerilerinizi ve geliştirmelerinizi paylaşabilirsiniz.
 
 Projeyi geliştirirken karşılaştığınız sorunları çözebilir, yeni özellikler ekleyebilir veya mevcut olanları iyileştirebilirsiniz. Ayrıca, topluluğa yardımcı olmak amacıyla belgeleri geliştirerek veya çeviriler yaparak katkıda bulunabilirsiniz.
 
