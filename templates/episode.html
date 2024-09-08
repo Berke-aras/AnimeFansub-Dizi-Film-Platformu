@@ -1,78 +1,98 @@
-{% extends "base.html" %}
-{% block title %}{{ episode.anime.name }} İzle{% endblock %}
-
-{% block content %}
+{% extends "base.html" %} {% block title %}{{ episode.anime.name }} İzle{%
+endblock %} {% block content %}
 
 <style>
-    h1, h5 {
-            color: #ffffff;
-        }
-        .btn-link {
-            color: #d1c4e9;
-        }
-        .btn-link:hover {
-            color: #b39ddb;
-        }
-        .link-group a {
-            font-size: 0.8rem; /* Daha küçük font boyutu */
-        }
-        .fnt {
-            font-size: 1rem; /* Daha büyük yazı boyutu */
-        }
+    h1,
+    h5 {
+        color: #ffffff;
+    }
+    .btn-link {
+        color: #d1c4e9;
+    }
+    .btn-link:hover {
+        color: #b39ddb;
+    }
+    .link-group a {
+        font-size: 0.8rem; /* Daha küçük font boyutu */
+    }
+    .fnt {
+        font-size: 1rem; /* Daha büyük yazı boyutu */
+    }
 
-        .video-player iframe {
-            border: 2px solid #6f42c1;
-            border-radius: 8px;
-        }
+    .video-player iframe {
+        border: 2px solid #6f42c1;
+        border-radius: 8px;
+    }
 
-        .cc {
-            background-color: #6f42c1;
-            border-color: #6f42c1;
-            color: #d1c4e9;
-        }
-        .btn-secondary:hover {
-            background-color: #5a3791;
-            border-color: #5a3791;
-        }
-        .btn-secondary {
+    .cc {
+        background-color: #6f42c1;
+        border-color: #6f42c1;
+        color: #d1c4e9;
+    }
+    .btn-secondary:hover {
+        background-color: #5a3791;
+        border-color: #5a3791;
+    }
+    .btn-secondary {
         background-color: #6f42c1;
         border-color: #6f42c1;
         color: #d1c4e9;
     }
 
-    
-        @media (max-width: 576px) {
-            .video-player iframe {
-                height: 300px; /* Mobil cihazlar için daha küçük video yüksekliği */
-            }
+    @media (max-width: 576px) {
+        .video-player iframe {
+            height: 300px; /* Mobil cihazlar için daha küçük video yüksekliği */
         }
-    </style>
+    }
+</style>
 
-    <div class="link-group text-center mt-5 fnt h6 ">
-        </div>
-            <h5 class="flex-wrap d-flex justify-content-center flex-wrap fnt h6">Site ve Videolar hakkındaki sorunlarınız için Mail veya Discord üzerinden bize ulaşabilirsiniz.<pre> <a href="#footer" onclick="highlightFooter()" style="color: #d38a8a;">Mail & Discord.</a></pre></h5>
-        </div>
+<div class="link-group text-center mt-5 fnt h6">
+    <div>
+        <h5 class="flex-wrap d-flex justify-content-center flex-wrap fnt h6">
+            Site ve Videolar hakkındaki sorunlarınız için Mail veya Discord
+            üzerinden bize ulaşabilirsiniz.
+            <pre> <a href="#footer" onclick="highlightFooter()" style="color: #d38a8a;">Mail & Discord.</a></pre>
+        </h5>
     </div>
-    <h1>{{ episode.anime.name }} - Bölüm {{ episode.number }}</h1>
-    <div class="video-player mb-4">
-        <iframe src="{{ sources[0] }}" frameborder="0" allowfullscreen class="w-100" style="height: 500px;"></iframe>
-    </div>
-    <div class="btn-group mb-3 d-flex justify-content-center flex-wrap">
+</div>
+<h1>{{ episode.anime.name }} - Bölüm {{ episode.number }}</h1>
+<div class="video-player mb-4">
+    <iframe
+        src="{{ sources[0] }}"
+        frameborder="0"
+        allowfullscreen
+        class="w-100"
+        style="height: 500px"
+    ></iframe>
+</div>
+<div class="btn-group mb-3 d-flex justify-content-center flex-wrap">
+    {% for source in sources %}
+    <button
+        class="btn btn-secondary mx-1 m-1"
+        onclick="document.querySelector('iframe').src='{{ source }}'"
+        style="background-color: #ca476e !important"
+    >
+        Kaynak {{ loop.index }}
+    </button>
+    {% endfor %}
+</div>
+
+<!-- Aşağıdaki linkleri daha küçük hale getirdik ve en alta taşıdık -->
+<div class="link-group text-center mt-5 fnt h6">
+    <h5>Açılmayan videolar için</h5>
+    <div class="d-flex justify-content-center flex-wrap fnt h6">
         {% for source in sources %}
-            <button class="btn btn-secondary mx-1 m-1" onclick="document.querySelector('iframe').src='{{ source }}'" style="background-color: #ca476e !important;">Kaynak {{ loop.index }}</button>
+        <a
+            href="{{ source }}"
+            target="_blank"
+            class="btn btn-link p-1 mx-1 small fnt h6"
+            >Kaynak {{ loop.index }}</a
+        >
         {% endfor %}
     </div>
-    
-    <!-- Aşağıdaki linkleri daha küçük hale getirdik ve en alta taşıdık -->
-    <div class="link-group text-center mt-5 fnt h6">
-        <h5>Açılmayan videolar için</h5>
-        <div class="d-flex justify-content-center flex-wrap fnt h6">
-            {% for source in sources %}
-                <a href="{{ source }}" target="_blank" class="btn btn-link p-1 mx-1 small fnt h6">Kaynak {{ loop.index }}</a>
-            {% endfor %}
-        </div>
-    </div>
-
-    
+    <!-- DİSQUS -->
+    <div id="disqus_thread" class="pt-5"></div>
+    <!-- DİSQUS -->
 </div>
+
 {% endblock %}
