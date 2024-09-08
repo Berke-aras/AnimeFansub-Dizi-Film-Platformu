@@ -4,7 +4,7 @@
 
 Anime-Dizi-Film tutkunları için basit ama gerekli özellikleri barındıran bir fansub platformudur. Kullanıcılar, anime serilerini izleyebilir ve bölümler arasında gezinebilirler. Platformda yer alan yönetim paneli ile yeni anime serileri ve bölümleri eklenebilir, platform kolayca yönetilebilir.
 
-> **Not:** Bu projeyi hayata geçirmeden önce **secret key** değerini değiştirmeyi ve veritabanını yeniden oluşturmayı unutmayın(veritabanı.txt, dosyasından kopya çekebilirsiniz). Kodları inceleyerek güvenlik önlemlerini almanız önerilir. Ayrıca Meta etiketlerini vs değiştirmeyi unutmayın!!!
+> **Not:** Bu projeyi hayata geçirmeden önce **secret key** değerini değiştirmeyi ve veritabanını yeniden oluşturmayı unutmayın(veritabanı.txt, dosyasından kopya çekebilirsiniz). Kodları inceleyerek güvenlik önlemlerini almanız önerilir. Ayrıca Meta etiketlerini ve DİSQUSS tarafını değiştirmeyi unutmayın!!!
 
 ## Özellikler
 
@@ -13,6 +13,7 @@ Anime-Dizi-Film tutkunları için basit ama gerekli özellikleri barındıran bi
 -   **Video Embed:** Videolar, iframe ile dış kaynaklardan platforma eklenmiştir.
 -   **Yönetim Panel:** Anime serileri ve bölümleri kolayca eklenebilir, silinebilir, düzenlenebilir.
 -   **Arama Çubuğu:** Kullanıcılar animeleri aratıp kolayca ulaşabilirler.
+-   **DİSQUSS ile yorum kısmı:** Kullanıcılar Anime sayfası ve bölümlerine yorum yapabilirler.
 
 ## Canlı Demo
 
