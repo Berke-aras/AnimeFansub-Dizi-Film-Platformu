@@ -28,7 +28,7 @@ Anime-Dizi-Film tutkunları için basit ama gerekli özellikleri barındıran bi
 
 Projeyi kullanmadan önce mutlaka güvenlik önlemlerini gözden geçirin. Secret key'i güncelleyip güçlü bir şifre kullanmayı unutmayın. Admin paneli ve veritabanı işlemleri için ek güvenlik katmanları ekleyebilirsiniz.
 
-## Bilinen Sorunlar!
+## !Bilinen Sorunlar!
 
 -   **iFrame:** Gdrive,Mega,Okru sitelerindeki linkler, iframe'ye dönüştürülemiyor(site bağlantı reddi veriyor).
 
