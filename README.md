@@ -13,7 +13,7 @@ Anime-Dizi-Film tutkunları için basit ama gerekli özellikleri barındıran bi
 -   **Video Embed:** Videolar, iframe ile dış kaynaklardan platforma eklenmiştir.
 -   **Yönetim Panel:** Anime serileri ve bölümleri kolayca eklenebilir, silinebilir, düzenlenebilir.
 -   **Arama Çubuğu:** Kullanıcılar animeleri aratıp kolayca ulaşabilirler.
--   **DİSQUSS ile yorum kısmı:** Kullanıcılar Anime sayfası ve bölümlerine yorum yapabilirler.
+-   **DİSQUSS ile Yorumlar:** Kullanıcılar Anime sayfası ve bölümlerine yorum yapabilirler.
 
 ## Canlı Demo
 
