@@ -94,23 +94,7 @@
                                 >Ana Sayfa</a
                             >
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('login') }}"
-                                >AdminGiris</a
-                            >
-                        </li>
-                        {% if current_user.is_authenticated %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('admin') }}"
-                                >Admin Paneli</a
-                            >
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('logout') }}"
-                                >Çıkış Yap</a
-                            >
-                        </li>
-                        {% else %} {% endif %}
+                        
                         <li class="nav-item">
                             <a
                                 class="nav-link"
@@ -139,13 +123,43 @@
                         >
                             Ara
                         </button>
+                        <ul class="navbar-nav ml-auto">
+                        {% if current_user.is_authenticated %}
+                        
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('admin') }}"
+                                >Admin Paneli</a
+                            >
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('logout') }}"
+                                >Çıkış Yap</a
+                            >
+                        </li>
+                        <li class="nav-item"></li>
+                            <a class="nav-link" href="{{ url_for('admin') }}"
+                                >Hoşgeldiniz, {{ current_user.username }}</a
+                            >
+                    </ul>
+
+                        {% endif %}
                     </form>
                 </div>
             </nav>
         </header>
 
-        <main class="container mt-4">{% block content %}{% endblock %}</main>
+        {% with messages = get_flashed_messages(with_categories=True) %} {% if
+            messages %}
+            <div class="alert alert-danger" role="alert">
+                {% for category, message in messages %}
+                <p>{{ message }}</p>
+                {% endfor %}
+            </div>
+            {% endif %} {% endwith %}
 
+        <main class="container mt-4">{% block content %}{% endblock %}</main>
+        {% block footer %}
         <footer id="footer" class="text-center mt-4">
             <p>
                 <a
@@ -169,7 +183,7 @@
                 </a>
             </p>
         </footer>
-
+        {% endblock %}
         <script>
             function highlightFooter() {
                 const footer = document.getElementById("footer");
@@ -179,6 +193,16 @@
                 }, 1000); // Animasyon süresi ile aynı olmalı
             }
         </script>
+
+        <!-- JavaScript onay kodu -->
+<script>
+    function confirmDelete() {
+        return confirm(
+            "Bu animeyi silmek istediğinize emin misiniz? Bu işlem geri alınamaz."
+        );
+    }
+</script>
+
 
         <!-- DİSQUS -->
         <script>

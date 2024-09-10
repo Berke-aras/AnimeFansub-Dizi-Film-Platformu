@@ -25,4 +25,34 @@ content %}
     <button type="submit" class="btn btn-success">Kaydet</button>
     <a href="{{ url_for('admin') }}" class="btn btn-secondary">İptal</a>
 </form>
+{% endblock %} {% block footer %}
+<footer class="bg-dark text-light py-4">
+    <div class="container">
+        <div class="row">
+            {% if current_user.can_add_user %}
+            <div class="col-md-4 mb-2">
+                <a href="{{ url_for('users') }}" class="btn btn-info btn-block"
+                    >Kullanıcılar</a
+                >
+            </div>
+            {% endif %} {% if current_user.can_add_user %}
+            <div class="col-md-4 mb-2">
+                <a
+                    href="{{ url_for('view_logs') }}"
+                    class="btn btn-info btn-block"
+                    >Loglar</a
+                >
+            </div>
+            {% endif %} {% if current_user.can_add_user %}
+            <div class="col-md-4 mb-2">
+                <a
+                    href="{{ url_for('add_user') }}"
+                    class="btn btn-info btn-block"
+                    >Kullanıcı Ekle</a
+                >
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</footer>
 {% endblock %}

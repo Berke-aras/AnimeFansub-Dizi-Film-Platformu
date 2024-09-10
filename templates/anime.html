@@ -1,30 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <meta
-            name="description"
-            content="Humat Fansub, Hacettepe Üniversitesi'ne ait bir topluluk olup, anime çevirileri ve izleme hizmeti sunar."
-        />
-        <meta
-            name="keywords"
-            content="Humat Fansub, anime izle, anime çevirileri, Hacettepe Üniversitesi, anime topluluğu"
-        />
-        <meta name="author" content="Humat Fansub" />
-
-        <!-- Open Graph Etiketleri -->
-        <meta
-            property="og:title"
-            content="Humat Fansub - Anime İzleme Platformu"
-        />
-        <meta
-            property="og:description"
-            content="Humat Fansub, Hacettepe Üniversitesi'ne ait bir topluluk olup, anime çevirileri ve izleme hizmeti sunar."
-        />
-        <meta
-            property="og:image"
-            content="{{ url_for('static', filename='images/logo.png') }}"
-        />
-        <meta property="og:type" content="website" />
         <link
             href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap"
             rel="stylesheet"
@@ -34,7 +10,11 @@
             href="{{ url_for('static', filename='images/ico.ico') }}"
             type="image/x-icon"
         />
-
+        <script
+            async
+            src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9669448014683960"
+            crossorigin="anonymous"
+        ></script>
         <meta charset="UTF-8" />
         <title>{{ anime.name }}</title>
         <link
@@ -124,6 +104,15 @@
         </style>
     </head>
     <body class="bg-dark text-light">
+        {% with messages = get_flashed_messages(with_categories=True) %} {% if
+        messages %}
+        <div class="alert alert-danger" role="alert">
+            {% for category, message in messages %}
+            <p>{{ message }}</p>
+            {% endfor %}
+        </div>
+        {% endif %} {% endwith %}
+
         <div class="container mt-4">
             <h1>{{ anime.name }}</h1>
             <div class="anime-info">
@@ -159,18 +148,27 @@
                         action="{{ url_for('delete_episode', episode_id=episode.id) }}"
                         method="post"
                         class="d-inline"
+                        onsubmit="return confirmDelete()"
                     >
                         <button type="submit" class="btn btn-danger btn-sm">
                             Sil
                         </button>
                     </form>
+
                     {% endif %}
                 </li>
                 {% endfor %}
                 <div id="disqus_thread" class="pt-5"></div>
-                <!-- DİSQUS -->
             </ul>
         </div>
+
+        <script>
+            function confirmDelete() {
+                return confirm(
+                    "Bu bölümü silmek istediğinize emin misiniz? Bu işlem geri alınamaz."
+                );
+            }
+        </script>
 
         <!-- DİSQUS -->
         <script>

@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+{% block content %}
+        <link
+            href="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/css/bootstrap.min.css"
+            rel="stylesheet"
+        />
+        <style>
+
+            .form-container {
+                background-color: #505050;
+                padding: 2rem;
+                border-radius: 8px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container mt-5">
+            <div class="form-container mx-auto">
+                <h2 class="mb-4">Yeni Kullanıcı Ekle</h2>
+                <form method="POST" action="{{ url_for('add_user') }}">
+                    {{ form.hidden_tag() }}
+
+                    <div class="mb-3">
+                        <label for="username" class="form-label"
+                            >Kullanıcı Adı:</label
+                        >
+                        {{ form.username(class_="form-control", id="username",
+                        placeholder="Kullanıcı adını girin") }}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Şifre:</label>
+                        {{ form.password(class_="form-control", id="password",
+                        placeholder="Şifreyi girin") }}
+                    </div>
+
+                    <div class="mb-3 form-check">
+                        {{ form.can_delete(class_="form-check-input",
+                        id="can_delete") }}
+                        <label class="form-check-label" for="can_delete"
+                            >Silme Yetkisi</label
+                        >
+                    </div>
+
+                    <div class="mb-3 form-check">
+                        {{ form.can_edit(class_="form-check-input",
+                        id="can_edit") }}
+                        <label class="form-check-label" for="can_edit"
+                            >Düzenleme Yetkisi</label
+                        >
+                    </div>
+
+                    <div class="mb-3 form-check">
+                        {{ form.can_add_user(class_="form-check-input",
+                        id="can_add_user") }}
+                        <label class="form-check-label" for="can_add_user"
+                            >Yeni Kullanıcı Ekleme Yetkisi</label
+                        >
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">
+                        Kullanıcı Ekle
+                    </button>
+                </form>
+
+                <a href="{{ url_for('admin') }}" class="btn btn-secondary mt-3"
+                    >Geri Dön</a
+                >
+            </div>
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    </body>
+
+    {% endblock %}
+
+
+    {% block footer %}
+    <footer class="bg-dark text-light py-4">
+        <div class="container">
+            <div class="row">
+                {% if current_user.can_add_user %}
+                <div class="col-md-4 mb-2">
+                    <a
+                        href="{{ url_for('users') }}"
+                        class="btn btn-info btn-block"
+                        >Kullanıcılar</a
+                    >
+                </div>
+                {% endif %} {% if current_user.can_add_user %}
+                <div class="col-md-4 mb-2">
+                    <a
+                        href="{{ url_for('view_logs') }}"
+                        class="btn btn-info btn-block"
+                        >Loglar</a
+                    >
+                </div>
+                {% endif %} {% if current_user.can_add_user %}
+                <div class="col-md-4 mb-2">
+                    <a
+                        href="{{ url_for('add_user') }}"
+                        class="btn btn-info btn-block"
+                        >Kullanıcı Ekle</a
+                    >
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </footer>
+    {% endblock %}
