@@ -38,7 +38,7 @@ Projeyi kullanmadan önce mutlaka güvenlik önlemlerini gözden geçirin. Secre
 
 Bu proje MIT Lisansı altında lisanslanmıştır. Daha fazla bilgi için `LICENSE` dosyasına göz atın.
 
-## Açık Kaynak Felsefesi
+## Katkıda Bulunuma.
 
 Eğer bu projeye katkıda bulunmak istiyorsanız, önerilerinizi ve geliştirmelerinizi paylaşabilirsiniz.
 
