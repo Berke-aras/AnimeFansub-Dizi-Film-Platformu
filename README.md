@@ -32,6 +32,7 @@ Projeyi kullanmadan önce mutlaka güvenlik önlemlerini gözden geçirin. Secre
 ## !Bilinen Sorunlar!
 
 -   **iFrame:** Gdrive,Mega,Okru sitelerindeki linkler, iframe'ye dönüştürülemiyor(site bağlantı reddi veriyor).
+-   **CSS:** CSS Dosyaları dağınık ve düzgün bir şelikde yapılandırılmamış bir biçimde.
 
 ## Lisans
 
