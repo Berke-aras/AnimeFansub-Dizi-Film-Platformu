@@ -57,4 +57,6 @@ Projeyi geliştirirken karşılaştığınız sorunları çözebilir, yeni özel
 
 <p align="center"> <img src="https://media1.tenor.com/m/w5EFZpYKe8MAAAAC/anime-anime-funny.gif" alt="Anime Fansub GIF" width="400" /> </p>
 
+[![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2FBerke-aras%2FAnimeFansub-Dizi-Film-Platformu&count_bg=%23AE0BE0&title_bg=%23000000&icon=skyliner.svg&icon_color=%23E7E7E7&title=%E2%80%8E+&edge_flat=true)](https://hits.seeyoufarm.com)
+
 
