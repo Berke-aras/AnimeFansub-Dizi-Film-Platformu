@@ -1,5 +1,4 @@
-<p align="center"> <img src="https://media1.tenor.com/m/U-dCikr2sLIAAAAC/menhera.gif" alt="Anime Fansub GIF" width="400" /> </p>
-
+<p align="center"> <img src="https://media1.tenor.com/m/IAkzeTqB_RMAAAAC/rin-tohsaka-carnival-pantasm.gif" alt="Anime Fansub GIF" width="400" /> </p>
 ## AnimeFansub-Dizi-Film Platformu
 
 Anime-Dizi-Film tutkunları için basit ama gerekli özellikleri barındıran bir fansub platformudur. Kullanıcılar, anime serilerini izleyebilir ve bölümler arasında gezinebilirler. Platformda yer alan yönetim paneli ile yeni anime serileri ve bölümleri eklenebilir, platform kolayca yönetilebilir.
