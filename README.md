@@ -1,4 +1,4 @@
-<p align="center"> <img src="https://media1.tenor.com/m/IAkzeTqB_RMAAAAC/rin-tohsaka-carnival-pantasm.gif" alt="Anime Fansub GIF" width="400" /> </p>
+<p align="center"> <img src="https://media1.tenor.com/m/U-dCikr2sLIAAAAC/menhera.gif" alt="Anime Fansub GIF" width="400" /> </p>
 
 ## AnimeFansub-Dizi-Film Platformu
 
