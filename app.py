@@ -59,8 +59,10 @@ def animes():
     query = Anime.query
 
     # Directly check for data in the form, works for both GET and POST
-    if form.query.data:
-        query = query.filter(Anime.name.like(f"%{form.query.data}%"))
+    if form.validate_on_submit() or request.method == 'GET':
+        search_query = form.query.data or request.args.get('query')
+        if search_query:
+            query = query.filter(Anime.name.ilike(f"%{search_query}%"))
     if form.genre.data:
         query = query.filter(Anime.genres.any(id=int(form.genre.data)))
     if form.release_year.data:
@@ -277,17 +279,7 @@ def edit_episode(episode_id):
     form.sources.data = episode.sources
     return render_template('edit_episode.html', form=form, episode=episode)
 
-@app.route('/search')
-def search():
-    query = request.args.get('query', '').strip()
-    # Basic input validation, for example, restricting certain special characters.
-    if not re.match("^[A-Za-z0-9 ]*$", query):
-        flash('Invalid search query', 'danger')
-        return redirect(url_for('index'))
 
-    # Use ORM to prevent SQL injection
-    results = Anime.query.filter(Anime.name.like(f"%{query}%")).all()
-    return render_template('search_results.html', query=query, results=results)
 
 
 @app.route('/add_user', methods=['GET', 'POST'])
