@@ -19,7 +19,7 @@ from werkzeug.security import generate_password_hash
 
 # Kullanıcı bilgileri
 username = "admin"
-password = "adminpsw"
+password = "admin123"
 can_delete = True
 can_edit = True
 can_add_user = True
