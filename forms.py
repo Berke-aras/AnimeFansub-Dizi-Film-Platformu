@@ -38,13 +38,20 @@ class GenreForm(FlaskForm):
     name = StringField('Tür Adı', validators=[DataRequired(), Length(min=2, max=50)])
     submit = SubmitField('Tür Ekle')
 
+from wtforms import StringField, PasswordField, SubmitField, TextAreaField, SelectMultipleField, IntegerField, SelectField, BooleanField
+from wtforms.validators import DataRequired, Length, EqualTo, Optional
+
 class AnimeSearchForm(FlaskForm):
-    query = StringField('Anime Adı', validators=[Optional(), Length(max=100)])
-    genre = SelectField('Tür', choices=[], validators=[Optional()]) # coerce=int kaldırıldı
-    release_year = IntegerField('Çıkış Yılı', validators=[Optional()])
-    anime_type = SelectField('Tip', choices=[
-        ('', 'Tümü'), ('TV', 'TV'), ('Film', 'Film'), ('OVA', 'OVA')
-    ], validators=[Optional()])
+    query = StringField('Arama', validators=[Optional(), Length(min=1, max=100)])
+    genre = SelectField('Tür', choices=[], validators=[Optional()])
+    release_year = IntegerField('Yıl', validators=[Optional()])
+    anime_type = SelectField('Tip', choices=[('', 'Tümü'), ('TV', 'TV'), ('Film', 'Film'), ('OVA', 'OVA')], validators=[Optional()])
+    sort_by = SelectField('Sırala', choices=[
+        ('name_asc', 'İsme Göre (A-Z)'),
+        ('name_desc', 'İsme Göre (Z-A)'),
+        ('rating_desc', 'Puana Göre (En Yüksek)'),
+        ('year_desc', 'Yıla Göre (En Yeni)'),
+    ], default='name_asc', validators=[Optional()])
     submit = SubmitField('Filtrele')
 
 class UserForm(FlaskForm):

@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}Profilim - {{ current_user.username }}{% endblock %}
+
+{% block content %}
+<div class="container content-container mt-5">
+    <div class="profile-header mb-5 text-center">
+        <i class="fas fa-user-circle fa-5x mb-3"></i>
+        <h1 class="display-5">{{ current_user.username }}</h1>
+    </div>
+
+    <!-- İzleme Listesi -->
+    <section class="anime-shelf my-5">
+        <h3 class="shelf-title">İzleme Listem</h3>
+        {% if watchlist %}
+            <div class="shelf-scroll">
+                {% for anime in watchlist %}
+                <div class="anime-card">
+                    <a href="{{ url_for('anime', anime_id=anime.id) }}">
+                        <img src="{{ anime.cover_image }}" alt="{{ anime.name }}">
+                        <div class="card-overlay">
+                            <div class="card-title">{{ anime.name }}</div>
+                            <div class="card-play-icon"><i class="fas fa-play"></i></div>
+                        </div>
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="text-muted">İzleme listenizde henüz anime bulunmuyor.</p>
+        {% endif %}
+    </section>
+
+    <!-- Puanladığım Animeler -->
+    <section class="anime-shelf my-5">
+        <h3 class="shelf-title">Puanladığım Animeler</h3>
+        {% if user_ratings %}
+            <div class="shelf-scroll">
+                {% for rating in user_ratings %}
+                <div class="anime-card">
+                    <a href="{{ url_for('anime', anime_id=rating.anime.id) }}">
+                        <img src="{{ rating.anime.cover_image }}" alt="{{ rating.anime.name }}">
+                        <div class="card-overlay">
+                            <div class="card-title">{{ rating.anime.name }}</div>
+                            <div class="user-rating-badge"><i class="fas fa-star"></i> {{ rating.score }}/5</div>
+                        </div>
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="text-muted">Henüz hiçbir animeyi puanlamadınız.</p>
+        {% endif %}
+    </section>
+
+</div>
+{% endblock %}

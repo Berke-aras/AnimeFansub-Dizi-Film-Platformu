@@ -1,55 +1,55 @@
 {% extends "base.html" %}
 
-{% block title %}İşlem Kayıtları{% endblock %}
+{% block title %}Aktivite Logları{% endblock %}
 
 {% block content %}
 <div class="container mt-5">
-    <h1 class="mb-4">İşlem Kayıtları</h1>
+    <h1 class="mb-4">Aktivite Logları</h1>
+
     <div class="table-responsive">
-        <table class="table table-dark table-hover">
+        <table class="table table-hover align-middle">
             <thead>
                 <tr>
-                    <th>Tarih</th>
-                    <th>Kullanıcı</th>
-                    <th>İşlem</th>
+                    <th>ID</th>
+                    <th>Eylem</th>
                     <th>Açıklama</th>
+                    <th>Kullanıcı</th>
+                    <th>Zaman Damgası</th>
                 </tr>
             </thead>
             <tbody>
                 {% for log in logs.items %}
                 <tr>
-                    <td>{{ log.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</td>
-                    <td>{{ log.user.username }}</td>
-                    <td>{{ log.action }}</td>
+                    <td>{{ log.id }}</td>
+                    <td><span class="badge bg-secondary">{{ log.action }}</span></td>
                     <td>{{ log.description }}</td>
+                    <td>{{ log.user.username if log.user else 'Bilinmiyor' }}</td>
+                    <td>{{ log.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
 
+    <!-- Sayfalama -->
     <nav aria-label="Page navigation">
         <ul class="pagination justify-content-center">
             {% if logs.has_prev %}
-            <li class="page-item">
-                <a class="page-link" href="{{ url_for('view_logs', page=logs.prev_num) }}" aria-label="Previous">
-                    <span aria-hidden="true">&laquo;</span>
-                </a>
-            </li>
+                <li class="page-item"><a class="page-link" href="{{ url_for('view_logs', page=logs.prev_num) }}">«</a></li>
             {% endif %}
 
-            {% for page_num in range(1, logs.pages + 1) %}
-            <li class="page-item {% if page_num == logs.page %}active{% endif %}">
-                <a class="page-link" href="{{ url_for('view_logs', page=page_num) }}">{{ page_num }}</a>
-            </li>
+            {% for page_num in logs.iter_pages() %}
+                {% if page_num %}
+                    <li class="page-item {{ 'active' if page_num == logs.page else '' }}">
+                        <a class="page-link" href="{{ url_for('view_logs', page=page_num) }}">{{ page_num }}</a>
+                    </li>
+                {% else %}
+                    <li class="page-item disabled"><span class="page-link">...</span></li>
+                {% endif %}
             {% endfor %}
 
             {% if logs.has_next %}
-            <li class="page-item">
-                <a class="page-link" href="{{ url_for('view_logs', page=logs.next_num) }}" aria-label="Next">
-                    <span aria-hidden="true">&raquo;</span>
-                </a>
-            </li>
+                <li class="page-item"><a class="page-link" href="{{ url_for('view_logs', page=logs.next_num) }}">»</a></li>
             {% endif %}
         </ul>
     </nav>

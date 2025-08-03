@@ -8,7 +8,7 @@
         <h1>Admin Paneli</h1>
         <div>
             <a href="{{ url_for('add_anime') }}" class="btn btn-primary">Yeni Anime Ekle</a>
-            <a href="{{ url_for('manage_genres') }}" class="btn btn-info">Türleri Yönet</a>
+            <a href="{{ url_for('manage_genres') }}" class="btn btn-secondary">Türleri Yönet</a>
         </div>
     </div>
 
@@ -16,12 +16,12 @@
 
     <div class="list-group">
         {% for anime in animes %}
-        <div class="list-group-item list-group-item-action bg-dark text-light mb-2 border-secondary rounded-lg d-flex justify-content-between align-items-center">
-            <a href="{{ url_for('anime', anime_id=anime.id) }}" class="text-light">{{ anime.name }}</a>
+        <div class="list-group-item list-group-item-action d-flex justify-content-between align-items-center mb-2">
+            <a href="{{ url_for('anime', anime_id=anime.id) }}" class="text-decoration-none">{{ anime.name }}</a>
             <div class="btn-group" role="group">
                 <a href="{{ url_for('add_episode', anime_id=anime.id) }}" class="btn btn-sm btn-outline-success">Bölüm Ekle</a>
                 <a href="{{ url_for('edit_anime', anime_id=anime.id) }}" class="btn btn-sm btn-outline-warning">Düzenle</a>
-                {% if current_user.is_authenticated %}
+                {% if current_user.can_delete %}
                 <form action="{{ url_for('delete_anime', anime_id=anime.id) }}" method="post" class="d-inline" onsubmit="return confirm('Bu animeyi silmek istediğinize emin misiniz?');">
                     <button type="submit" class="btn btn-sm btn-outline-danger">Sil</button>
                 </form>
@@ -31,18 +31,24 @@
         {% endfor %}
     </div>
 
+    {% if current_user.can_add_user %}
     <div class="row mt-5">
-        {% if current_user.can_add_user %}
         <div class="col-md-4 mb-2">
-            <a href="{{ url_for('users') }}" class="btn btn-outline-info btn-block">Kullanıcılar</a>
+            <div class="d-grid">
+                <a href="{{ url_for('users') }}" class="btn btn-outline-secondary">Kullanıcılar</a>
+            </div>
         </div>
         <div class="col-md-4 mb-2">
-            <a href="{{ url_for('view_logs') }}" class="btn btn-outline-info btn-block">Loglar</a>
+            <div class="d-grid">
+                <a href="{{ url_for('view_logs') }}" class="btn btn-outline-secondary">Loglar</a>
+            </div>
         </div>
         <div class="col-md-4 mb-2">
-            <a href="{{ url_for('add_user') }}" class="btn btn-outline-info btn-block">Kullanıcı Ekle</a>
+            <div class="d-grid">
+                <a href="{{ url_for('add_user') }}" class="btn btn-outline-secondary">Kullanıcı Ekle</a>
+            </div>
         </div>
-        {% endif %}
     </div>
+    {% endif %}
 </div>
 {% endblock %}

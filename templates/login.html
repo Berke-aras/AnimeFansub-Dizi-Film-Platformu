@@ -3,25 +3,23 @@
 {% block title %}Giriş Yap{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-6">
-        <div class="card p-4">
-            <h1 class="text-center mb-4">Giriş Yap</h1>
-            <form method="POST">
-                {{ form.hidden_tag() }}
-                <div class="form-group">
-                    {{ form.username.label(class="form-label") }}
-                    {{ form.username(class="form-control form-control-lg bg-dark text-light border-secondary", size=32) }}
-                </div>
-                <div class="form-group">
-                    {{ form.password.label(class="form-label") }}
-                    {{ form.password(class="form-control form-control-lg bg-dark text-light border-secondary", size=32) }}
-                </div>
-                <div class="form-group mt-4">
-                    {{ form.submit(class="btn btn-primary btn-block btn-lg") }}
-                </div>
-            </form>
-        </div>
+<div class="login-container">
+    <div class="login-box">
+        <h2 class="text-center mb-4">Giriş Yap</h2>
+        <form method="POST">
+            {{ form.hidden_tag() }}
+            <div class="form-floating mb-3">
+                {{ form.username(class="form-control", id="floatingInput", placeholder="Kullanıcı Adı") }}
+                {{ form.username.label(for="floatingInput") }}
+            </div>
+            <div class="form-floating mb-3">
+                {{ form.password(class="form-control", id="floatingPassword", placeholder="Şifre") }}
+                {{ form.password.label(for="floatingPassword") }}
+            </div>
+            <div class="d-grid mt-4">
+                {{ form.submit(class="btn btn-primary btn-lg") }}
+            </div>
+        </form>
     </div>
 </div>
 {% endblock %}

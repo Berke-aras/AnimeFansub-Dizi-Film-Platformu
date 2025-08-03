@@ -1,49 +1,120 @@
 {% extends "base.html" %}
 
-{% block title %}Anime Düzenle{% endblock %}
+{% block title %}Anime Düzenle: {{ anime.name }}{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-8">
-        <div class="card p-4">
-            <h1 class="text-center mb-4">Anime Düzenle: {{ anime.name }}</h1>
-            <form method="POST">
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <h1 class="mb-4">Anime Düzenle: {{ anime.name }}</h1>
+            <form method="POST" class="p-4 rounded-3" style="background-color: var(--light-dark-color);">
                 {{ form.hidden_tag() }}
-                <div class="form-group">
+                <div class="mb-3">
                     {{ form.name.label(class="form-label") }}
-                    {{ form.name(class="form-control form-control-lg bg-dark text-light border-secondary") }}
+                    {{ form.name(class="form-control") }}
                 </div>
-                <div class="form-group">
+                <div class="mb-3">
                     {{ form.description.label(class="form-label") }}
-                    {{ form.description(class="form-control form-control-lg bg-dark text-light border-secondary", rows=5) }}
+                    {{ form.description(class="form-control", rows=5) }}
                 </div>
-                <div class="form-group">
+                <div class="mb-3">
                     {{ form.cover_image.label(class="form-label") }}
-                    {{ form.cover_image(class="form-control form-control-lg bg-dark text-light border-secondary") }}
+                    {{ form.cover_image(class="form-control") }}
                 </div>
-                <div class="form-row">
-                    <div class="form-group col-md-4">
+                <div class="row">
+                    <div class="col-md-4 mb-3">
                         {{ form.release_year.label(class="form-label") }}
-                        {{ form.release_year(class="form-control form-control-lg bg-dark text-light border-secondary") }}
+                        {{ form.release_year(class="form-control") }}
                     </div>
-                    <div class="form-group col-md-4">
+                    <div class="col-md-4 mb-3">
                         {{ form.status.label(class="form-label") }}
-                        {{ form.status(class="form-control form-control-lg bg-dark text-light border-secondary") }}
+                        {{ form.status(class="form-select") }}
                     </div>
-                    <div class="form-group col-md-4">
+                    <div class="col-md-4 mb-3">
                         {{ form.anime_type.label(class="form-label") }}
-                        {{ form.anime_type(class="form-control form-control-lg bg-dark text-light border-secondary") }}
+                        {{ form.anime_type(class="form-select") }}
                     </div>
                 </div>
-                <div class="form-group">
-                    {{ form.genres.label(class="form-label") }}
-                    {{ form.genres(class="form-control form-control-lg bg-dark text-light border-secondary", multiple="multiple") }}
-                </div>
-                <div class="form-group mt-4">
-                    {{ form.submit(class="btn btn-primary btn-block btn-lg") }}
+                <div class="d-grid mt-4">
+                    {{ form.submit(class="btn btn-primary btn-lg", value="Temel Bilgileri Güncelle") }}
                 </div>
             </form>
+
+            <hr class="my-5">
+
+            <!-- Tür Yönetimi -->
+            <div id="genre-manager" data-anime-id="{{ anime.id }}">
+                <h3 class="mb-4">Tür Yönetimi</h3>
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5>Atanmış Türler</h5>
+                        <div id="assigned-genres" class="genre-list p-3 rounded">
+                            {% for genre in assigned_genres %}
+                            <span class="genre-pill" data-id="{{ genre.id }}">{{ genre.name }} <i class="fas fa-times remove-genre"></i></span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <h5>Tüm Türler</h5>
+                        <div id="unassigned-genres" class="genre-list p-3 rounded">
+                            {% for genre in unassigned_genres %}
+                            <span class="genre-pill" data-id="{{ genre.id }}">{{ genre.name }} <i class="fas fa-plus add-genre"></i></span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const genreManager = document.getElementById('genre-manager');
+    const animeId = genreManager.dataset.animeId;
+    const assignedGenresContainer = document.getElementById('assigned-genres');
+    const unassignedGenresContainer = document.getElementById('unassigned-genres');
+
+    function handleGenreClick(event) {
+        const target = event.target;
+        const pill = target.closest('.genre-pill');
+        if (!pill) return;
+
+        const genreId = pill.dataset.id;
+        let action = '';
+        let fromContainer, toContainer;
+
+        if (target.classList.contains('add-genre')) {
+            action = 'add';
+            fromContainer = unassignedGenresContainer;
+            toContainer = assignedGenresContainer;
+            target.classList.remove('fa-plus', 'add-genre');
+            target.classList.add('fa-times', 'remove-genre');
+        } else if (target.classList.contains('remove-genre')) {
+            action = 'remove';
+            fromContainer = assignedGenresContainer;
+            toContainer = unassignedGenresContainer;
+            target.classList.remove('fa-times', 'remove-genre');
+            target.classList.add('fa-plus', 'add-genre');
+        }
+
+        if (action) {
+            fetch(`/api/anime/${animeId}/genre/${action}/${genreId}`, { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        toContainer.appendChild(pill);
+                    } else {
+                        // Handle error - maybe move the pill back
+                    }
+                });
+        }
+    }
+
+    assignedGenresContainer.addEventListener('click', handleGenreClick);
+    unassignedGenresContainer.addEventListener('click', handleGenreClick);
+});
+</script>
 {% endblock %}

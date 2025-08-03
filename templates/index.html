@@ -3,89 +3,114 @@
 {% block title %}Ana Sayfa - Humat Fansub{% endblock %}
 
 {% block content %}
-<div class="container mt-5">
 
-    <!-- Editörün Seçimi -->
+<!-- Hero Section -->
+{% if editor_picks %}
+<div id="heroCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel">
+    <div class="carousel-indicators">
+        {% for anime in editor_picks %}
+        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="{{ loop.index0 }}" class="{{ 'active' if loop.first }}" aria-current="true" aria-label="Slide {{ loop.index }}"></button>
+        {% endfor %}
+    </div>
+    <div class="carousel-inner">
+        {% for anime in editor_picks %}
+        <div class="carousel-item {{ 'active' if loop.first }}">
+            <div class="hero-background" style="background-image: url({{ anime.cover_image }});"></div>
+            <div class="hero-overlay"></div>
+            <div class="hero-content container">
+                <h1 class="display-4 fw-bold">{{ anime.name }}</h1>
+                <p class="lead col-lg-6">{{ anime.description|truncate(150) }}</p>
+                <a href="{{ url_for('anime', anime_id=anime.id) }}" class="btn btn-primary btn-lg">Şimdi İzle</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+    </button>
+</div>
+{% endif %}
+
+<div class="container-fluid content-container">
+
+    <!-- Anime Rafları -->
     {% if editor_picks %}
-    <section class="mb-5">
-        <h2 class="font-weight-bold mb-4">Editörün Seçimi</h2>
-        <div class="horizontal-scroll-wrapper">
+    <section class="anime-shelf my-5">
+        <h3 class="shelf-title">Editörün Seçimi</h3>
+        <div class="shelf-scroll">
             {% for anime in editor_picks %}
-            <div class="scroll-card">
-                <div class="card h-100">
-                    <a href="{{ url_for('anime', anime_id=anime.id) }}">
-                        <img src="{{ anime.cover_image }}" class="card-img-top" alt="{{ anime.name }}">
-                    </a>
-                    <div class="card-body">
-                        <h5 class="card-title">{{ anime.name }}</h5>
-                    </div>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-    </section>
-    {% endif %}
-
-    <!-- Sana Özel Öneriler -->
-    {% if personalized_recs %}
-    <section class="mb-5">
-        <h2 class="font-weight-bold mb-4">Sana Özel Öneriler</h2>
-        <div class="row">
-            {% for anime in personalized_recs %}
-            <div class="col-md-4 col-sm-6 mb-4">
-                <div class="card h-100">
-                    <a href="{{ url_for('anime', anime_id=anime.id) }}">
-                        <img src="{{ anime.cover_image }}" class="card-img-top" alt="{{ anime.name }}">
-                    </a>
-                    <div class="card-body d-flex flex-column">
-                        <h5 class="card-title">{{ anime.name }}</h5>
-                        <a href="{{ url_for('anime', anime_id=anime.id) }}" class="btn btn-primary mt-auto align-self-start">İzle</a>
-                    </div>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-    </section>
-    {% endif %}
-
-    <!-- Son Eklenenler -->
-    {% if latest_animes %}
-    <section class="mb-5">
-        <h2 class="font-weight-bold mb-4">Son Eklenenler</h2>
-        <div class="row">
-            {% for anime in latest_animes %}
-            <div class="col-md-4 col-sm-6 mb-4">
-                <div class="card h-100">
-                    <a href="{{ url_for('anime', anime_id=anime.id) }}">
-                        <img src="{{ anime.cover_image }}" class="card-img-top" alt="{{ anime.name }}">
-                    </a>
-                    <div class="card-body d-flex flex-column">
-                        <h5 class="card-title">{{ anime.name }}</h5>
-                        <a href="{{ url_for('anime', anime_id=anime.id) }}" class="btn btn-primary mt-auto align-self-start">İzle</a>
-                    </div>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-    </section>
-    {% endif %}
-
-    <!-- Rastgele Keşfet -->
-    {% if random_animes %}
-    <section>
-        <h2 class="font-weight-bold mb-4">Rastgele Keşfet</h2>
-        <div class="row">
-            <div class="col-md-12">
-                {% for anime in random_animes %}
-                <a href="{{ url_for('anime', anime_id=anime.id) }}" class="list-view-item text-decoration-none text-light">
+            <div class="anime-card">
+                <a href="{{ url_for('anime', anime_id=anime.id) }}">
                     <img src="{{ anime.cover_image }}" alt="{{ anime.name }}">
-                    <div class="list-view-content">
-                        <h5>{{ anime.name }}</h5>
-                        <p>{{ anime.genres|map(attribute='name')|join(', ') }}</p>
+                    <div class="card-overlay">
+                        <div class="card-title">{{ anime.name }}</div>
+                        <div class="card-play-icon"><i class="fas fa-play"></i></div>
                     </div>
                 </a>
-                {% endfor %}
             </div>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+
+    {% if latest_animes %}
+    <section class="anime-shelf my-5">
+        <h3 class="shelf-title">Son Eklenenler</h3>
+        <div class="shelf-scroll">
+            {% for anime in latest_animes %}
+            <div class="anime-card">
+                <a href="{{ url_for('anime', anime_id=anime.id) }}">
+                    <img src="{{ anime.cover_image }}" alt="{{ anime.name }}">
+                    <div class="card-overlay">
+                        <div class="card-title">{{ anime.name }}</div>
+                        <div class="card-play-icon"><i class="fas fa-play"></i></div>
+                    </div>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+
+    {% if personalized_recs %}
+    <section class="anime-shelf my-5">
+        <h3 class="shelf-title">Sana Özel Öneriler</h3>
+        <div class="shelf-scroll">
+            {% for anime in personalized_recs %}
+            <div class="anime-card">
+                <a href="{{ url_for('anime', anime_id=anime.id) }}">
+                    <img src="{{ anime.cover_image }}" alt="{{ anime.name }}">
+                    <div class="card-overlay">
+                        <div class="card-title">{{ anime.name }}</div>
+                        <div class="card-play-icon"><i class="fas fa-play"></i></div>
+                    </div>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+
+    {% if random_animes %}
+    <section class="anime-shelf my-5">
+        <h3 class="shelf-title">Rastgele Keşfet</h3>
+        <div class="shelf-scroll">
+            {% for anime in random_animes %}
+            <div class="anime-card">
+                <a href="{{ url_for('anime', anime_id=anime.id) }}">
+                    <img src="{{ anime.cover_image }}" alt="{{ anime.name }}">
+                    <div class="card-overlay">
+                        <div class="card-title">{{ anime.name }}</div>
+                        <div class="card-play-icon"><i class="fas fa-play"></i></div>
+                    </div>
+                </a>
+            </div>
+            {% endfor %}
         </div>
     </section>
     {% endif %}

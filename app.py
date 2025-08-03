@@ -1,9 +1,9 @@
-from flask import Flask, render_template, redirect, url_for, flash, request, session
+from flask import Flask, render_template, redirect, url_for, flash, request, session, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user, UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 from forms import LoginForm, AnimeForm, EpisodeForm, UserForm, EditUserForm, GenreForm, AnimeSearchForm
-from models import db, User, Anime, Episode, Log, Genre
+from models import db, User, Anime, Episode, Log, Genre, Rating
 import re
 import random
 
@@ -52,23 +52,36 @@ def index():
 
 @app.route('/animes', methods=['GET', 'POST'])
 def animes():
-    form = AnimeSearchForm(request.form)
+    # Use request.values to get data from both GET and POST requests
+    form = AnimeSearchForm(request.values)
     form.genre.choices = [('', 'Tüm Türler')] + [(str(g.id), g.name) for g in Genre.query.order_by('name').all()]
     
     query = Anime.query
 
-    if form.validate_on_submit():
-        if form.query.data:
-            query = query.filter(Anime.name.like(f"%{form.query.data}%"))
-        if form.genre.data:
-            query = query.filter(Anime.genres.any(id=int(form.genre.data)))
-        if form.release_year.data:
-            query = query.filter_by(release_year=form.release_year.data)
-        if form.anime_type.data:
-            query = query.filter_by(anime_type=form.anime_type.data)
+    # Directly check for data in the form, works for both GET and POST
+    if form.query.data:
+        query = query.filter(Anime.name.like(f"%{form.query.data}%"))
+    if form.genre.data:
+        query = query.filter(Anime.genres.any(id=int(form.genre.data)))
+    if form.release_year.data:
+        query = query.filter_by(release_year=form.release_year.data)
+    if form.anime_type.data:
+        query = query.filter_by(anime_type=form.anime_type.data)
+
+    # Sorting logic
+    sort_option = form.sort_by.data or 'name_asc'
+    if sort_option == 'name_asc':
+        query = query.order_by(Anime.name.asc())
+    elif sort_option == 'name_desc':
+        query = query.order_by(Anime.name.desc())
+    elif sort_option == 'rating_desc':
+        query = query.order_by(Anime.average_rating.desc())
+    elif sort_option == 'year_desc':
+        query = query.order_by(Anime.release_year.desc())
 
     page = request.args.get('page', 1, type=int)
-    animes = query.order_by(Anime.name).paginate(page=page, per_page=18)
+    animes = query.paginate(page=page, per_page=18, error_out=False)
+    
     return render_template('all_animes.html', animes=animes, form=form)
 
 @app.route('/episode/<int:episode_id>')
@@ -133,6 +146,7 @@ def add_anime():
 def edit_anime(anime_id):
     anime = Anime.query.get_or_404(anime_id)
     form = AnimeForm(obj=anime)
+
     if form.validate_on_submit():
         anime.name = form.name.data
         anime.description = form.description.data
@@ -140,11 +154,15 @@ def edit_anime(anime_id):
         anime.release_year = form.release_year.data
         anime.status = form.status.data
         anime.anime_type = form.anime_type.data
-        anime.genres = form.genres.data
+        # Türler artık API üzerinden yönetildiği için buradan kaldırıldı
         db.session.commit()
         log_action('update', f'Anime "{anime.name}" düzenlendi.')
         return redirect(url_for('admin'))
-    return render_template('edit_anime.html', form=form, anime=anime)
+
+    assigned_genres = anime.genres
+    unassigned_genres = [genre for genre in Genre.query.all() if genre not in assigned_genres]
+
+    return render_template('edit_anime.html', form=form, anime=anime, assigned_genres=assigned_genres, unassigned_genres=unassigned_genres)
 
 @app.route('/copyright')
 def copyright():
@@ -154,7 +172,13 @@ def copyright():
 @app.route('/anime/<int:anime_id>')
 def anime(anime_id):
     anime = Anime.query.get_or_404(anime_id)
-    return render_template('anime.html', anime=anime)
+    user_rating = None
+    is_in_watchlist = False
+    if current_user.is_authenticated:
+        user_rating = Rating.query.filter_by(user_id=current_user.id, anime_id=anime.id).first()
+        is_in_watchlist = anime in current_user.watchlist_animes
+
+    return render_template('anime.html', anime=anime, user_rating=user_rating, is_in_watchlist=is_in_watchlist)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -341,6 +365,78 @@ def edit_user(user_id):
 
     return render_template('edit_user.html', form=form, user=user)
 
+# --- API Endpoints ---
+@app.route('/api/watchlist/<int:anime_id>', methods=['POST'])
+@login_required
+def toggle_watchlist(anime_id):
+    anime = Anime.query.get_or_404(anime_id)
+    if anime in current_user.watchlist_animes:
+        current_user.watchlist_animes.remove(anime)
+        status = 'removed'
+    else:
+        current_user.watchlist_animes.append(anime)
+        status = 'added'
+    db.session.commit()
+    return jsonify({'status': status})
+
+@app.route('/api/rate/<int:anime_id>', methods=['POST'])
+@login_required
+def rate_anime(anime_id):
+    anime = Anime.query.get_or_404(anime_id)
+    score = request.json.get('score')
+
+    if not score or not 1 <= score <= 5:
+        return jsonify({'status': 'error', 'message': 'Invalid score'}), 400
+
+    rating = Rating.query.filter_by(user_id=current_user.id, anime_id=anime.id).first()
+    if rating:
+        rating.score = score
+    else:
+        rating = Rating(user_id=current_user.id, anime_id=anime.id, score=score)
+        db.session.add(rating)
+    
+    # Update average rating
+    total_ratings = db.session.query(db.func.sum(Rating.score)).filter(Rating.anime_id == anime.id).scalar()
+    count_ratings = db.session.query(db.func.count(Rating.id)).filter(Rating.anime_id == anime.id).scalar()
+
+    anime.average_rating = total_ratings / count_ratings
+    anime.rating_count = count_ratings
+
+    db.session.commit()
+
+    return jsonify({'status': 'success', 'new_average': anime.average_rating, 'rating_count': anime.rating_count})
+
+@app.route('/profile')
+@login_required
+def profile():
+    # Kullanıcının izleme listesindeki animeler zaten modeldeki ilişki sayesinde kolayca erişilebilir.
+    watchlist = current_user.watchlist_animes
+    
+    # Kullanıcının puan verdiği animeleri ve verdiği puanları al
+    user_ratings = Rating.query.filter_by(user_id=current_user.id).order_by(Rating.score.desc()).all()
+
+    return render_template('profile.html', watchlist=watchlist, user_ratings=user_ratings)
+
+@app.route('/api/anime/<int:anime_id>/genre/add/<int:genre_id>', methods=['POST'])
+@login_required
+def add_genre_to_anime(anime_id, genre_id):
+    anime = Anime.query.get_or_404(anime_id)
+    genre = Genre.query.get_or_404(genre_id)
+    if genre not in anime.genres:
+        anime.genres.append(genre)
+        db.session.commit()
+    return jsonify({'status': 'success'})
+
+@app.route('/api/anime/<int:anime_id>/genre/remove/<int:genre_id>', methods=['POST'])
+@login_required
+def remove_genre_from_anime(anime_id, genre_id):
+    anime = Anime.query.get_or_404(anime_id)
+    genre = Genre.query.get_or_404(genre_id)
+    if genre in anime.genres:
+        anime.genres.remove(genre)
+        db.session.commit()
+    return jsonify({'status': 'success'})
+
 
 
 @app.route('/delete_user/<int:user_id>', methods=['POST'])
@@ -373,4 +469,4 @@ def logout():
     return redirect(url_for('index'))
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    app.run(debug=True, host='0.0.0.0', port=5400)

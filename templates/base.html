@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-bs-theme="dark">
 
 <head>
     <meta charset="UTF-8" />
@@ -27,47 +27,48 @@
     <meta property="og:type" content="website" />
 
     <!-- CSS Bağlantıları -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}">
     <link rel="icon" href="{{ url_for('static', filename='images/ico.ico') }}" type="image/x-icon" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet" />
 </head>
 
 <body>
     <header>
-        <nav class="navbar navbar-expand-lg navbar-dark">
-            <div class="container">
+        <nav class="navbar navbar-expand-lg fixed-top navbar-dark">
+            <div class="container-fluid">
                 <a class="navbar-brand" href="{{ url_for('index') }}">
                     <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" width="40" height="40" class="d-inline-block align-text-top">
-                    <span>Humat Fansub</span>
+                    <span class="ms-2">Humat Fansub</span>
                 </a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                     aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav mr-auto">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item">
                             <a class="nav-link" href="{{ url_for('index') }}">Ana Sayfa</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('animes') }}">Tüm Animeler</a>
+                            <a class="nav-link" href="{{ url_for('animes') }}">Keşfet</a>
                         </li>
                     </ul>
-                    <form class="form-inline my-2 my-lg-0 mr-3" action="{{ url_for('search') }}" method="GET">
-                        <input class="form-control mr-sm-2 bg-dark text-light border-secondary" type="search" name="query" placeholder="Anime Ara..." aria-label="Search">
+                    <form class="d-flex me-3" action="{{ url_for('search') }}" method="GET">
+                        <input class="form-control me-2" type="search" name="query" placeholder="Anime Ara..." aria-label="Search">
                     </form>
                     <ul class="navbar-nav">
                         {% if current_user.is_authenticated %}
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                {{ current_user.username }}
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-user me-1"></i> {{ current_user.username }}
                             </a>
-                            <div class="dropdown-menu dropdown-menu-right bg-dark" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item text-light" href="{{ url_for('admin') }}">Admin Paneli</a>
-                                <div class="dropdown-divider"></div>
-                                <a class="dropdown-item text-light" href="{{ url_for('logout') }}">Çıkış Yap</a>
-                            </div>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                                <li><a class="dropdown-item" href="{{ url_for('profile') }}">Profilim</a></li>
+                                <li><a class="dropdown-item" href="{{ url_for('admin') }}">Admin Paneli</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="{{ url_for('logout') }}">Çıkış Yap</a></li>
+                            </ul>
                         </li>
                         {% else %}
                         <li class="nav-item">
@@ -80,23 +81,24 @@
         </nav>
     </header>
 
-    {% with messages = get_flashed_messages(with_categories=True) %} {% if
-    messages %}
-    <div class="container mt-4">
-        <div class="alert alert-danger" role="alert">
-            {% for category, message in messages %}
-            <p>{{ message }}</p>
-            {% endfor %}
-        </div>
-    </div>
-    {% endif %} {% endwith %}
+    <main>
+        {% with messages = get_flashed_messages(with_categories=True) %}
+            {% if messages %}
+                <div class="container flash-container">
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
 
-    <main class="container mt-4">
         {% block content %}{% endblock %}
     </main>
 
-    {% block footer %}
-    <footer class="text-center mt-5">
+    <footer class="text-center py-4 mt-auto">
         <div class="container">
             <p>&copy; 2025 Humat Fansub. Tüm hakları saklıdır.</p>
             <p>
@@ -106,11 +108,23 @@
             </p>
         </div>
     </footer>
-    {% endblock %}
 
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script>
+        // Scroll-reveal animation for anime shelves
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.anime-shelf').forEach(shelf => {
+            observer.observe(shelf);
+        });
+    </script>
+    {% block scripts %}{% endblock %}
 </body>
 
 </html>
