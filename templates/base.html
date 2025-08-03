@@ -1,244 +1,164 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <link
-            href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap"
-            rel="stylesheet"
-        />
 
-        <title>
-            {% block title %}Humat Fansub - Anime İzleme Platformu{% endblock %}
-        </title>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet" />
 
-        <!-- Meta Etiketler -->
-        <meta
-            name="description"
-            content="Humat Fansub, Hacettepe Üniversitesi'ne ait bir topluluk olup, anime çevirileri ve izleme hizmeti sunar."
-        />
-        <meta
-            name="keywords"
-            content="Humat Fansub, anime izle, anime çevirileri, Hacettepe Üniversitesi, anime topluluğu"
-        />
-        <meta name="author" content="Humat Fansub" />
+    <title>
+        {% block title %}Humat Fansub - Anime İzleme Platformu{% endblock %}
+    </title>
 
-        <!-- Open Graph Etiketleri -->
-        <meta
-            property="og:title"
-            content="Humat Fansub - Anime İzleme Platformu"
-        />
-        <meta
-            property="og:description"
-            content="Humat Fansub, Hacettepe Üniversitesi'ne ait bir topluluk olup, anime çevirileri ve izleme hizmeti sunar."
-        />
-        <meta
-            property="og:image"
-            content="{{ url_for('static', filename='images/logo.png') }}"
-        />
-        <meta property="og:type" content="website" />
+    <!-- Meta Etiketler -->
+    <meta name="description"
+        content="Humat Fansub, Hacettepe Üniversitesi'ne ait bir topluluk olup, anime çevirileri ve izleme hizmeti sunar." />
+    <meta name="keywords"
+        content="Humat Fansub, anime izle, anime çevirileri, Hacettepe Üniversitesi, anime topluluğu" />
+    <meta name="author" content="Humat Fansub" />
 
-        <!-- CSS Bağlantıları -->
-        <link
-            rel="stylesheet"
-            href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
-        />
-        <link
-            rel="stylesheet"
-            href="{{ url_for('static', filename='css/style.css') }}"
-        />
-        <link
-            href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Kaushan+Script&display=swap"
-            rel="stylesheet"
-        />
+    <!-- Open Graph Etiketleri -->
+    <meta property="og:title" content="Humat Fansub - Anime İzleme Platformu" />
+    <meta property="og:description"
+        content="Humat Fansub, Hacettepe Üniversitesi'ne ait bir topluluk olup, anime çevirileri ve izleme hizmeti sunar." />
+    <meta property="og:image" content="{{ url_for('static', filename='images/logo.png') }}" />
+    <meta property="og:type" content="website" />
 
-        <link
-            rel="icon"
-            href="{{ url_for('static', filename='images/ico.ico') }}"
-            type="image/x-icon"
-        />
-        <link
-            href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css"
-            rel="stylesheet"
-        />
-    </head>
+    <!-- CSS Bağlantıları -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Kaushan+Script&display=swap"
+        rel="stylesheet" />
 
-    <body class="bg-dark text-light">
-        <header>
-            <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-                <a
-                    class="navbar-brand navbar-brand-logo"
-                    href="{{ url_for('index') }}"
-                >
-                    <img
-                        src="{{ url_for('static', filename='images/logo.png') }}"
-                        alt="Logo"
-                    />
-                    <span>Humat Fansub</span>
-                </a>
-                <button
-                    class="navbar-toggler"
-                    type="button"
-                    data-toggle="collapse"
-                    data-target="#navbarNav"
-                    aria-controls="navbarNav"
-                    aria-expanded="false"
-                    aria-label="Toggle navigation"
-                >
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarNav">
+    <link rel="icon" href="{{ url_for('static', filename='images/ico.ico') }}" type="image/x-icon" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet" />
+</head>
+
+<body class="bg-dark text-light">
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+            <a class="navbar-brand navbar-brand-logo" href="{{ url_for('index') }}">
+                <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" />
+                <span>Humat Fansub</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('index') }}">Ana Sayfa</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="#footer" onclick="highlightFooter()">SSS/FAQ</a>
+                    </li>
+                </ul>
+                <!-- Arama Formu -->
+                <form class="form-inline my-2 my-lg-0" action="{{ url_for('search') }}" method="GET">
+                    <input class="form-control mr-sm-2" type="search" name="query" placeholder="Arama"
+                        aria-label="Search" />
+                    <button class="btn btn-outline-light my-2 my-sm-0" type="submit">
+                        Ara
+                    </button>
                     <ul class="navbar-nav ml-auto">
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('index') }}"
-                                >Ana Sayfa</a
-                            >
-                        </li>
-                        
-                        <li class="nav-item">
-                            <a
-                                class="nav-link"
-                                href="#footer"
-                                onclick="highlightFooter()"
-                                >SSS/FAQ</a
-                            >
-                        </li>
-                    </ul>
-                    <!-- Arama Formu -->
-                    <form
-                        class="form-inline my-2 my-lg-0"
-                        action="{{ url_for('search') }}"
-                        method="GET"
-                    >
-                        <input
-                            class="form-control mr-sm-2"
-                            type="search"
-                            name="query"
-                            placeholder="Arama"
-                            aria-label="Search"
-                        />
-                        <button
-                            class="btn btn-outline-light my-2 my-sm-0"
-                            type="submit"
-                        >
-                            Ara
-                        </button>
-                        <ul class="navbar-nav ml-auto">
                         {% if current_user.is_authenticated %}
-                        
+
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('admin') }}"
-                                >Admin Paneli</a
-                            >
+                            <a class="nav-link" href="{{ url_for('admin') }}">Admin Paneli</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('logout') }}"
-                                >Çıkış Yap</a
-                            >
+                            <a class="nav-link" href="{{ url_for('logout') }}">Çıkış Yap</a>
                         </li>
                         <li class="nav-item"></li>
-                            <a class="nav-link" href="{{ url_for('admin') }}"
-                                >Hoşgeldiniz, {{ current_user.username }}</a
-                            >
+                        <a class="nav-link" href="{{ url_for('admin') }}">Hoşgeldiniz, {{ current_user.username }}</a>
                     </ul>
 
-                        {% endif %}
-                    </form>
-                </div>
-            </nav>
-        </header>
-
-        {% with messages = get_flashed_messages(with_categories=True) %} {% if
-            messages %}
-            <div class="alert alert-danger" role="alert">
-                {% for category, message in messages %}
-                <p>{{ message }}</p>
-                {% endfor %}
+                    {% endif %}
+                </form>
             </div>
-            {% endif %} {% endwith %}
+        </nav>
+    </header>
 
-        <main class="container mt-4">{% block content %}{% endblock %}</main>
-        {% block footer %}
-        <footer id="footer" class="text-center mt-4">
-            <p>
-                <a
-                    href="{{ url_for('copyright') }}"
-                    onclick="highlightFooter()"
-                >
-                    <i class="bi bi-c-circle"></i>Copyright/DMCA/SSS/FAQ
-                </a>
-            </p>
-            <p>
-                <a href="https://discord.gg/SaKSmuZkAf">
-                    <i class="bi bi-discord"></i> Discord
-                </a>
-            </p>
-            <p>
-                <a
-                    href="https://github.com/Berke-aras/AnimeFansub-Dizi-Film-Platformu"
-                    target="_blank"
-                >
-                    <i class="bi bi-github"></i> GitHub
-                </a>
-            </p>
-        </footer>
-        {% endblock %}
-        <script>
-            function highlightFooter() {
-                const footer = document.getElementById("footer");
-                footer.classList.add("glow");
-                setTimeout(() => {
-                    footer.classList.remove("glow");
-                }, 1000); // Animasyon süresi ile aynı olmalı
-            }
-        </script>
+    {% with messages = get_flashed_messages(with_categories=True) %} {% if
+    messages %}
+    <div class="alert alert-danger" role="alert">
+        {% for category, message in messages %}
+        <p>{{ message }}</p>
+        {% endfor %}
+    </div>
+    {% endif %} {% endwith %}
 
-        <!-- JavaScript onay kodu -->
-<script>
-    function confirmDelete() {
-        return confirm(
-            "Bu animeyi silmek istediğinize emin misiniz? Bu işlem geri alınamaz."
-        );
-    }
-</script>
+    <main class="container mt-4">{% block content %}{% endblock %}</main>
+    {% block footer %}
+    <footer id="footer" class="text-center mt-4">
+        <p>
+            <a href="{{ url_for('copyright') }}" onclick="highlightFooter()">
+                <i class="bi bi-c-circle"></i>Copyright/DMCA/SSS/FAQ
+            </a>
+        </p>
+        <p>
+            <a href="https://discord.gg/SaKSmuZkAf">
+                <i class="bi bi-discord"></i> Discord
+            </a>
+        </p>
+        <p>
+            <a href="https://github.com/Berke-aras/AnimeFansub-Dizi-Film-Platformu" target="_blank">
+                <i class="bi bi-github"></i> GitHub
+            </a>
+        </p>
+    </footer>
+    {% endblock %}
+    <script>
+        function highlightFooter() {
+            const footer = document.getElementById("footer");
+            footer.classList.add("glow");
+            setTimeout(() => {
+                footer.classList.remove("glow");
+            }, 1000); // Animasyon süresi ile aynı olmalı
+        }
+    </script>
+
+    <!-- JavaScript onay kodu -->
+    <script>
+        function confirmDelete() {
+            return confirm(
+                "Bu animeyi silmek istediğinize emin misiniz? Bu işlem geri alınamaz."
+            );
+        }
+    </script>
 
 
-        <!-- DİSQUS -->
-        <script>
-            /**
-             *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
-             *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables    */
+    <!-- DİSQUS -->
+    <script>
+        /**
+         *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+         *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables    */
 
-            var disqus_config = function () {
-                this.page.url = PAGE_URL; // Replace PAGE_URL with your page's canonical URL variable
-                this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
-            };
+        var disqus_config = function () {
+            this.page.url = PAGE_URL; // Replace PAGE_URL with your page's canonical URL variable
+            this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+        };
 
-            (function () {
-                // DON'T EDIT BELOW THIS LINE
-                var d = document,
-                    s = d.createElement("script");
-                s.src = "https://humatfansub.disqus.com/embed.js";
-                s.setAttribute("data-timestamp", +new Date());
-                (d.head || d.body).appendChild(s);
-            })();
-        </script>
-        <noscript
-            >Please enable JavaScript to view the
-            <a href="https://disqus.com/?ref_noscript"
-                >comments powered by Disqus.</a
-            ></noscript
-        >
-        <script
-            id="dsq-count-scr"
-            src="//humatfansub.disqus.com/count.js"
-            async
-        ></script>
-        <!-- DİSQUS -->
+        (function () {
+            // DON'T EDIT BELOW THIS LINE
+            var d = document,
+                s = d.createElement("script");
+            s.src = "https://humatfansub.disqus.com/embed.js";
+            s.setAttribute("data-timestamp", +new Date());
+            (d.head || d.body).appendChild(s);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the
+        <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <script id="dsq-count-scr" src="//humatfansub.disqus.com/count.js" async></script>
+    <!-- DİSQUS -->
 
-        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    </body>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
 </html>

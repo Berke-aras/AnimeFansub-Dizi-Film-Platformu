@@ -1,0 +1,7 @@
+{
+    "python.defaultInterpreterPath": "/opt/anaconda3/envs/PythonProjelerim/bin/python",
+    "python.pythonPath": "/opt/anaconda3/envs/PythonProjelerim/bin/python",
+    "python-envs.defaultEnvManager": "ms-python.python:conda",
+    "python-envs.defaultPackageManager": "ms-python.python:conda",
+    "python-envs.pythonProjects": []
+}
