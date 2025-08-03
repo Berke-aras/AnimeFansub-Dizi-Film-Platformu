@@ -5,12 +5,33 @@
 {% block content %}
 <div class="container mt-5">
 
-    <!-- Admin Önerileri -->
+    <!-- Editörün Seçimi -->
     {% if recommended_animes %}
     <section class="mb-5">
         <h2 class="font-weight-bold mb-4">Editörün Seçimi</h2>
-        <div class="row">
+        <div class="horizontal-scroll-wrapper">
             {% for anime in recommended_animes %}
+            <div class="scroll-card">
+                <div class="card h-100">
+                    <a href="{{ url_for('anime', anime_id=anime.id) }}">
+                        <img src="{{ anime.cover_image }}" class="card-img-top" alt="{{ anime.name }}">
+                    </a>
+                    <div class="card-body">
+                        <h5 class="card-title">{{ anime.name }}</h5>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+
+    <!-- Son Eklenenler -->
+    {% if latest_animes %}
+    <section class="mb-5">
+        <h2 class="font-weight-bold mb-4">Son Eklenenler</h2>
+        <div class="row">
+            {% for anime in latest_animes %}
             <div class="col-md-4 col-sm-6 mb-4">
                 <div class="card h-100">
                     <a href="{{ url_for('anime', anime_id=anime.id) }}">
@@ -29,44 +50,20 @@
 
     <!-- Rastgele Keşfet -->
     {% if random_animes %}
-    <section class="mb-5">
+    <section>
         <h2 class="font-weight-bold mb-4">Rastgele Keşfet</h2>
         <div class="row">
-            {% for anime in random_animes %}
-            <div class="col-md-4 col-sm-6 mb-4">
-                <div class="card h-100">
-                    <a href="{{ url_for('anime', anime_id=anime.id) }}">
-                        <img src="{{ anime.cover_image }}" class="card-img-top" alt="{{ anime.name }}">
-                    </a>
-                    <div class="card-body d-flex flex-column">
-                        <h5 class="card-title">{{ anime.name }}</h5>
-                        <a href="{{ url_for('anime', anime_id=anime.id) }}" class="btn btn-primary mt-auto align-self-start">İzle</a>
+            <div class="col-md-12">
+                {% for anime in random_animes %}
+                <a href="{{ url_for('anime', anime_id=anime.id) }}" class="list-view-item text-decoration-none text-light">
+                    <img src="{{ anime.cover_image }}" alt="{{ anime.name }}">
+                    <div class="list-view-content">
+                        <h5>{{ anime.name }}</h5>
+                        <p>{{ anime.genres.split(',')[:3] | join(', ') }}</p>
                     </div>
-                </div>
+                </a>
+                {% endfor %}
             </div>
-            {% endfor %}
-        </div>
-    </section>
-    {% endif %}
-
-    <!-- Son Eklenenler -->
-    {% if latest_animes %}
-    <section>
-        <h2 class="font-weight-bold mb-4">Son Eklenenler</h2>
-        <div class="row">
-            {% for anime in latest_animes %}
-            <div class="col-md-4 col-sm-6 mb-4">
-                <div class="card h-100">
-                    <a href="{{ url_for('anime', anime_id=anime.id) }}">
-                        <img src="{{ anime.cover_image }}" class="card-img-top" alt="{{ anime.name }}">
-                    </a>
-                    <div class="card-body d-flex flex-column">
-                        <h5 class="card-title">{{ anime.name }}</h5>
-                        <a href="{{ url_for('anime', anime_id=anime.id) }}" class="btn btn-primary mt-auto align-self-start">İzle</a>
-                    </div>
-                </div>
-            </div>
-            {% endfor %}
         </div>
     </section>
     {% endif %}

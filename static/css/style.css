@@ -1,13 +1,12 @@
-
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 :root {
-    --background-color: #1a1b26; /* Daha açık, mavimsi koyu */
-    --card-background: #2a2c3a; /* Kartlar için daha yumuşak bir ton */
+    --background-color: #1a1b26;
+    --card-background: #2a2c3a;
     --text-color: #f0f0f5;
     --secondary-color: #a9a9b3;
     --border-color: #3a3c4a;
-    --accent-color: #3399ff; /* Canlı bir mavi */
+    --accent-color: #3399ff;
     --hover-color: #3a3c4a;
 }
 
@@ -104,13 +103,79 @@ footer {
     background-color: #1a1b26;
 }
 
+/* Yatay Kaydırma (Carousel) Stilleri */
+.horizontal-scroll-wrapper {
+    display: flex;
+    overflow-x: auto;
+    padding-bottom: 1.5rem; /* Scrollbar için boşluk */
+    scrollbar-width: thin;
+    scrollbar-color: var(--accent-color) var(--background-color);
+}
+
+.horizontal-scroll-wrapper::-webkit-scrollbar {
+    height: 8px;
+}
+
+.horizontal-scroll-wrapper::-webkit-scrollbar-track {
+    background: var(--background-color);
+}
+
+.horizontal-scroll-wrapper::-webkit-scrollbar-thumb {
+    background-color: var(--accent-color);
+    border-radius: 10px;
+    border: 3px solid var(--background-color);
+}
+
+.scroll-card {
+    flex: 0 0 280px; /* Kartların genişliği */
+    margin-right: 1.5rem;
+}
+
+/* Liste Görünümü Stilleri */
+.list-view-item {
+    display: flex;
+    background-color: var(--card-background);
+    border-radius: 12px;
+    margin-bottom: 1rem;
+    padding: 1rem;
+    transition: background-color 0.2s ease;
+    align-items: center;
+}
+
+.list-view-item:hover {
+    background-color: var(--hover-color);
+}
+
+.list-view-item img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-right: 1.5rem;
+}
+
+.list-view-content {
+    flex-grow: 1;
+}
+
+.list-view-content h5 {
+    margin: 0;
+    font-size: 1.1rem;
+}
+
+.list-view-content p {
+    margin: 0;
+    color: var(--secondary-color);
+    font-size: 0.9rem;
+}
+
 /* Animasyonlar */
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(15px); }
     to { opacity: 1; transform: translateY(0); }
 }
 
-.container, .card {
+.container, .card, .list-view-item {
     animation: fadeIn 0.6s ease-out forwards;
 }
 
