@@ -1,55 +1,58 @@
 {% extends "base.html" %}
-<link
-    rel="stylesheet"
-    href="{{ url_for('static', filename='css/style.css') }}"
-/>
-{% block title %}Ana Sayfa{% endblock %} {% block content %}
 
-<main class="container mt-4">
-    <h1>Anime Listesi</h1>
-    <div class="row justify-content-center">
+{% block title %}Ana Sayfa{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="text-center mb-5">
+        <h1 class="display-4 font-weight-bold">En Yeni Animeler</h1>
+        <p class="lead text-secondary">En son eklenen animeleri keşfet.</p>
+    </div>
+    <div class="row">
         {% for anime in animes %}
-        <div class="col-md-4 col-sm-6 d-flex justify-content-center">
-            <div
-                class="card mb-4 bg-dark text-light card-fixed-height"
-                style="max-width: 275px; min-width: 275px"
-            >
-                <img
-                    src="{{ anime.cover_image }}"
-                    class="card-img-top"
-                    alt="{{ anime.name }}"
-                />
-                <div class="card-body">
+        <div class="col-md-4 col-sm-6 mb-4">
+            <div class="card h-100">
+                <a href="{{ url_for('anime', anime_id=anime.id) }}">
+                    <img src="{{ anime.cover_image }}" class="card-img-top" alt="{{ anime.name }}">
+                </a>
+                <div class="card-body d-flex flex-column">
                     <h5 class="card-title">{{ anime.name }}</h5>
-                    <p>
-                        Tür: {{ anime.genres.split(',')[:3] | join(', ') }} ...
-                    </p>
-                    <a
-                        href="{{ url_for('anime', anime_id=anime.id) }}"
-                        class="btn btn-primary btn-izle"
-                        >İzle</a
-                    >
+                    <p class="card-text flex-grow-1">{{ anime.genres.split(',')[:2] | join(', ') }}</p>
+                    <a href="{{ url_for('anime', anime_id=anime.id) }}" class="btn btn-primary mt-auto align-self-start">Detayları Gör</a>
                 </div>
             </div>
         </div>
         {% endfor %}
     </div>
 
-    <div class="pagination">
-        {% if animes.has_prev %}
-        <a href="{{ url_for('index', page=animes.prev_num) }}">Önceki</a>
-        {% endif %} {% for page_num in animes.iter_pages(left_edge=1,
-        right_edge=1, left_current=2, right_current=2) %} {% if page_num %} {%
-        if page_num == animes.page %}
-        <span class="current">{{ page_num }}</span>
-        {% else %}
-        <a href="{{ url_for('index', page=page_num) }}">{{ page_num }}</a>
-        {% endif %} {% else %}
-        <span>…</span>
-        {% endif %} {% endfor %} {% if animes.has_next %}
-        <a href="{{ url_for('index', page=animes.next_num) }}">Sonraki</a>
-        {% endif %}
-    </div>
-</main>
+    <nav aria-label="Page navigation" class="mt-4">
+        <ul class="pagination justify-content-center">
+            {% if animes.has_prev %}
+            <li class="page-item">
+                <a class="page-link" href="{{ url_for('index', page=animes.prev_num) }}" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            {% endif %}
 
+            {% for page_num in animes.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+            {% if page_num %}
+            <li class="page-item {% if page_num == animes.page %}active{% endif %}">
+                <a class="page-link" href="{{ url_for('index', page=page_num) }}">{{ page_num }}</a>
+            </li>
+            {% else %}
+            <li class="page-item disabled"><span class="page-link">…</span></li>
+            {% endif %}
+            {% endfor %}
+
+            {% if animes.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="{{ url_for('index', page=animes.next_num) }}" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+</div>
 {% endblock %}

@@ -1,98 +1,52 @@
-{% extends "base.html" %} {% block title %}{{ episode.anime.name }} İzle{%
-endblock %} {% block content %}
+{% extends "base.html" %}
 
-<style>
-    h1,
-    h5 {
-        color: #ffffff;
-    }
-    .btn-link {
-        color: #d1c4e9;
-    }
-    .btn-link:hover {
-        color: #b39ddb;
-    }
-    .link-group a {
-        font-size: 0.8rem; /* Daha küçük font boyutu */
-    }
-    .fnt {
-        font-size: 1rem; /* Daha büyük yazı boyutu */
-    }
+{% block title %}{{ episode.anime.name }} - Bölüm {{ episode.number }}{% endblock %}
 
-    .video-player iframe {
-        border: 2px solid #6f42c1;
-        border-radius: 8px;
-    }
-
-    .cc {
-        background-color: #6f42c1;
-        border-color: #6f42c1;
-        color: #d1c4e9;
-    }
-    .btn-secondary:hover {
-        background-color: #5a3791;
-        border-color: #5a3791;
-    }
-    .btn-secondary {
-        background-color: #6f42c1;
-        border-color: #6f42c1;
-        color: #d1c4e9;
-    }
-
-    @media (max-width: 576px) {
-        .video-player iframe {
-            height: 300px; /* Mobil cihazlar için daha küçük video yüksekliği */
-        }
-    }
-</style>
-
-<div class="link-group text-center mt-5 fnt h6">
-    <div>
-        <h5 class="flex-wrap d-flex justify-content-center flex-wrap fnt h6">
-            Site ve Videolar hakkındaki sorunlarınız için Mail veya Discord
-            üzerinden bize ulaşabilirsiniz.
-            <pre> <a href="#footer" onclick="highlightFooter()" style="color: #d38a8a;">Mail & Discord.</a></pre>
-        </h5>
+{% block content %}
+<div class="container mt-5">
+    <div class="text-center mb-4">
+        <h1 class="font-weight-bold">{{ episode.anime.name }}</h1>
+        <p class="text-secondary">Bölüm {{ episode.number }}</p>
     </div>
-</div>
-<h1>{{ episode.anime.name }} - Bölüm {{ episode.number }}</h1>
-<div class="video-player mb-4">
-    <iframe
-        src="{{ sources[0] }}"
-        frameborder="0"
-        allowfullscreen
-        class="w-100"
-        style="height: 500px"
-    ></iframe>
-</div>
-<div class="btn-group mb-3 d-flex justify-content-center flex-wrap">
-    {% for source in sources %}
-    <button
-        class="btn btn-secondary mx-1 m-1"
-        onclick="document.querySelector('iframe').src='{{ source }}'"
-        style="background-color: #ca476e !important"
-    >
-        Kaynak {{ loop.index }}
-    </button>
-    {% endfor %}
-</div>
 
-<!-- Aşağıdaki linkleri daha küçük hale getirdik ve en alta taşıdık -->
-<div class="link-group text-center mt-5 fnt h6">
-    <h5>Açılmayan videolar için</h5>
-    <div class="d-flex justify-content-center flex-wrap fnt h6">
-        {% for source in sources %}
-        <a
-            href="{{ source }}"
-            target="_blank"
-            class="btn btn-link p-1 mx-1 small fnt h6"
-            >Kaynak {{ loop.index }}</a
-        >
-        {% endfor %}
+    <div class="video-player-wrapper mb-4">
+        <iframe src="{{ sources[0] }}" allowfullscreen></iframe>
     </div>
-    <!-- DİSQUS -->
+
+    <div class="text-center mb-4">
+        <p class="text-secondary">Videoyu oynatmada sorun yaşarsanız, farklı bir kaynak deneyin.</p>
+        <div class="btn-group" role="group" aria-label="Video Kaynakları">
+            {% for source in sources %}
+            <button class="btn btn-outline-primary mx-1" onclick="document.querySelector('iframe').src='{{ source }}'">
+                Kaynak {{ loop.index }}
+            </button>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-between mt-5">
+        {% if episode.id > 1 %}
+        <a href="{{ url_for('episode', episode_id=episode.id - 1) }}" class="btn btn-secondary">&laquo; Önceki Bölüm</a>
+        {% endif %}
+        <a href="{{ url_for('anime', anime_id=episode.anime.id) }}" class="btn btn-primary">Tüm Bölümler</a>
+        <a href="{{ url_for('episode', episode_id=episode.id + 1) }}" class="btn btn-secondary">Sonraki Bölüm &raquo;</a>
+    </div>
+
     <div id="disqus_thread" class="pt-5"></div>
-    <!-- DİSQUS -->
 </div>
 
+<!-- DİSQUS -->
+<script>
+    var disqus_config = function () {
+        this.page.url = "{{ request.url }}";
+        this.page.identifier = "episode-{{ episode.id }}";
+    };
+    (function() {
+        var d = document, s = d.createElement('script');
+        s.src = 'https://humatfansub.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 {% endblock %}

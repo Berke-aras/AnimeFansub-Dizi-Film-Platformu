@@ -1,58 +1,36 @@
-{% extends "base.html" %} {% block title %}Anime Düzenle{% endblock %} {% block
-content %}
-<h1>Anime Düzenle: {{ anime.name }}</h1>
-<form method="POST" action="{{ url_for('edit_anime', anime_id=anime.id) }}">
-    {{ form.hidden_tag() }}
-    <div class="form-group">
-        {{ form.name.label(class="form-control-label") }} {{
-        form.name(class="form-control") }}
-    </div>
-    <div class="form-group">
-        {{ form.description.label(class="form-control-label") }} {{
-        form.description(class="form-control") }}
-    </div>
-    <div class="form-group">
-        {{ form.cover_image.label(class="form-control-label") }} {{
-        form.cover_image(class="form-control") }}
-    </div>
-    <!-- Türler (Genres) alanı -->
-    <div class="form-group">
-        {{ form.genres.label(class="form-control-label") }}
-        <!-- Genres alanının etiketi -->
-        {{ form.genres(class="form-control") }}
-        <!-- Genres input alanı -->
-    </div>
-    <button type="submit" class="btn btn-success">Kaydet</button>
-    <a href="{{ url_for('admin') }}" class="btn btn-secondary">İptal</a>
-</form>
-{% endblock %} {% block footer %}
-<footer class="bg-dark text-light py-4">
-    <div class="container">
-        <div class="row">
-            {% if current_user.can_add_user %}
-            <div class="col-md-4 mb-2">
-                <a href="{{ url_for('users') }}" class="btn btn-info btn-block"
-                    >Kullanıcılar</a
-                >
-            </div>
-            {% endif %} {% if current_user.can_add_user %}
-            <div class="col-md-4 mb-2">
-                <a
-                    href="{{ url_for('view_logs') }}"
-                    class="btn btn-info btn-block"
-                    >Loglar</a
-                >
-            </div>
-            {% endif %} {% if current_user.can_add_user %}
-            <div class="col-md-4 mb-2">
-                <a
-                    href="{{ url_for('add_user') }}"
-                    class="btn btn-info btn-block"
-                    >Kullanıcı Ekle</a
-                >
-            </div>
-            {% endif %}
+{% extends "base.html" %}
+
+{% block title %}Anime Düzenle{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card p-4">
+            <h1 class="text-center mb-4">Anime Düzenle: {{ anime.name }}</h1>
+            <form method="POST" action="{{ url_for('edit_anime', anime_id=anime.id) }}">
+                {{ form.hidden_tag() }}
+                <div class="form-group">
+                    {{ form.name.label(class="form-label") }}
+                    {{ form.name(class="form-control form-control-lg bg-dark text-light border-secondary") }}
+                </div>
+                <div class="form-group">
+                    {{ form.description.label(class="form-label") }}
+                    {{ form.description(class="form-control form-control-lg bg-dark text-light border-secondary") }}
+                </div>
+                <div class="form-group">
+                    {{ form.cover_image.label(class="form-label") }}
+                    {{ form.cover_image(class="form-control form-control-lg bg-dark text-light border-secondary") }}
+                </div>
+                <div class="form-group">
+                    {{ form.genres.label(class="form-label") }}
+                    {{ form.genres(class="form-control form-control-lg bg-dark text-light border-secondary") }}
+                </div>
+                <div class="form-group mt-4">
+                    <button type="submit" class="btn btn-primary btn-block btn-lg">Kaydet</button>
+                    <a href="{{ url_for('admin') }}" class="btn btn-secondary btn-block btn-lg mt-2">İptal</a>
+                </div>
+            </form>
         </div>
     </div>
-</footer>
+</div>
 {% endblock %}

@@ -1,239 +1,155 @@
-/* Genel ve base.html css bitiş*/
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+    --background-color: #1a1b26; /* Daha açık, mavimsi koyu */
+    --card-background: #2a2c3a; /* Kartlar için daha yumuşak bir ton */
+    --text-color: #f0f0f5;
+    --secondary-color: #a9a9b3;
+    --border-color: #3a3c4a;
+    --accent-color: #3399ff; /* Canlı bir mavi */
+    --hover-color: #3a3c4a;
+}
+
+body {
+    background-color: var(--background-color);
+    color: var(--text-color);
+    font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+h1, .display-4 {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+.navbar {
+    background-color: rgba(26, 27, 38, 0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.navbar-brand span {
+    font-weight: 600;
+    font-size: 1.5rem;
+}
+
+.nav-link {
+    color: var(--secondary-color) !important;
+    transition: color 0.3s ease;
+}
+
+.nav-link:hover {
+    color: var(--accent-color) !important;
+}
+
 .card {
-    border-radius: 12px;
+    background-color: var(--card-background);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
     overflow: hidden;
-    border: none;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
 }
 
 .card:hover {
-    transform: translateY(-5px);
+    transform: translateY(-8px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
 }
 
 .card-img-top {
-    width: 100%;
-    height: 250px; /* Resimlerin boyutunu eşitle */
-    object-fit: cover; /* Resimleri kesmeden sığdır */
-}
-
-.btn-izle {
-    background-color: #6a1b9a; /* Mor */
-    border-color: #6a1b9a;
-    color: #fff;
-    transition: background-color 0.3s ease;
-}
-
-.btn-izle:hover {
-    background-color: #4a148c; /* Koyu Mor */
-    border-color: #4a148c;
-}
-
-h1,
-h2 {
-    color: #e1bee7; /* Açık Mor */
-}
-
-.list-group-item {
-    background-color: #2c2c2c;
-    border: 1px solid #6a1b9a; /* Mor */
-}
-
-.list-group-item a {
-    color: #e1bee7; /* Açık Mor */
-}
-
-.list-group-item a:hover {
-    color: #ce93d8; /* Daha Açık Mor */
-}
-
-.btn-danger {
-    background-color: #c2185b; /* Pembe */
-    border-color: #c2185b;
-}
-
-.btn-danger:hover {
-    background-color: #ad1457; /* Koyu Pembe */
-    border-color: #ad1457;
-}
-
-.anime-list {
-    display: flex;
-    flex-wrap: wrap;
-}
-
-/* Fix overlapping issue */
-@media (min-width: 768px) and (max-width: 990px) {
-    .col-md-4 {
-        flex: 0 0 33.33%; /* Set 3 columns per row */
-        max-width: 33.33%; /* Adjust the max-width for columns */
-    }
-    .col-sm-6 {
-        flex: 0 0 50%; /* Set 2 columns per row */
-        max-width: 50%;
-    }
-}
-
-@media (max-width: 767px) {
-    .col-sm-6 {
-        flex: 0 0 100%; /* Full width on small screens */
-        max-width: 100%;
-    }
-}
-
-/* Optional: Adjust card margins to avoid any possible overlap */
-.card {
-    margin-bottom: 20px;
-}
-
-.pagination {
-    display: flex;
-    justify-content: center; /* Sayfa numaralarını ortala */
-    align-items: center;
-    margin-top: 20px;
-    margin-bottom: 20px;
-}
-
-.pagination a,
-.pagination span {
-    color: #e1bee7; /* Açık Mor */
-    background-color: #2c2c2c; /* Sayfa numaralarının arka plan rengi */
-    border: 1px solid #6a1b9a; /* Mor */
-    padding: 10px 15px;
-    margin: 0 5px; /* Sayfa numaraları arasındaki boşluk */
-    text-decoration: none; /* Alt çizgiyi kaldır */
-    border-radius: 5px; /* Köşeleri yuvarla */
-    transition: background-color 0.3s, color 0.3s; /* Geçiş animasyonu */
-}
-
-.pagination a:hover {
-    background-color: #6a1b9a; /* Mor */
-    color: #fff; /* Üzerine gelindiğinde yazı rengi */
-}
-
-.pagination .current {
-    background-color: #c2185b; /* Pembe */
-    color: #fff; /* Aktif sayfa yazı rengi */
-    cursor: default;
-}
-
-html,
-body {
-    height: 100%;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-}
-body {
-    font-family: "Poppins", sans-serif;
-    font-size: 16px;
-    color: #f3e5f5; /* Çok Açık Mor */
-    background-color: #121212; /* Koyu Gri */
-}
-@keyframes glow {
-    0% {
-        box-shadow: 0 0 5px #c2185b, 0 0 10px #c2185b, 0 0 15px #c2185b,
-            0 0 20px #c2185b, 0 0 25px #c2185b, 0 0 30px #c2185b,
-            0 0 35px #c2185b;
-    }
-    100% {
-        box-shadow: 0 0 0px #c2185b, 0 0 0px #c2185b, 0 0 0px #c2185b,
-            0 0 0px #c2185b, 0 0 0px #c2185b, 0 0 0px #c2185b, 0 0 0px #c2185b;
-    }
-}
-
-.glow {
-    animation: glow 1s ease-in-out;
-}
-
-.navbar-brand-logo {
-    display: flex;
-    align-items: center;
-}
-.navbar-brand-logo img {
-    max-width: 60px;
-    max-height: 60px;
-    margin-right: 10px;
-    border-radius: 50%; /* Yuvarlak yapar */
-}
-.navbar-brand-logo span {
-    font-family: "Poppins", cursive; /* Anime sitesine uygun güzel bir font */
-    font-size: 1.4em; /* Boyutunu küçülttük */
-    color: #fff;
-}
-body.bg-dark {
-    background-color: #121212 !important; /* Koyu Gri */
-}
-.navbar {
-    background-color: #1f1f1f !important; /* Daha Koyu Gri */
-    border-bottom: 1px solid #6a1b9a; /* Mor */
-}
-.nav-link {
-    color: #e1bee7 !important; /* Açık Mor */
-}
-.nav-link:hover {
-    color: #fff !important; /* Beyaz */
-}
-footer {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    flex-wrap: wrap;
-    padding: 1rem;
-    background-color: #1f1f1f; /* Daha Koyu Gri */
-    position: relative;
-    bottom: 0;
-    width: 100%;
-    border-top: 1px solid #6a1b9a; /* Mor */
-}
-footer p {
-    margin: 0.5rem;
-    color: #e1bee7; /* Açık Mor */
-}
-footer a {
-    color: #ce93d8; /* Daha Açık Mor */
-}
-
-footer a:hover {
-    color: #fff; /* Beyaz */
-}
-
-.card-fixed-height {
-    height: 500px; /* Increased the height for more space */
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    border-bottom: 1px solid var(--border-color);
 }
 
 .card-body {
-    background-color: #1f1f1f; /* Daha Koyu Gri */
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    padding: 15px; /*  padding for better spacing */
+    padding: 1.25rem;
 }
 
 .card-title {
-    font-size: 1.2rem; /* the title size */
+    color: var(--text-color);
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+.card-text {
+    color: var(--secondary-color);
+    font-size: 0.9rem;
+}
+
+.btn {
+    border-radius: 10px;
+    padding: 0.6rem 1.2rem;
+    font-weight: 500;
+    transition: all 0.2s ease-in-out;
+}
+
+.btn-primary {
+    background-color: var(--accent-color);
+    color: var(--text-color);
+    border: none;
+}
+
+.btn-primary:hover {
+    background-color: #1a8cff;
+    transform: scale(1.05);
+}
+
+footer {
+    border-top: 1px solid var(--border-color);
+    padding: 2rem 0;
+    color: var(--secondary-color);
+    background-color: #1a1b26;
+}
+
+/* Animasyonlar */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.container, .card {
+    animation: fadeIn 0.6s ease-out forwards;
+}
+
+/* Anime sayfası için özel stiller */
+.anime-description {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    line-height: 1.6;
+    color: var(--secondary-color);
+}
+
+.episode-list-item {
+    background-color: var(--card-background);
+    border: 1px solid var(--border-color);
     margin-bottom: 10px;
-    color: #e1bee7; /* Açık Mor */
+    border-radius: 12px;
+    transition: background-color 0.2s ease, transform 0.2s ease;
 }
 
-.card p {
-    flex-grow: 1;
-    font-size: 1rem; /* font size for paragraph */
-    color: #f3e5f5; /* Çok Açık Mor */
+.episode-list-item:hover {
+    background-color: var(--hover-color);
+    transform: translateX(5px);
 }
 
-.btn-izle {
-    margin-top: auto;
-    font-size: 1rem; /*  button font size */
-    padding: 10px 20px; /* button size */
+/* Video Oynatıcı */
+.video-player-wrapper {
+    position: relative;
+    padding-top: 56.25%; /* 16:9 Aspect Ratio */
+    background-color: #000;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
 }
 
-main {
-    flex: 1; /* Sayfanın geri kalan kısmını kaplar */
+.video-player-wrapper iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
 }
-
-/* Genel ve base.html css bitiş*/
