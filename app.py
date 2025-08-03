@@ -5,7 +5,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from forms import LoginForm, AnimeForm, EpisodeForm, UserForm, EditUserForm
 from models import db, User, Anime, Episode, Log
 import re
-
+import random
 
 # Uygulamanızın diğer başlangıç kodları...
 
@@ -13,7 +13,7 @@ import re
 app = Flask(__name__)
 application = app
 app.config['SECRET_KEY'] = 'asd*fasd-dsdsaf+fa+fd,aadsf,af,.d,f.daf*f9d88asd7asdf68sdf567as47'
-#https bağlantısı yoksa sorun çıkartıyor dikkat et
+# https bağlantısı yoksa sorun çıkartıyor dikkat et
 # app.config['SESSION_COOKIE_SECURE'] = True 
 # app.config['SESSION_COOKIE_HTTPONLY'] = True
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///anime_site.db'
@@ -39,9 +39,16 @@ def load_user(user_id):
 
 @app.route('/')
 def index():
-    page = request.args.get('page', 1, type=int)  # URL'den sayfa numarasını al
-    animes = Anime.query.order_by().paginate(page=page, per_page=15)  # 15 animeyi getir
-    return render_template('index.html', animes=animes)
+    recommended_animes = Anime.query.filter(Anime.genres.like('%Oneri%')).limit(6).all()
+    random_animes = random.sample(Anime.query.all(), min(len(Anime.query.all()), 6))
+    latest_animes = Anime.query.order_by(Anime.id.desc()).limit(6).all()
+    return render_template('index.html', recommended_animes=recommended_animes, random_animes=random_animes, latest_animes=latest_animes)
+
+@app.route('/animes')
+def animes():
+    page = request.args.get('page', 1, type=int)
+    animes = Anime.query.order_by(Anime.name).paginate(page=page, per_page=18)
+    return render_template('all_animes.html', animes=animes)
 
 @app.route('/copyright')
 def copyright():

@@ -50,6 +50,9 @@
                         <li class="nav-item">
                             <a class="nav-link" href="{{ url_for('index') }}">Ana Sayfa</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('animes') }}">Tüm Animeler</a>
+                        </li>
                     </ul>
                     <form class="form-inline my-2 my-lg-0 mr-3" action="{{ url_for('search') }}" method="GET">
                         <input class="form-control mr-sm-2 bg-dark text-light border-secondary" type="search" name="query" placeholder="Anime Ara..." aria-label="Search">
