@@ -9,7 +9,8 @@
 <div id="heroCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel">
     <div class="carousel-indicators">
         {% for anime in editor_picks %}
-        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="{{ loop.index0 }}" class="{{ 'active' if loop.first }}" aria-current="true" aria-label="Slide {{ loop.index }}"></button>
+        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="{{ loop.index0 }}"
+            class="{{ 'active' if loop.first }}" aria-current="true" aria-label="Slide {{ loop.index }}"></button>
         {% endfor %}
     </div>
     <div class="carousel-inner">

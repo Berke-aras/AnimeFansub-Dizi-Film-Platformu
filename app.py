@@ -2,10 +2,12 @@ from flask import Flask, render_template, redirect, url_for, flash, request, ses
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user, UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
-from forms import LoginForm, AnimeForm, EpisodeForm, UserForm, EditUserForm, GenreForm, AnimeSearchForm
+from forms import LoginForm, AnimeForm, EpisodeForm, UserForm, EditUserForm, GenreForm, AnimeSearchForm, RegistrationForm
 from models import db, User, Anime, Episode, Log, Genre, Rating
 import re
 import random
+from functools import wraps
+import requests
 
 app = Flask(__name__)
 application = app
@@ -17,6 +19,28 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
 
+def admin_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not current_user.is_authenticated or not (current_user.can_add_user or current_user.can_edit or current_user.can_delete):
+            flash('Bu sayfayı görüntüleme yetkiniz yok.', 'danger')
+            return redirect(url_for('index'))
+        return f(*args, **kwargs)
+    return decorated_function
+
+def update_mal_data(anime):
+    try:
+        response = requests.get(f'https://api.jikan.moe/v4/anime?q={anime.name}&limit=1')
+        if response.status_code == 200:
+            data = response.json().get('data')
+            if data:
+                mal_anime = data[0]
+                anime.mal_id = mal_anime.get('mal_id')
+                anime.mal_score = mal_anime.get('score')
+                anime.mal_url = mal_anime.get('url')
+    except requests.exceptions.RequestException as e:
+        flash(f'MyAnimeList verileri alınamadı: {e}', 'warning')
+
 def log_action(action, description):
     if current_user.is_authenticated:
         new_log = Log(action=action, description=description, user_id=current_user.id)
@@ -27,12 +51,23 @@ def log_action(action, description):
 def load_user(user_id):
     return User.query.get(int(user_id))
 
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+    form = RegistrationForm()
+    if form.validate_on_submit():
+        hashed_password = generate_password_hash(form.password.data, method='pbkdf2:sha256')
+        user = User(username=form.username.data, password=hashed_password)
+        db.session.add(user)
+        db.session.commit()
+        flash('Hesabınız oluşturuldu! Şimdi giriş yapabilirsiniz.', 'success')
+        return redirect(url_for('login'))
+    return render_template('register.html', title='Kayıt Ol', form=form)
+
 @app.route('/')
 def index():
-    # Editörün Seçimi (Admin tarafından 'Oneri' türü eklenenler)
     editor_picks = Anime.query.filter(Anime.genres.any(Genre.name == 'Oneri')).limit(6).all()
-
-    # Kişiselleştirilmiş Öneriler
     user_genres = session.get('user_genres', {})
     personalized_recs = []
     if user_genres:
@@ -40,25 +75,15 @@ def index():
         top_genre_ids = [int(g[0]) for g in sorted_genres[:3]]
         if top_genre_ids:
             personalized_recs = Anime.query.filter(Anime.genres.any(Genre.id.in_(top_genre_ids))).limit(6).all()
-
     latest_animes = Anime.query.order_by(Anime.id.desc()).limit(6).all()
     random_animes = random.sample(Anime.query.all(), min(len(Anime.query.all()), 6))
-    
-    return render_template('index.html', 
-                           editor_picks=editor_picks,
-                           personalized_recs=personalized_recs, 
-                           latest_animes=latest_animes, 
-                           random_animes=random_animes)
+    return render_template('index.html', editor_picks=editor_picks, personalized_recs=personalized_recs, latest_animes=latest_animes, random_animes=random_animes)
 
 @app.route('/animes', methods=['GET', 'POST'])
 def animes():
-    # Use request.values to get data from both GET and POST requests
     form = AnimeSearchForm(request.values)
     form.genre.choices = [('', 'Tüm Türler')] + [(str(g.id), g.name) for g in Genre.query.order_by('name').all()]
-    
     query = Anime.query
-
-    # Directly check for data in the form, works for both GET and POST
     if form.validate_on_submit() or request.method == 'GET':
         search_query = form.query.data or request.args.get('query')
         if search_query:
@@ -69,8 +94,6 @@ def animes():
         query = query.filter_by(release_year=form.release_year.data)
     if form.anime_type.data:
         query = query.filter_by(anime_type=form.anime_type.data)
-
-    # Sorting logic
     sort_option = form.sort_by.data or 'name_asc'
     if sort_option == 'name_asc':
         query = query.order_by(Anime.name.asc())
@@ -80,28 +103,23 @@ def animes():
         query = query.order_by(Anime.average_rating.desc())
     elif sort_option == 'year_desc':
         query = query.order_by(Anime.release_year.desc())
-
     page = request.args.get('page', 1, type=int)
     animes = query.paginate(page=page, per_page=18, error_out=False)
-    
     return render_template('all_animes.html', animes=animes, form=form)
 
 @app.route('/episode/<int:episode_id>')
 def episode(episode_id):
     episode = Episode.query.get_or_404(episode_id)
     sources = episode.sources.split(',')
-
     user_genres = session.get('user_genres', {})
     for genre in episode.anime.genres:
         user_genres[str(genre.id)] = user_genres.get(str(genre.id), 0) + 1
     session['user_genres'] = user_genres
-
     return render_template('episode.html', episode=episode, sources=sources)
-
-# ... (Diğer tüm rotalar aynı kalacak)
 
 @app.route('/admin/genres', methods=['GET', 'POST'])
 @login_required
+@admin_required
 def manage_genres():
     form = GenreForm()
     if form.validate_on_submit():
@@ -115,6 +133,7 @@ def manage_genres():
 
 @app.route('/admin/delete_genre/<int:genre_id>', methods=['POST'])
 @login_required
+@admin_required
 def delete_genre(genre_id):
     genre = Genre.query.get_or_404(genre_id)
     db.session.delete(genre)
@@ -124,17 +143,17 @@ def delete_genre(genre_id):
 
 @app.route('/add_anime', methods=['GET', 'POST'])
 @login_required
+@admin_required
 def add_anime():
     form = AnimeForm()
     if form.validate_on_submit():
-        new_anime = Anime(
-            name=form.name.data,
-            description=form.description.data,
-            cover_image=form.cover_image.data,
-            release_year=form.release_year.data,
-            status=form.status.data,
-            anime_type=form.anime_type.data
-        )
+        new_anime = Anime(name=form.name.data, description=form.description.data, cover_image=form.cover_image.data, release_year=form.release_year.data, status=form.status.data, anime_type=form.anime_type.data)
+        if form.mal_score.data:
+            new_anime.mal_score = float(form.mal_score.data)
+        if form.mal_url.data:
+            new_anime.mal_url = form.mal_url.data
+        if not new_anime.mal_score:
+            update_mal_data(new_anime)
         for genre in form.genres.data:
             new_anime.genres.append(genre)
         db.session.add(new_anime)
@@ -145,10 +164,10 @@ def add_anime():
 
 @app.route('/edit_anime/<int:anime_id>', methods=['GET', 'POST'])
 @login_required
+@admin_required
 def edit_anime(anime_id):
     anime = Anime.query.get_or_404(anime_id)
     form = AnimeForm(obj=anime)
-
     if form.validate_on_submit():
         anime.name = form.name.data
         anime.description = form.description.data
@@ -156,20 +175,22 @@ def edit_anime(anime_id):
         anime.release_year = form.release_year.data
         anime.status = form.status.data
         anime.anime_type = form.anime_type.data
-        # Türler artık API üzerinden yönetildiği için buradan kaldırıldı
+        if form.mal_score.data:
+            anime.mal_score = float(form.mal_score.data)
+        if form.mal_url.data:
+            anime.mal_url = form.mal_url.data
+        if not anime.mal_score:
+            update_mal_data(anime)
         db.session.commit()
         log_action('update', f'Anime "{anime.name}" düzenlendi.')
         return redirect(url_for('admin'))
-
     assigned_genres = anime.genres
     unassigned_genres = [genre for genre in Genre.query.all() if genre not in assigned_genres]
-
     return render_template('edit_anime.html', form=form, anime=anime, assigned_genres=assigned_genres, unassigned_genres=unassigned_genres)
 
 @app.route('/copyright')
 def copyright():
     return render_template('copyright.html')
-
 
 @app.route('/anime/<int:anime_id>')
 def anime(anime_id):
@@ -179,7 +200,6 @@ def anime(anime_id):
     if current_user.is_authenticated:
         user_rating = Rating.query.filter_by(user_id=current_user.id, anime_id=anime.id).first()
         is_in_watchlist = anime in current_user.watchlist_animes
-
     return render_template('anime.html', anime=anime, user_rating=user_rating, is_in_watchlist=is_in_watchlist)
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -189,19 +209,21 @@ def login():
         user = User.query.filter_by(username=form.username.data).first()
         if user and check_password_hash(user.password, form.password.data):
             login_user(user)
-            return redirect(url_for('admin'))
+            return redirect(url_for('index'))
         else:
-            flash('Login Unsuccessful. Please check username and password', 'danger')
+            flash('Giriş başarısız. Lütfen kullanıcı adınızı ve şifrenizi kontrol edin.', 'danger')
     return render_template('login.html', form=form)
 
 @app.route('/admin', methods=['GET', 'POST'])
 @login_required
+@admin_required
 def admin():
     animes = Anime.query.all()
     return render_template('admin.html', animes=animes)
 
 @app.route('/add_episode/<int:anime_id>', methods=['GET', 'POST'])
 @login_required
+@admin_required
 def add_episode(anime_id):
     form = EpisodeForm()
     if form.validate_on_submit():
@@ -214,17 +236,16 @@ def add_episode(anime_id):
         return redirect(url_for('anime', anime_id=anime_id))
     return render_template('add_episode.html', form=form)
 
-
 @app.route('/delete_anime/<int:anime_id>', methods=['POST'])
 @login_required
+@admin_required
 def delete_anime(anime_id):
     if not current_user.can_delete:
         flash('Silme yetkiniz yok!', 'danger')
         return redirect(url_for('admin'))
-
     anime = Anime.query.get_or_404(anime_id)
     if anime:
-        anime_name = anime.name  # Log için anime adını kaydediyoruz
+        anime_name = anime.name
         Episode.query.filter_by(anime_id=anime_id).delete()
         db.session.delete(anime)
         db.session.commit()
@@ -234,130 +255,100 @@ def delete_anime(anime_id):
 
 @app.route('/delete_episode/<int:episode_id>', methods=['POST'])
 @login_required
+@admin_required
 def delete_episode(episode_id):
     if not current_user.can_delete:
         flash('Bu işlemi gerçekleştirme yetkiniz yok.', 'danger')
         return redirect(url_for('anime', anime_id=Episode.query.get_or_404(episode_id).anime_id))
-    
     episode = Episode.query.get_or_404(episode_id)
     anime_id = episode.anime_id
     db.session.delete(episode)
     db.session.commit()
-
-    # Log kaydı ekle
     log_action('delete', f'Bölüm {episode.number} silindi. Anime ID: {anime_id}')
-
     flash('Bölüm başarıyla silindi.', 'success')
     return redirect(url_for('anime', anime_id=anime_id))
 
-
 @app.route('/edit_episode/<int:episode_id>', methods=['GET', 'POST'])
 @login_required
+@admin_required
 def edit_episode(episode_id):
     if not current_user.can_edit:
         flash('Bu işlemi gerçekleştirme yetkiniz yok.', 'danger')
         return redirect(url_for('anime', anime_id=Episode.query.get_or_404(episode_id).anime_id))
-    
     episode = Episode.query.get_or_404(episode_id)
     form = EpisodeForm()
-
     if form.validate_on_submit():
         old_number = episode.number
         old_sources = episode.sources
-
         episode.number = form.number.data
         episode.sources = form.sources.data
         db.session.commit()
-
-        # Log kaydı ekle
         log_action('edit', f'Bölüm {old_number} güncellendi. Yeni numara: {form.number.data}, Eski kaynaklar: {old_sources}, Yeni kaynaklar: {form.sources.data}')
-
         flash('Bölüm başarıyla güncellendi.', 'success')
         return redirect(url_for('anime', anime_id=episode.anime_id))
-
     form.number.data = episode.number
     form.sources.data = episode.sources
     return render_template('edit_episode.html', form=form, episode=episode)
 
-
-
-
 @app.route('/add_user', methods=['GET', 'POST'])
 @login_required
+@admin_required
 def add_user():
     if not current_user.can_add_user:
         flash('Yetkiniz yok!', 'danger')
         return redirect(url_for('admin'))
-
     form = UserForm()
     if form.validate_on_submit():
         hashed_password = generate_password_hash(form.password.data, method='pbkdf2:sha256')
-        new_user = User(username=form.username.data, 
-                        password=hashed_password,
-                        can_delete=form.can_delete.data,
-                        can_edit=form.can_edit.data,
-                        can_add_user=form.can_add_user.data)
+        new_user = User(username=form.username.data, password=hashed_password, can_delete=form.can_delete.data, can_edit=form.can_edit.data, can_add_user=form.can_add_user.data)
         db.session.add(new_user)
         db.session.commit()
-
-        # Log kaydı ekle
         log_action('add_user', f'Yeni kullanıcı eklendi: {form.username.data}, Silme yetkisi: {form.can_delete.data}, Düzenleme yetkisi: {form.can_edit.data}, Kullanıcı ekleme yetkisi: {form.can_add_user.data}')
-
         flash('Kullanıcı başarıyla eklendi!', 'success')
         return redirect(url_for('admin'))
     return render_template('add_user.html', form=form)
 
-
-
 @app.route('/logs')
 @login_required
+@admin_required
 def view_logs():
     if not current_user.can_add_user:
         flash('Bu sayfayı görüntüleme yetkiniz yok.', 'danger')
         return redirect(url_for('index'))
-    
-    
-    page = request.args.get('page', 1, type=int)  # URL'den sayfa numarasını al
-    logs = Log.query.order_by(Log.timestamp.desc()).paginate(page=page, per_page=10) 
+    page = request.args.get('page', 1, type=int)
+    logs = Log.query.order_by(Log.timestamp.desc()).paginate(page=page, per_page=10)
     return render_template('log.html', logs=logs)
-
 
 @app.route('/users')
 @login_required
+@admin_required
 def users():
     if not current_user.can_add_user:
         flash('Bu sayfayı görüntüleme yetkiniz yok.', 'danger')
         return redirect(url_for('index'))
-    
     users = User.query.all()
     return render_template('users.html', users=users)
 
 @app.route('/edit_user/<int:user_id>', methods=['GET', 'POST'])
 @login_required
+@admin_required
 def edit_user(user_id):
     if not current_user.can_add_user:
         flash('Bu işlemi gerçekleştirme yetkiniz yok.', 'danger')
         return redirect(url_for('admin'))
-
     user = User.query.get_or_404(user_id)
     form = EditUserForm(obj=user)
-    
     if form.validate_on_submit():
         user.username = form.username.data
         user.can_delete = form.can_delete.data
         user.can_edit = form.can_edit.data
         user.can_add_user = form.can_add_user.data
         db.session.commit()
-
-        # Log kaydı ekle
         log_action('edit_user', f'Kullanıcı "{user.username}" güncellendi.')
-
         flash('Kullanıcı başarıyla güncellendi.', 'success')
         return redirect(url_for('admin'))
-
     return render_template('edit_user.html', form=form, user=user)
 
-# --- API Endpoints ---
 @app.route('/api/watchlist/<int:anime_id>', methods=['POST'])
 @login_required
 def toggle_watchlist(anime_id):
@@ -376,41 +367,31 @@ def toggle_watchlist(anime_id):
 def rate_anime(anime_id):
     anime = Anime.query.get_or_404(anime_id)
     score = request.json.get('score')
-
     if not score or not 1 <= score <= 5:
         return jsonify({'status': 'error', 'message': 'Invalid score'}), 400
-
     rating = Rating.query.filter_by(user_id=current_user.id, anime_id=anime.id).first()
     if rating:
         rating.score = score
     else:
         rating = Rating(user_id=current_user.id, anime_id=anime.id, score=score)
         db.session.add(rating)
-    
-    # Update average rating
     total_ratings = db.session.query(db.func.sum(Rating.score)).filter(Rating.anime_id == anime.id).scalar()
     count_ratings = db.session.query(db.func.count(Rating.id)).filter(Rating.anime_id == anime.id).scalar()
-
     anime.average_rating = total_ratings / count_ratings
     anime.rating_count = count_ratings
-
     db.session.commit()
-
     return jsonify({'status': 'success', 'new_average': anime.average_rating, 'rating_count': anime.rating_count})
 
 @app.route('/profile')
 @login_required
 def profile():
-    # Kullanıcının izleme listesindeki animeler zaten modeldeki ilişki sayesinde kolayca erişilebilir.
     watchlist = current_user.watchlist_animes
-    
-    # Kullanıcının puan verdiği animeleri ve verdiği puanları al
     user_ratings = Rating.query.filter_by(user_id=current_user.id).order_by(Rating.score.desc()).all()
-
     return render_template('profile.html', watchlist=watchlist, user_ratings=user_ratings)
 
 @app.route('/api/anime/<int:anime_id>/genre/add/<int:genre_id>', methods=['POST'])
 @login_required
+@admin_required
 def add_genre_to_anime(anime_id, genre_id):
     anime = Anime.query.get_or_404(anime_id)
     genre = Genre.query.get_or_404(genre_id)
@@ -421,6 +402,7 @@ def add_genre_to_anime(anime_id, genre_id):
 
 @app.route('/api/anime/<int:anime_id>/genre/remove/<int:genre_id>', methods=['POST'])
 @login_required
+@admin_required
 def remove_genre_from_anime(anime_id, genre_id):
     anime = Anime.query.get_or_404(anime_id)
     genre = Genre.query.get_or_404(genre_id)
@@ -429,28 +411,20 @@ def remove_genre_from_anime(anime_id, genre_id):
         db.session.commit()
     return jsonify({'status': 'success'})
 
-
-
 @app.route('/delete_user/<int:user_id>', methods=['POST'])
 @login_required
+@admin_required
 def delete_user(user_id):
     user = User.query.get_or_404(user_id)
-    
     if not current_user.can_delete:
         flash('Bu sayfayı görüntüleme yetkiniz yok.', 'danger')
         return redirect(url_for('index'))
-    
-    # Kullanıcıya ait log kayıtlarını güncelleyin
     logs = Log.query.filter_by(user_id=user_id).all()
     for log in logs:
         log.user_id = None
-    
     db.session.commit()
-    
-    # Kullanıcıyı sil
     db.session.delete(user)
     db.session.commit()
-    
     flash('Kullanıcı başarıyla silindi!', 'success')
     return redirect(url_for('users'))
 

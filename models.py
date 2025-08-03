@@ -49,6 +49,11 @@ class Anime(db.Model):
     average_rating = db.Column(db.Float, default=0.0)
     rating_count = db.Column(db.Integer, default=0)
 
+    # MyAnimeList Integration
+    mal_id = db.Column(db.Integer, nullable=True)
+    mal_score = db.Column(db.Float, nullable=True)
+    mal_url = db.Column(db.String(200), nullable=True)
+
     genres = db.relationship('Genre', secondary=anime_genres, lazy='subquery',
         backref=db.backref('animes', lazy=True))
     ratings = db.relationship('Rating', backref='anime', lazy=True, cascade="all, delete-orphan")

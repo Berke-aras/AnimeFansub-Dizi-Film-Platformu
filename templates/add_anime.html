@@ -39,6 +39,14 @@
                     {{ form.genres.label(class="form-label") }}
                     {{ form.genres(class="form-select", multiple="multiple") }}
                 </div>
+                <div class="mb-3">
+                    {{ form.mal_score.label(class="form-label") }}
+                    {{ form.mal_score(class="form-control") }}
+                </div>
+                <div class="mb-3">
+                    {{ form.mal_url.label(class="form-label") }}
+                    {{ form.mal_url(class="form-control") }}
+                </div>
                 <div class="d-grid mt-4">
                     {{ form.submit(class="btn btn-primary btn-lg") }}
                 </div>

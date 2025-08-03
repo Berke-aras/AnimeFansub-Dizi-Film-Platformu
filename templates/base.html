@@ -65,7 +65,9 @@
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                                 <li><a class="dropdown-item" href="{{ url_for('profile') }}">Profilim</a></li>
+                                {% if current_user.can_add_user or current_user.can_edit or current_user.can_delete %}
                                 <li><a class="dropdown-item" href="{{ url_for('admin') }}">Admin Paneli</a></li>
+                                {% endif %}
                                 <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item" href="{{ url_for('logout') }}">Çıkış Yap</a></li>
                             </ul>
@@ -73,6 +75,9 @@
                         {% else %}
                         <li class="nav-item">
                             <a class="nav-link" href="{{ url_for('login') }}">Giriş Yap</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('register') }}">Kayıt Ol</a>
                         </li>
                         {% endif %}
                     </ul>

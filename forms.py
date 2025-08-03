@@ -1,11 +1,22 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, TextAreaField, SubmitField, BooleanField, SelectField, IntegerField
-from wtforms.validators import DataRequired, Length, Optional
+from wtforms.validators import DataRequired, Length, Optional, EqualTo, ValidationError
 from wtforms_sqlalchemy.fields import QuerySelectMultipleField
-from models import Genre
+from models import Genre, User
 
 def get_genres():
     return Genre.query.all()
+
+class RegistrationForm(FlaskForm):
+    username = StringField('Kullanıcı Adı', validators=[DataRequired(), Length(min=3, max=20)])
+    password = PasswordField('Şifre', validators=[DataRequired(), Length(min=6)])
+    confirm_password = PasswordField('Şifreyi Onayla', validators=[DataRequired(), EqualTo('password', message='Şifreler uyuşmuyor.')])
+    submit = SubmitField('Kayıt Ol')
+
+    def validate_username(self, username):
+        user = User.query.filter_by(username=username.data).first()
+        if user:
+            raise ValidationError('Bu kullanıcı adı zaten alınmış. Lütfen farklı bir kullanıcı adı seçin.')
 
 class LoginForm(FlaskForm):
     username = StringField('Kullanıcı Adı', validators=[DataRequired()])
@@ -23,23 +34,22 @@ class AnimeForm(FlaskForm):
     cover_image = StringField('Kapak Resmi URL', validators=[DataRequired()])
     release_year = IntegerField('Çıkış Yılı', validators=[Optional()])
     status = SelectField('Durum', choices=[
-        ('Bitti', 'Bitti'), 
+        ('Bitti', 'Bitti'),
         ('Devam Ediyor', 'Devam Ediyor')
     ], validators=[Optional()])
     anime_type = SelectField('Tip', choices=[
-        ('TV', 'TV'), 
-        ('Film', 'Film'), 
+        ('TV', 'TV'),
+        ('Film', 'Film'),
         ('OVA', 'OVA')
     ], validators=[Optional()])
     genres = QuerySelectMultipleField('Türler', query_factory=get_genres, get_label='name', allow_blank=True)
+    mal_score = StringField('MyAnimeList Puanı', validators=[Optional()])
+    mal_url = StringField('MyAnimeList URL', validators=[Optional()])
     submit = SubmitField('Anime Ekle/Güncelle')
 
 class GenreForm(FlaskForm):
     name = StringField('Tür Adı', validators=[DataRequired(), Length(min=2, max=50)])
     submit = SubmitField('Tür Ekle')
-
-from wtforms import StringField, PasswordField, SubmitField, TextAreaField, SelectMultipleField, IntegerField, SelectField, BooleanField
-from wtforms.validators import DataRequired, Length, EqualTo, Optional
 
 class AnimeSearchForm(FlaskForm):
     query = StringField('Arama', validators=[Optional(), Length(min=1, max=100)])
