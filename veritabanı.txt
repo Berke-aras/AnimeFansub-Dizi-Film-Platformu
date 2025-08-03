@@ -1,3 +1,5 @@
+Oneri etiketi oluşturmak editörün seçimi kısmını tetikliyor.
+
 # Terminalde, eski SQLite dosyasını silin
 rm ./instance/anime_site.db
 Daha sonra, Flask shell veya bir Python betiği ile veritabanını yeniden oluşturabilirsiniz.
@@ -12,6 +14,8 @@ Flash shell ile database ekleme yap
 
 from app import db, User
 from werkzeug.security import generate_password_hash
+
+
 
 # Kullanıcı bilgileri
 username = "admin"

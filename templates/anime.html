@@ -10,7 +10,12 @@
         </div>
         <div class="col-md-8">
             <h1 class="display-4 font-weight-bold">{{ anime.name }}</h1>
-            <p class="text-secondary font-italic">{{ anime.genres.split(',') | join(', ') }}</p>
+            <div class="d-flex align-items-center my-3">
+                {% if anime.release_year %}<span class="badge badge-pill badge-secondary mr-2">{{ anime.release_year }}</span>{% endif %}
+                {% if anime.anime_type %}<span class="badge badge-pill badge-info mr-2">{{ anime.anime_type }}</span>{% endif %}
+                {% if anime.status %}<span class="badge badge-pill badge-success">{{ anime.status }}</span>{% endif %}
+            </div>
+            <p class="text-secondary font-italic">{{ anime.genres|map(attribute='name')|join(', ') }}</p>
             <p class="mt-4 anime-description">{{ anime.description }}</p>
         </div>
     </div>

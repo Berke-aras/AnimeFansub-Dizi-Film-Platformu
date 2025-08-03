@@ -1,6 +1,5 @@
 <p align="center"> <img src="https://media1.tenor.com/m/IAkzeTqB_RMAAAAC/rin-tohsaka-carnival-pantasm.gif" alt="Anime Fansub GIF" width="400" /> </p>
 
-
 ## AnimeFansub-Dizi-Film Platformu
 
 Anime-Dizi-Film tutkunları için basit ama gerekli özellikleri barındıran bir fansub platformudur. Kullanıcılar, anime serilerini izleyebilir ve bölümler arasında gezinebilirler. Platformda yer alan yönetim paneli ile yeni anime serileri ve bölümleri eklenebilir, platform kolayca yönetilebilir.
@@ -22,8 +21,8 @@ Anime-Dizi-Film tutkunları için basit ama gerekli özellikleri barındıran bi
 
 **Database'ye kayıtlı Yönetim paneli:** - Kullanıcı Adı: `admin` - Şifre: `adminpsw`
 
-
 **Dikkat:** Çalışan Hümat Fansuba ait versiyon:
+
 > [www.humatfansub.com.tr](https://www.humatfansub.com.tr)
 
 ## Güvenlik
@@ -59,5 +58,3 @@ Projeyi geliştirirken karşılaştığınız sorunları çözebilir, yeni özel
 <p align="center"> <img src="https://media1.tenor.com/m/w5EFZpYKe8MAAAAC/anime-anime-funny.gif" alt="Anime Fansub GIF" width="400" /> </p>
 
 ![:name](https://count.getloli.com/get/@:anime-fansub-dizi-platformu?theme=rule34)
-
-

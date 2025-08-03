@@ -1,24 +1,51 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, TextAreaField, SubmitField, BooleanField
-from wtforms.validators import DataRequired, Length
+from wtforms import StringField, PasswordField, TextAreaField, SubmitField, BooleanField, SelectField, IntegerField
+from wtforms.validators import DataRequired, Length, Optional
+from wtforms_sqlalchemy.fields import QuerySelectMultipleField
+from models import Genre
+
+def get_genres():
+    return Genre.query.all()
 
 class LoginForm(FlaskForm):
-    username = StringField('Username', validators=[DataRequired()])
-    password = PasswordField('Password', validators=[DataRequired()])
-    submit = SubmitField('Login')
+    username = StringField('Kullanıcı Adı', validators=[DataRequired()])
+    password = PasswordField('Şifre', validators=[DataRequired()])
+    submit = SubmitField('Giriş Yap')
 
 class EpisodeForm(FlaskForm):
-    number = StringField('Episode Number', validators=[DataRequired()])
-    sources = TextAreaField('Sources (comma separated URLs)', validators=[DataRequired()])
-    submit = SubmitField('Add Episode')
-
+    number = StringField('Bölüm Numarası', validators=[DataRequired()])
+    sources = TextAreaField("Kaynaklar (virgülle ayrılmış URL'ler)", validators=[DataRequired()])
+    submit = SubmitField('Bölüm Ekle')
 
 class AnimeForm(FlaskForm):
-    name = StringField('Anime Name', validators=[DataRequired(), Length(min=1, max=150)])
-    description = TextAreaField('Description', validators=[DataRequired()])
-    cover_image = StringField('Cover Image URL', validators=[DataRequired()])
-    genres = StringField('Genres (comma separated)(oneri. yazarsaniz editore girer.)', validators=[DataRequired()])  # Yeni alan
-    submit = SubmitField('Add/Update Anime')
+    name = StringField('Anime Adı', validators=[DataRequired(), Length(min=1, max=150)])
+    description = TextAreaField('Açıklama', validators=[DataRequired()])
+    cover_image = StringField('Kapak Resmi URL', validators=[DataRequired()])
+    release_year = IntegerField('Çıkış Yılı', validators=[Optional()])
+    status = SelectField('Durum', choices=[
+        ('Bitti', 'Bitti'), 
+        ('Devam Ediyor', 'Devam Ediyor')
+    ], validators=[Optional()])
+    anime_type = SelectField('Tip', choices=[
+        ('TV', 'TV'), 
+        ('Film', 'Film'), 
+        ('OVA', 'OVA')
+    ], validators=[Optional()])
+    genres = QuerySelectMultipleField('Türler', query_factory=get_genres, get_label='name', allow_blank=True)
+    submit = SubmitField('Anime Ekle/Güncelle')
+
+class GenreForm(FlaskForm):
+    name = StringField('Tür Adı', validators=[DataRequired(), Length(min=2, max=50)])
+    submit = SubmitField('Tür Ekle')
+
+class AnimeSearchForm(FlaskForm):
+    query = StringField('Anime Adı', validators=[Optional(), Length(max=100)])
+    genre = SelectField('Tür', choices=[], validators=[Optional()]) # coerce=int kaldırıldı
+    release_year = IntegerField('Çıkış Yılı', validators=[Optional()])
+    anime_type = SelectField('Tip', choices=[
+        ('', 'Tümü'), ('TV', 'TV'), ('Film', 'Film'), ('OVA', 'OVA')
+    ], validators=[Optional()])
+    submit = SubmitField('Filtrele')
 
 class UserForm(FlaskForm):
     username = StringField('Kullanıcı Adı', validators=[DataRequired(), Length(min=1, max=50)])

@@ -8,6 +8,31 @@
         <h1 class="display-4 font-weight-bold">Tüm Animeler</h1>
         <p class="lead text-secondary">Geniş anime arşivimizi keşfedin.</p>
     </div>
+
+    <!-- Filtreleme Formu -->
+    <div class="card p-4 mb-5">
+        <form method="POST" class="form-inline">
+            {{ form.hidden_tag() }}
+            <div class="form-group mr-3">
+                {{ form.query.label(class="mr-2") }}
+                {{ form.query(class="form-control bg-dark text-light border-secondary") }}
+            </div>
+            <div class="form-group mr-3">
+                {{ form.genre.label(class="mr-2") }}
+                {{ form.genre(class="form-control bg-dark text-light border-secondary") }}
+            </div>
+            <div class="form-group mr-3">
+                {{ form.release_year.label(class="mr-2") }}
+                {{ form.release_year(class="form-control bg-dark text-light border-secondary") }}
+            </div>
+            <div class="form-group mr-3">
+                {{ form.anime_type.label(class="mr-2") }}
+                {{ form.anime_type(class="form-control bg-dark text-light border-secondary") }}
+            </div>
+            {{ form.submit(class="btn btn-primary") }}
+        </form>
+    </div>
+
     <div class="row">
         {% for anime in animes.items %}
         <div class="col-md-4 col-sm-6 mb-4">
@@ -17,7 +42,7 @@
                 </a>
                 <div class="card-body d-flex flex-column">
                     <h5 class="card-title">{{ anime.name }}</h5>
-                    <p class="card-text flex-grow-1">{{ anime.genres.split(',')[:2] | join(', ') }}</p>
+                    <p class="card-text flex-grow-1">{{ anime.genres|map(attribute='name')|join(', ') }}</p>
                     <a href="{{ url_for('anime', anime_id=anime.id) }}" class="btn btn-primary mt-auto align-self-start">Detayları Gör</a>
                 </div>
             </div>
