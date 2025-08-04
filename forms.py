@@ -8,15 +8,45 @@ def get_genres():
     return Genre.query.all()
 
 class RegistrationForm(FlaskForm):
-    username = StringField('Kullanıcı Adı', validators=[DataRequired(), Length(min=3, max=20)])
+    username = StringField('Kullanıcı Adı', validators=[DataRequired(), Length(min=4, max=20)])
+    email = StringField('E-posta', validators=[DataRequired(), Email()])
     password = PasswordField('Şifre', validators=[DataRequired(), Length(min=6)])
-    confirm_password = PasswordField('Şifreyi Onayla', validators=[DataRequired(), EqualTo('password', message='Şifreler uyuşmuyor.')])
+    password2 = PasswordField('Şifre Tekrar', validators=[DataRequired(), EqualTo('password', message='Şifreler eşleşmiyor')])
     submit = SubmitField('Kayıt Ol')
 
     def validate_username(self, username):
+        # Kullanıcı adı sadece harf, rakam ve alt çizgi içermeli
+        if not all(c.isalnum() or c == '_' for c in username.data):
+            raise ValidationError('Kullanıcı adı sadece harf, rakam ve alt çizgi (_) içermelidir.')
+            
+        # Kullanıcı adı rakamla başlamamalı
+        if username.data[0].isdigit():
+            raise ValidationError('Kullanıcı adı rakamla başlayamaz.')
+            
         user = User.query.filter_by(username=username.data).first()
         if user:
-            raise ValidationError('Bu kullanıcı adı zaten alınmış. Lütfen farklı bir kullanıcı adı seçin.')
+            raise ValidationError('Bu kullanıcı adı zaten kullanılıyor. Lütfen farklı bir kullanıcı adı seçin.')
+
+    def validate_email(self, email):
+        # E-posta format kontrolü (büyük/küçük harf duyarsız)
+        email_lower = email.data.lower()
+        
+        user = User.query.filter_by(email=email.data).first()
+        if user:
+            raise ValidationError('Bu e-posta adresi zaten kayıtlı. Lütfen farklı bir e-posta adresi kullanın.')
+
+    def validate_password(self, password):
+        # Şifre en az bir büyük harf içermeli
+        if not any(c.isupper() for c in password.data):
+            raise ValidationError('Şifre en az bir büyük harf içermelidir.')
+            
+        # Şifre en az bir rakam içermeli
+        if not any(c.isdigit() for c in password.data):
+            raise ValidationError('Şifre en az bir rakam içermelidir.')
+            
+        # Şifre en az bir küçük harf içermeli
+        if not any(c.islower() for c in password.data):
+            raise ValidationError('Şifre en az bir küçük harf içermelidir.')
 
 class LoginForm(FlaskForm):
     username = StringField('Kullanıcı Adı', validators=[DataRequired()])
@@ -111,32 +141,61 @@ class CommunityRegistrationForm(FlaskForm):
     department = StringField('Bölümünüz (Department)', validators=[DataRequired(), Length(min=2, max=100)])
     preferred_units = SelectMultipleField('Hangi birimde çalışmak istersiniz? (Which unit do you want to participate to?)', 
                                         choices=[
-                                            ('anime_dubbing', 'Anime Dublaj'),
-                                            ('translation', 'Çeviri'),
-                                            ('editing', 'Editörlük'),
-                                            ('timing', 'Timing'),
-                                            ('quality_control', 'Kalite Kontrolü'),
-                                            ('social_media', 'Sosyal Medya'),
-                                            ('graphic_design', 'Grafik Tasarım'),
-                                            ('web_development', 'Web Geliştirme'),
-                                            ('project_management', 'Proje Yönetimi')
+                                            ('drawing_unit', 'Çizim Birimi'),
+                                            ('cosplay_unit', 'Cosplay Birimi'),
+                                            ('social_media_unit', 'Sosyal Medya Birimi'),
+                                            ('translation_fansub', 'Çeviri Birimi / Fansub'),
+                                            ('ninjutsu_unit', 'Ninjutsu Birimi')
                                         ], 
                                         validators=[Optional()])
     submit = SubmitField('Topluluk Üyeliği İçin Başvur')
 
     def validate_email(self, email):
+        # E-posta format kontrolü
+        if not email.data.lower().endswith('@hacettepe.edu.tr') and not email.data.lower().endswith('@gmail.com') and not email.data.lower().endswith('@outlook.com'):
+            # Sadece uyarı, engelleme yok
+            pass
+        
         member = CommunityMember.query.filter_by(email=email.data).first()
         if member:
             raise ValidationError('Bu e-posta adresi zaten kayıtlı.')
 
     def validate_student_id(self, student_id):
+        # Öğrenci numarası format kontrolü (sadece rakam olmalı)
+        if not student_id.data.isdigit():
+            raise ValidationError('Öğrenci numarası sadece rakamlardan oluşmalıdır.')
+        
+        # Hacettepe öğrenci numarası genelde 9 haneli
+        if len(student_id.data) < 7 or len(student_id.data) > 10:
+            raise ValidationError('Öğrenci numarası 7-10 haneli olmalıdır.')
+            
         member = CommunityMember.query.filter_by(student_id=student_id.data).first()
         if member:
             raise ValidationError('Bu öğrenci numarası zaten kayıtlı.')
 
     def validate_phone_number(self, phone_number):
+        # Ülke kodu kontrolü
         if not phone_number.data.startswith('+'):
             raise ValidationError('Telefon numarası ülke kodu ile başlamalıdır (örn: +905123456789)')
+        
+        # Sadece rakam ve + içermeli
+        if not all(c.isdigit() or c == '+' for c in phone_number.data):
+            raise ValidationError('Telefon numarası sadece rakam ve + işareti içermelidir.')
+            
+        # Türkiye numarası format kontrolü
+        if phone_number.data.startswith('+90') and len(phone_number.data) != 13:
+            raise ValidationError('Türkiye telefon numarası +90 ile başlayıp 13 haneli olmalıdır.')
+            
         member = CommunityMember.query.filter_by(phone_number=phone_number.data).first()
         if member:
             raise ValidationError('Bu telefon numarası zaten kayıtlı.')
+    
+    def validate_name(self, name):
+        # İsim sadece harf içermeli
+        if not all(c.isalpha() or c.isspace() for c in name.data):
+            raise ValidationError('İsim sadece harf ve boşluk içermelidir.')
+    
+    def validate_surname(self, surname):
+        # Soyisim sadece harf içermeli
+        if not all(c.isalpha() or c.isspace() for c in surname.data):
+            raise ValidationError('Soyisim sadece harf ve boşluk içermelidir.')

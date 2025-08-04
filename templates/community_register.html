@@ -2,190 +2,483 @@
 
 {% block title %}Topluluk Üyeliği Başvuru{% endblock %}
 
+{% block head_extra %}
+<style>
+    .unit-selection {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 15px;
+        margin-top: 10px;
+    }
+
+    .unit-card {
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+        padding: 15px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        background: #f8f9fa;
+    }
+
+    .unit-card:hover {
+        border-color: #007bff;
+        background: #e3f2fd;
+    }
+
+    .unit-card.selected {
+        border-color: #007bff;
+        background: #e3f2fd;
+        box-shadow: 0 0 10px rgba(0, 123, 255, 0.3);
+    }
+
+    .unit-card input[type="checkbox"] {
+        display: none;
+    }
+
+    .unit-card .unit-icon {
+        font-size: 2rem;
+        text-align: center;
+        margin-bottom: 10px;
+        color: #007bff;
+    }
+
+    .unit-card .unit-title {
+        font-weight: bold;
+        text-align: center;
+        color: #333;
+    }
+
+    .progress-bar {
+        height: 4px;
+        background: #e0e0e0;
+        margin: 20px 0;
+        border-radius: 2px;
+        overflow: hidden;
+    }
+
+    .progress-fill {
+        height: 100%;
+        background: linear-gradient(45deg, #007bff, #0056b3);
+        width: 0%;
+        transition: width 0.3s ease;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
 <div class="container mt-5">
     <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header bg-primary text-white">
-                    <h4 class="mb-0">Topluluk Üyeliği Başvuru Formu</h4>
+        <div class="col-md-10">
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-gradient text-white text-center"
+                    style="background: linear-gradient(45deg, #007bff, #0056b3);">
+                    <h3 class="mb-0">
+                        <i class="fas fa-users me-2"></i>Topluluk Üyeliği Başvuru Formu
+                    </h3>
+                    <p class="mb-0 small">Hacettepe Üniversitesi Anime ve Manga Topluluğu</p>
                 </div>
-                <div class="card-body">
-                    <p class="text-muted mb-4">
-                        Topluluk üyesi olarak forum ve etkinlik takvimlerine erişim kazanacaksınız.
-                        Başvurunuz admin onayı sonrası aktif olacaktır.
-                    </p>
 
-                    <form method="POST">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+
+                <div class="card-body p-4">
+                    <div class="alert alert-info d-flex align-items-center mb-4">
+                        <i class="fas fa-info-circle fa-2x me-3"></i>
+                        <div>
+                            <strong>Topluluk Üyesi Olmanın Avantajları:</strong><br>
+                            <small>
+                                • Forum ve etkinlik takvimlerine tam erişim<br>
+                                • Topluluk etkinliklerine katılım hakkı<br>
+                                • Proje ve birim çalışmalarına dahil olma<br>
+                                • Özel topluluk içeriklerine erişim
+                            </small>
+                        </div>
+                    </div>
+
+                    <form method="POST" id="communityForm">
                         {{ form.hidden_tag() }}
 
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                {{ form.email.label(class="form-label") }}
-                                {{ form.email(class="form-control") }}
-                                {% if form.email.errors %}
-                                <div class="text-danger">
-                                    {% for error in form.email.errors %}
-                                    <small>{{ error }}</small>
-                                    {% endfor %}
+                        <!-- Kişisel Bilgiler -->
+                        <div class="form-section mb-5">
+                            <h5 class="text-primary mb-3">
+                                <i class="fas fa-user me-2"></i>Kişisel Bilgiler
+                            </h5>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    {{ form.email.label(class="form-label") }}
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                                        {{ form.email(class="form-control", placeholder="ornek@hacettepe.edu.tr") }}
+                                    </div>
+                                    {% if form.email.errors %}
+                                    <div class="text-danger">
+                                        {% for error in form.email.errors %}
+                                        <small><i class="fas fa-exclamation-circle me-1"></i>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                    {% endif %}
                                 </div>
-                                {% endif %}
+
+                                <div class="col-md-3 mb-3">
+                                    {{ form.name.label(class="form-label") }}
+                                    {{ form.name(class="form-control", placeholder="Adınız") }}
+                                    {% if form.name.errors %}
+                                    <div class="text-danger">
+                                        {% for error in form.name.errors %}
+                                        <small><i class="fas fa-exclamation-circle me-1"></i>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="col-md-3 mb-3">
+                                    {{ form.surname.label(class="form-label") }}
+                                    {{ form.surname(class="form-control", placeholder="Soyadınız") }}
+                                    {% if form.surname.errors %}
+                                    <div class="text-danger">
+                                        {% for error in form.surname.errors %}
+                                        <small><i class="fas fa-exclamation-circle me-1"></i>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                    {% endif %}
+                                </div>
                             </div>
 
-                            <div class="col-md-3 mb-3">
-                                {{ form.name.label(class="form-label") }}
-                                {{ form.name(class="form-control") }}
-                                {% if form.name.errors %}
-                                <div class="text-danger">
-                                    {% for error in form.name.errors %}
-                                    <small>{{ error }}</small>
-                                    {% endfor %}
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    {{ form.place_of_birth.label(class="form-label") }}
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fas fa-map-marker-alt"></i></span>
+                                        {{ form.place_of_birth(class="form-control", placeholder="Doğum yeriniz") }}
+                                    </div>
+                                    {% if form.place_of_birth.errors %}
+                                    <div class="text-danger">
+                                        {% for error in form.place_of_birth.errors %}
+                                        <small><i class="fas fa-exclamation-circle me-1"></i>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                    {% endif %}
                                 </div>
-                                {% endif %}
+
+                                <div class="col-md-6 mb-3">
+                                    {{ form.date_of_birth.label(class="form-label") }}
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fas fa-calendar"></i></span>
+                                        {{ form.date_of_birth(class="form-control") }}
+                                    </div>
+                                    {% if form.date_of_birth.errors %}
+                                    <div class="text-danger">
+                                        {% for error in form.date_of_birth.errors %}
+                                        <small><i class="fas fa-exclamation-circle me-1"></i>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                    {% endif %}
+                                </div>
                             </div>
 
-                            <div class="col-md-3 mb-3">
-                                {{ form.surname.label(class="form-label") }}
-                                {{ form.surname(class="form-control") }}
-                                {% if form.surname.errors %}
-                                <div class="text-danger">
-                                    {% for error in form.surname.errors %}
-                                    <small>{{ error }}</small>
-                                    {% endfor %}
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    {{ form.current_residence.label(class="form-label") }}
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fas fa-home"></i></span>
+                                        {{ form.current_residence(class="form-control", placeholder="Mevcut adresiniz")
+                                        }}
+                                    </div>
+                                    {% if form.current_residence.errors %}
+                                    <div class="text-danger">
+                                        {% for error in form.current_residence.errors %}
+                                        <small><i class="fas fa-exclamation-circle me-1"></i>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                    {% endif %}
                                 </div>
-                                {% endif %}
-                            </div>
-                        </div>
 
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                {{ form.place_of_birth.label(class="form-label") }}
-                                {{ form.place_of_birth(class="form-control") }}
-                                {% if form.place_of_birth.errors %}
-                                <div class="text-danger">
-                                    {% for error in form.place_of_birth.errors %}
-                                    <small>{{ error }}</small>
-                                    {% endfor %}
+                                <div class="col-md-6 mb-3">
+                                    {{ form.phone_number.label(class="form-label") }}
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                                        {{ form.phone_number(class="form-control", placeholder="+905123456789") }}
+                                    </div>
+                                    {% if form.phone_number.errors %}
+                                    <div class="text-danger">
+                                        {% for error in form.phone_number.errors %}
+                                        <small><i class="fas fa-exclamation-circle me-1"></i>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                    {% endif %}
                                 </div>
-                                {% endif %}
-                            </div>
-
-                            <div class="col-md-6 mb-3">
-                                {{ form.date_of_birth.label(class="form-label") }}
-                                {{ form.date_of_birth(class="form-control") }}
-                                {% if form.date_of_birth.errors %}
-                                <div class="text-danger">
-                                    {% for error in form.date_of_birth.errors %}
-                                    <small>{{ error }}</small>
-                                    {% endfor %}
-                                </div>
-                                {% endif %}
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                {{ form.current_residence.label(class="form-label") }}
-                                {{ form.current_residence(class="form-control") }}
-                                {% if form.current_residence.errors %}
-                                <div class="text-danger">
-                                    {% for error in form.current_residence.errors %}
-                                    <small>{{ error }}</small>
-                                    {% endfor %}
-                                </div>
-                                {% endif %}
-                            </div>
-
-                            <div class="col-md-6 mb-3">
-                                {{ form.student_id.label(class="form-label") }}
-                                {{ form.student_id(class="form-control") }}
-                                {% if form.student_id.errors %}
-                                <div class="text-danger">
-                                    {% for error in form.student_id.errors %}
-                                    <small>{{ error }}</small>
-                                    {% endfor %}
-                                </div>
-                                {% endif %}
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                {{ form.phone_number.label(class="form-label") }}
-                                {{ form.phone_number(class="form-control") }}
-                                {% if form.phone_number.errors %}
-                                <div class="text-danger">
-                                    {% for error in form.phone_number.errors %}
-                                    <small>{{ error }}</small>
-                                    {% endfor %}
-                                </div>
-                                {% endif %}
-                            </div>
-
-                            <div class="col-md-6 mb-3">
-                                {{ form.student_class.label(class="form-label") }}
-                                {{ form.student_class(class="form-control") }}
-                                {% if form.student_class.errors %}
-                                <div class="text-danger">
-                                    {% for error in form.student_class.errors %}
-                                    <small>{{ error }}</small>
-                                    {% endfor %}
-                                </div>
-                                {% endif %}
                             </div>
                         </div>
 
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                {{ form.faculty.label(class="form-label") }}
-                                {{ form.faculty(class="form-control") }}
-                                {% if form.faculty.errors %}
-                                <div class="text-danger">
-                                    {% for error in form.faculty.errors %}
-                                    <small>{{ error }}</small>
-                                    {% endfor %}
+                        <!-- Akademik Bilgiler -->
+                        <div class="form-section mb-5">
+                            <h5 class="text-primary mb-3">
+                                <i class="fas fa-graduation-cap me-2"></i>Akademik Bilgiler
+                            </h5>
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    {{ form.student_id.label(class="form-label") }}
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fas fa-id-card"></i></span>
+                                        {{ form.student_id(class="form-control", placeholder="21xxxxxxx") }}
+                                    </div>
+                                    {% if form.student_id.errors %}
+                                    <div class="text-danger">
+                                        {% for error in form.student_id.errors %}
+                                        <small><i class="fas fa-exclamation-circle me-1"></i>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                    {% endif %}
                                 </div>
-                                {% endif %}
+
+                                <div class="col-md-4 mb-3">
+                                    {{ form.student_class.label(class="form-label") }}
+                                    {{ form.student_class(class="form-control", placeholder="1, 2, 3, 4, Yüksek
+                                    Lisans...") }}
+                                    {% if form.student_class.errors %}
+                                    <div class="text-danger">
+                                        {% for error in form.student_class.errors %}
+                                        <small><i class="fas fa-exclamation-circle me-1"></i>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="col-md-4 mb-3">
+                                    {{ form.faculty.label(class="form-label") }}
+                                    {{ form.faculty(class="form-control", placeholder="Mühendislik Fakültesi") }}
+                                    {% if form.faculty.errors %}
+                                    <div class="text-danger">
+                                        {% for error in form.faculty.errors %}
+                                        <small><i class="fas fa-exclamation-circle me-1"></i>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                    {% endif %}
+                                </div>
                             </div>
 
-                            <div class="col-md-6 mb-3">
-                                {{ form.department.label(class="form-label") }}
-                                {{ form.department(class="form-control") }}
-                                {% if form.department.errors %}
-                                <div class="text-danger">
-                                    {% for error in form.department.errors %}
-                                    <small>{{ error }}</small>
-                                    {% endfor %}
+                            <div class="row">
+                                <div class="col-md-12 mb-3">
+                                    {{ form.department.label(class="form-label") }}
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fas fa-university"></i></span>
+                                        {{ form.department(class="form-control", placeholder="Bilgisayar Mühendisliği")
+                                        }}
+                                    </div>
+                                    {% if form.department.errors %}
+                                    <div class="text-danger">
+                                        {% for error in form.department.errors %}
+                                        <small><i class="fas fa-exclamation-circle me-1"></i>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                    {% endif %}
                                 </div>
-                                {% endif %}
                             </div>
                         </div>
 
-                        <div class="mb-3">
-                            {{ form.preferred_units.label(class="form-label") }}
-                            <small class="text-muted d-block">Doldurulması zorunlu değildir, birden fazla seçim
-                                yapabilirsiniz</small>
-                            {{ form.preferred_units(class="form-select", multiple=True, size=5) }}
+                        <!-- Birim Seçimi -->
+                        <div class="form-section mb-5">
+                            <h5 class="text-primary mb-3">
+                                <i class="fas fa-users-cog me-2"></i>İlgilendiğiniz Birimler
+                            </h5>
+                            <p class="text-muted mb-3">
+                                <i class="fas fa-info-circle me-1"></i>
+                                Birden fazla birim seçebilirsiniz. Bu alan zorunlu değildir.
+                            </p>
+
+                            <div class="unit-selection">
+                                <div class="unit-card" data-value="drawing_unit">
+                                    <input type="checkbox" name="preferred_units" value="drawing_unit"
+                                        id="drawing_unit">
+                                    <div class="unit-icon">
+                                        <i class="fas fa-palette"></i>
+                                    </div>
+                                    <div class="unit-title">Çizim Birimi</div>
+                                    <div class="text-muted small text-center">Karakter tasarım, poster ve logo çizimleri
+                                    </div>
+                                </div>
+
+                                <div class="unit-card" data-value="cosplay_unit">
+                                    <input type="checkbox" name="preferred_units" value="cosplay_unit"
+                                        id="cosplay_unit">
+                                    <div class="unit-icon">
+                                        <i class="fas fa-mask"></i>
+                                    </div>
+                                    <div class="unit-title">Cosplay Birimi</div>
+                                    <div class="text-muted small text-center">Kostüm tasarım ve cosplay organizasyonu
+                                    </div>
+                                </div>
+
+                                <div class="unit-card" data-value="social_media_unit">
+                                    <input type="checkbox" name="preferred_units" value="social_media_unit"
+                                        id="social_media_unit">
+                                    <div class="unit-icon">
+                                        <i class="fas fa-share-alt"></i>
+                                    </div>
+                                    <div class="unit-title">Sosyal Medya Birimi</div>
+                                    <div class="text-muted small text-center">İçerik üretimi ve sosyal medya yönetimi
+                                    </div>
+                                </div>
+
+                                <div class="unit-card" data-value="translation_fansub">
+                                    <input type="checkbox" name="preferred_units" value="translation_fansub"
+                                        id="translation_fansub">
+                                    <div class="unit-icon">
+                                        <i class="fas fa-language"></i>
+                                    </div>
+                                    <div class="unit-title">Çeviri Birimi / Fansub</div>
+                                    <div class="text-muted small text-center">Anime/manga çeviri ve altyazı çalışmaları
+                                    </div>
+                                </div>
+
+                                <div class="unit-card" data-value="ninjutsu_unit">
+                                    <input type="checkbox" name="preferred_units" value="ninjutsu_unit"
+                                        id="ninjutsu_unit">
+                                    <div class="unit-icon">
+                                        <i class="fas fa-user-ninja"></i>
+                                    </div>
+                                    <div class="unit-title">Ninjutsu Birimi</div>
+                                    <div class="text-muted small text-center">Özel projeler ve teknoloji geliştirme
+                                    </div>
+                                </div>
+                            </div>
+
                             {% if form.preferred_units.errors %}
-                            <div class="text-danger">
+                            <div class="text-danger mt-2">
                                 {% for error in form.preferred_units.errors %}
-                                <small>{{ error }}</small>
+                                <small><i class="fas fa-exclamation-circle me-1"></i>{{ error }}</small>
                                 {% endfor %}
                             </div>
                             {% endif %}
                         </div>
 
                         <div class="d-grid gap-2">
-                            {{ form.submit(class="btn btn-primary") }}
+                            {{ form.submit(class="btn btn-primary btn-lg") }}
                         </div>
                     </form>
 
-                    <div class="mt-3 text-center">
-                        <a href="{{ url_for('register') }}" class="text-muted">Normal kayıt olmak istiyorum</a>
+                    <div class="mt-4 text-center">
+                        <a href="{{ url_for('register') }}" class="text-muted text-decoration-none">
+                            <i class="fas fa-arrow-left me-1"></i>Normal kayıt olmak istiyorum
+                        </a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+    // Unit selection functionality
+    document.querySelectorAll('.unit-card').forEach(card => {
+        card.addEventListener('click', function () {
+            const checkbox = this.querySelector('input[type="checkbox"]');
+            checkbox.checked = !checkbox.checked;
+
+            if (checkbox.checked) {
+                this.classList.add('selected');
+            } else {
+                this.classList.remove('selected');
+            }
+
+            updateProgress();
+        });
+    });
+
+    // Progress bar functionality
+    function updateProgress() {
+        const totalFields = document.querySelectorAll('input[required], select[required]').length;
+        const filledRequiredFields = Array.from(document.querySelectorAll('input[required], select[required]')).filter(field => {
+            return field.value && field.value.trim() !== '';
+        }).length;
+
+        const allFields = document.querySelectorAll('input:not([type="checkbox"]), select').length;
+        const filledAllFields = Array.from(document.querySelectorAll('input:not([type="checkbox"]), select')).filter(field => {
+            return field.value && field.value.trim() !== '';
+        }).length;
+
+        const percentage = (filledAllFields / allFields) * 100;
+        document.getElementById('progressFill').style.width = percentage + '%';
+    }
+
+    // Real-time validation
+    document.querySelectorAll('input, select').forEach(input => {
+        input.addEventListener('input', updateProgress);
+        input.addEventListener('change', updateProgress);
+    });
+
+    // Form validation
+    document.getElementById('communityForm').addEventListener('submit', function (e) {
+        const email = document.querySelector('input[name="email"]').value;
+        const phone = document.querySelector('input[name="phone_number"]').value;
+        const studentId = document.querySelector('input[name="student_id"]').value;
+        const name = document.querySelector('input[name="name"]').value;
+        const surname = document.querySelector('input[name="surname"]').value;
+
+        let errors = [];
+
+        // E-posta validasyonu
+        if (!email.includes('@') || !email.includes('.')) {
+            errors.push('Lütfen geçerli bir e-posta adresi girin.');
+        }
+
+        // Telefon validasyonu
+        if (!phone.startsWith('+')) {
+            errors.push('Telefon numarası ülke kodu ile başlamalıdır (örn: +905123456789)');
+        } else if (!/^\+\d{10,15}$/.test(phone)) {
+            errors.push('Telefon numarası geçerli formatta değil.');
+        }
+
+        // Öğrenci numarası validasyonu
+        if (!/^\d{7,10}$/.test(studentId)) {
+            errors.push('Öğrenci numarası 7-10 haneli rakam olmalıdır.');
+        }
+
+        // İsim validasyonu
+        if (!/^[a-zA-ZğĞıİöÖüÜşŞçÇ\s]+$/.test(name)) {
+            errors.push('İsim sadece harf ve boşluk içermelidir.');
+        }
+
+        // Soyisim validasyonu
+        if (!/^[a-zA-ZğĞıİöÖüÜşŞçÇ\s]+$/.test(surname)) {
+            errors.push('Soyisim sadece harf ve boşluk içermelidir.');
+        }
+
+        if (errors.length > 0) {
+            e.preventDefault();
+
+            // Hata mesajlarını göster
+            const errorHtml = errors.map(error => `<li>${error}</li>`).join('');
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'alert alert-danger mt-3';
+            errorDiv.innerHTML = `
+            <h6><i class="fas fa-exclamation-triangle"></i> Lütfen aşağıdaki hataları düzeltin:</h6>
+            <ul class="mb-0">${errorHtml}</ul>
+        `;
+
+            // Mevcut hata mesajını kaldır
+            const existingError = document.querySelector('.alert-danger');
+            if (existingError) {
+                existingError.remove();
+            }
+
+            // Forma hata mesajını ekle
+            this.appendChild(errorDiv);
+
+            // Sayfayı en üste kaydır
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            return false;
+        } else {
+            // Loading state
+            const submitBtn = this.querySelector('button[type="submit"]');
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Başvuru Gönderiliyor...';
+            submitBtn.disabled = true;
+        }
+    });
+
+    // Initialize progress
+    updateProgress();
+</script>
 {% endblock %}

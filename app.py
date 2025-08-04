@@ -93,12 +93,42 @@ def register():
         return redirect(url_for('index'))
     form = RegistrationForm()
     if form.validate_on_submit():
-        hashed_password = generate_password_hash(form.password.data, method='pbkdf2:sha256')
-        user = User(username=form.username.data, password=hashed_password)
-        db.session.add(user)
-        db.session.commit()
-        flash('Hesabınız oluşturuldu! Şimdi giriş yapabilirsiniz.', 'success')
-        return redirect(url_for('login'))
+        try:
+            # Mükerrer kayıt kontrolü (ek güvenlik)
+            existing_username = User.query.filter_by(username=form.username.data).first()
+            existing_email = User.query.filter_by(email=form.email.data).first()
+            
+            if existing_username:
+                flash('Bu kullanıcı adı zaten kullanılıyor.', 'error')
+                return render_template('register.html', title='Kayıt Ol', form=form)
+                
+            if existing_email:
+                flash('Bu e-posta adresi zaten kayıtlı.', 'error')
+                return render_template('register.html', title='Kayıt Ol', form=form)
+            
+            hashed_password = generate_password_hash(form.password.data, method='pbkdf2:sha256')
+            user = User(
+                username=form.username.data.strip().lower(),
+                email=form.email.data.strip().lower(),
+                password=hashed_password
+            )
+            db.session.add(user)
+            db.session.commit()
+            
+            flash('Hesabınız başarıyla oluşturuldu! Şimdi giriş yapabilirsiniz.', 'success')
+            return redirect(url_for('login'))
+            
+        except Exception as e:
+            db.session.rollback()
+            flash('Hesap oluşturulurken bir hata oluştu. Lütfen tekrar deneyin.', 'error')
+            app.logger.error(f"User registration error: {str(e)}")
+            
+    elif request.method == 'POST':
+        # Form validasyon hatalarını kullanıcıya göster
+        for field, errors in form.errors.items():
+            for error in errors:
+                flash(f'{getattr(form, field).label.text}: {error}', 'error')
+    
     return render_template('register.html', title='Kayıt Ol', form=form)
 
 @app.route('/community/register', methods=['GET', 'POST'])
@@ -107,27 +137,58 @@ def community_register():
         return redirect(url_for('index'))
     form = CommunityRegistrationForm()
     if form.validate_on_submit():
-        # Seçilen birimleri JSON string olarak kaydet
-        preferred_units = ','.join(form.preferred_units.data) if form.preferred_units.data else ''
-        
-        community_member = CommunityMember(
-            email=form.email.data,
-            name=form.name.data,
-            surname=form.surname.data,
-            place_of_birth=form.place_of_birth.data,
-            date_of_birth=form.date_of_birth.data,
-            current_residence=form.current_residence.data,
-            student_id=form.student_id.data,
-            phone_number=form.phone_number.data,
-            student_class=form.student_class.data,
-            faculty=form.faculty.data,
-            department=form.department.data,
-            preferred_units=preferred_units
-        )
-        db.session.add(community_member)
-        db.session.commit()
-        flash('Topluluk üyeliği başvurunuz alındı! Onaylandığında e-posta ile bilgilendirileceksiniz.', 'success')
-        return redirect(url_for('index'))
+        try:
+            # Seçilen birimleri JSON string olarak kaydet
+            preferred_units = ','.join(form.preferred_units.data) if form.preferred_units.data else ''
+            
+            # Mükerrer kayıt kontrolü (ek güvenlik)
+            existing_email = CommunityMember.query.filter_by(email=form.email.data).first()
+            existing_student_id = CommunityMember.query.filter_by(student_id=form.student_id.data).first()
+            existing_phone = CommunityMember.query.filter_by(phone_number=form.phone_number.data).first()
+            
+            if existing_email:
+                flash('Bu e-posta adresi zaten kayıtlı.', 'error')
+                return render_template('community_register.html', title='Topluluk Üyeliği Başvuru', form=form)
+            
+            if existing_student_id:
+                flash('Bu öğrenci numarası zaten kayıtlı.', 'error')
+                return render_template('community_register.html', title='Topluluk Üyeliği Başvuru', form=form)
+                
+            if existing_phone:
+                flash('Bu telefon numarası zaten kayıtlı.', 'error')
+                return render_template('community_register.html', title='Topluluk Üyeliği Başvuru', form=form)
+            
+            community_member = CommunityMember(
+                email=form.email.data.lower().strip(),
+                name=form.name.data.strip().title(),
+                surname=form.surname.data.strip().title(),
+                place_of_birth=form.place_of_birth.data.strip().title(),
+                date_of_birth=form.date_of_birth.data,
+                current_residence=form.current_residence.data.strip().title(),
+                student_id=form.student_id.data.strip(),
+                phone_number=form.phone_number.data.strip(),
+                student_class=form.student_class.data.strip(),
+                faculty=form.faculty.data.strip().title(),
+                department=form.department.data.strip().title(),
+                preferred_units=preferred_units
+            )
+            db.session.add(community_member)
+            db.session.commit()
+            
+            flash('Topluluk üyeliği başvurunuz başarıyla alındı! Başvurunuz incelendikten sonra giriş yapabileceksiniz.', 'success')
+            return redirect(url_for('index'))
+            
+        except Exception as e:
+            db.session.rollback()
+            flash('Başvuru gönderilirken bir hata oluştu. Lütfen tekrar deneyin.', 'error')
+            app.logger.error(f"Community registration error: {str(e)}")
+            
+    elif request.method == 'POST':
+        # Form validasyon hatalarını kullanıcıya göster
+        for field, errors in form.errors.items():
+            for error in errors:
+                flash(f'{getattr(form, field).label.text}: {error}', 'error')
+    
     return render_template('community_register.html', title='Topluluk Üyeliği Başvuru', form=form)
 
 @app.route('/')

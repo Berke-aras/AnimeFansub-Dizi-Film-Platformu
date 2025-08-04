@@ -96,15 +96,11 @@
                             {% for unit in member.preferred_units.split(',') %}
                             {% if unit %}
                             <span class="badge bg-secondary">
-                                {% if unit == 'anime_dubbing' %}Anime Dublaj
-                                {% elif unit == 'translation' %}Çeviri
-                                {% elif unit == 'editing' %}Editörlük
-                                {% elif unit == 'timing' %}Timing
-                                {% elif unit == 'quality_control' %}Kalite Kontrolü
-                                {% elif unit == 'social_media' %}Sosyal Medya
-                                {% elif unit == 'graphic_design' %}Grafik Tasarım
-                                {% elif unit == 'web_development' %}Web Geliştirme
-                                {% elif unit == 'project_management' %}Proje Yönetimi
+                                {% if unit == 'drawing_unit' %}Çizim Birimi
+                                {% elif unit == 'cosplay_unit' %}Cosplay Birimi
+                                {% elif unit == 'social_media_unit' %}Sosyal Medya Birimi
+                                {% elif unit == 'translation_fansub' %}Çeviri Birimi / Fansub
+                                {% elif unit == 'ninjutsu_unit' %}Ninjutsu Birimi
                                 {% else %}{{ unit }}
                                 {% endif %}
                             </span>

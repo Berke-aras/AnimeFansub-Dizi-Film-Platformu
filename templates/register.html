@@ -5,63 +5,259 @@
 <div class="container mt-5">
     <div class="row justify-content-center">
         <div class="col-md-6">
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="text-center">Kayıt Ol</h3>
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-primary text-white text-center">
+                    <h3 class="mb-0">
+                        <i class="fas fa-user-plus me-2"></i>Hesap Oluştur
+                    </h3>
+                    <p class="mb-0 small">Anime izleme deneyimine başlayın</p>
                 </div>
-                <div class="card-body">
+                <div class="card-body p-4">
                     <form method="POST" action="">
                         {{ form.hidden_tag() }}
-                        <div class="form-group">
-                            {{ form.username.label(class="form-control-label") }}
-                            {{ form.username(class="form-control") }}
+
+                        <div class="mb-3">
+                            {{ form.username.label(class="form-label") }}
+                            {{ form.username(class="form-control form-control-lg", placeholder="Kullanıcı adınızı
+                            girin") }}
                             {% if form.username.errors %}
                             <div class="invalid-feedback d-block">
                                 {% for error in form.username.errors %}
-                                <span>{{ error }}</span>
+                                <i class="fas fa-exclamation-circle me-1"></i>{{ error }}
                                 {% endfor %}
                             </div>
                             {% endif %}
                         </div>
-                        <div class="form-group">
-                            {{ form.password.label(class="form-control-label") }}
-                            {{ form.password(class="form-control") }}
+
+                        <div class="mb-3">
+                            {{ form.email.label(class="form-label") }}
+                            {{ form.email(class="form-control form-control-lg", placeholder="E-posta adresinizi girin")
+                            }}
+                            {% if form.email.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.email.errors %}
+                                <i class="fas fa-exclamation-circle me-1"></i>{{ error }}
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form.password.label(class="form-label") }}
+                            <div class="input-group">
+                                {{ form.password(class="form-control form-control-lg", placeholder="Güçlü bir şifre
+                                oluşturun", id="password") }}
+                                <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                                    <i class="fas fa-eye" id="passwordIcon"></i>
+                                </button>
+                            </div>
+                            <div class="form-text">Şifre en az 6 karakter, 1 büyük harf ve 1 küçük harf içermelidir.
+                            </div>
                             {% if form.password.errors %}
                             <div class="invalid-feedback d-block">
                                 {% for error in form.password.errors %}
-                                <span>{{ error }}</span>
+                                <i class="fas fa-exclamation-circle me-1"></i>{{ error }}
                                 {% endfor %}
                             </div>
                             {% endif %}
                         </div>
-                        <div class="form-group">
-                            {{ form.confirm_password.label(class="form-control-label") }}
-                            {{ form.confirm_password(class="form-control") }}
-                            {% if form.confirm_password.errors %}
+
+                        <div class="mb-4">
+                            {{ form.password2.label(class="form-label") }}
+                            {{ form.password2(class="form-control form-control-lg", placeholder="Şifrenizi tekrar
+                            girin") }}
+                            {% if form.password2.errors %}
                             <div class="invalid-feedback d-block">
-                                {% for error in form.confirm_password.errors %}
-                                <span>{{ error }}</span>
+                                {% for error in form.password2.errors %}
+                                <i class="fas fa-exclamation-circle me-1"></i>{{ error }}
                                 {% endfor %}
                             </div>
                             {% endif %}
                         </div>
-                        <div class="form-group">
-                            {{ form.submit(class="btn btn-primary btn-block") }}
+
+                        <div class="d-grid mb-3">
+                            {{ form.submit(class="btn btn-primary btn-lg") }}
                         </div>
                     </form>
                 </div>
-                <div class="card-footer text-center">
-                    <div class="mb-2">
-                        <a href="{{ url_for('community_register') }}" class="btn btn-outline-primary btn-sm">
-                            Topluluk Üyesi Olarak Kayıt Ol
+                <div class="card-footer text-center bg-light">
+                    <div class="mb-3">
+                        <a href="{{ url_for('community_register') }}" class="btn btn-outline-success">
+                            <i class="fas fa-users me-2"></i>Topluluk Üyesi Olarak Kayıt Ol
                         </a>
                     </div>
                     <small class="text-muted">
-                        Zaten bir hesabın var mı? <a href="{{ url_for('login') }}">Giriş Yap</a>
+                        Zaten bir hesabın var mı? <a href="{{ url_for('login') }}" class="text-decoration-none">Giriş
+                            Yap</a>
                     </small>
+                </div>
+            </div>
+
+            <!-- Info Cards -->
+            <div class="row mt-4">
+                <div class="col-md-6 mb-3">
+                    <div class="card h-100 border-0 bg-light">
+                        <div class="card-body text-center">
+                            <i class="fas fa-play-circle fa-2x text-primary mb-2"></i>
+                            <h6>Anime İzle</h6>
+                            <small class="text-muted">Animelerinizi listelere kaydedin.</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <div class="card h-100 border-0 bg-light">
+                        <div class="card-body text-center">
+                            <i class="fas fa-heart fa-2x text-danger mb-2"></i>
+                            <h6>İzleme Listesi</h6>
+                            <small class="text-muted">Favori animelerinizi kaydedin</small>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+    document.getElementById('togglePassword').addEventListener('click', function () {
+        const password = document.getElementById('password');
+        const icon = document.getElementById('passwordIcon');
+
+        if (password.type === 'password') {
+            password.type = 'text';
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+        } else {
+            password.type = 'password';
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+        }
+    });
+
+    // Form validation
+    document.querySelector('form').addEventListener('submit', function (e) {
+        const username = document.querySelector('input[name="username"]').value;
+        const email = document.querySelector('input[name="email"]').value;
+        const password = document.querySelector('input[name="password"]').value;
+        const password2 = document.querySelector('input[name="password2"]').value;
+
+        let errors = [];
+
+        // Kullanıcı adı validasyonu
+        if (!/^[a-zA-Z0-9_]+$/.test(username)) {
+            errors.push('Kullanıcı adı sadece harf, rakam ve alt çizgi (_) içermelidir.');
+        }
+
+        if (/^\d/.test(username)) {
+            errors.push('Kullanıcı adı rakamla başlayamaz.');
+        }
+
+        // E-posta validasyonu
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            errors.push('Geçerli bir e-posta adresi girin.');
+        }
+
+        // Şifre validasyonu
+        if (!/(?=.*[a-z])/.test(password)) {
+            errors.push('Şifre en az bir küçük harf içermelidir.');
+        }
+
+        if (!/(?=.*[A-Z])/.test(password)) {
+            errors.push('Şifre en az bir büyük harf içermelidir.');
+        }
+
+        if (!/(?=.*\d)/.test(password)) {
+            errors.push('Şifre en az bir rakam içermelidir.');
+        }
+
+        // Şifre eşleşme kontrolü
+        if (password !== password2) {
+            errors.push('Şifreler eşleşmiyor.');
+        }
+
+        if (errors.length > 0) {
+            e.preventDefault();
+
+            // Hata mesajlarını göster
+            const errorHtml = errors.map(error => `<li>${error}</li>`).join('');
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'alert alert-danger mt-3';
+            errorDiv.innerHTML = `
+                <h6><i class="fas fa-exclamation-triangle"></i> Lütfen aşağıdaki hataları düzeltin:</h6>
+                <ul class="mb-0">${errorHtml}</ul>
+            `;
+
+            // Mevcut hata mesajını kaldır
+            const existingError = document.querySelector('.alert-danger');
+            if (existingError) {
+                existingError.remove();
+            }
+
+            // Forma hata mesajını ekle
+            this.appendChild(errorDiv);
+
+            // Sayfayı en üste kaydır
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            return false;
+        } else {
+            // Loading state
+            const submitBtn = this.querySelector('button[type="submit"]');
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Kayıt Yapılıyor...';
+            submitBtn.disabled = true;
+        }
+    });
+
+    // Real-time password strength indicator
+    const passwordInput = document.querySelector('input[name="password"]');
+    if (passwordInput) {
+        const strengthIndicator = document.createElement('div');
+        strengthIndicator.className = 'password-strength mt-2';
+        strengthIndicator.innerHTML = `
+            <div class="d-flex justify-content-between">
+                <small class="text-muted">Şifre Gücü:</small>
+                <small class="strength-text text-muted">Zayıf</small>
+            </div>
+            <div class="progress" style="height: 4px;">
+                <div class="progress-bar strength-bar" style="width: 0%;"></div>
+            </div>
+        `;
+        passwordInput.parentNode.appendChild(strengthIndicator);
+
+        passwordInput.addEventListener('input', function () {
+            const password = this.value;
+            let strength = 0;
+            let strengthText = 'Zayıf';
+            let strengthColor = 'bg-danger';
+
+            // Şifre gücü hesaplama
+            if (password.length >= 6) strength++;
+            if (/[a-z]/.test(password)) strength++;
+            if (/[A-Z]/.test(password)) strength++;
+            if (/\d/.test(password)) strength++;
+            if (/[^a-zA-Z0-9]/.test(password)) strength++;
+
+            const percentage = (strength / 5) * 100;
+
+            if (strength >= 4) {
+                strengthText = 'Güçlü';
+                strengthColor = 'bg-success';
+            } else if (strength >= 3) {
+                strengthText = 'Orta';
+                strengthColor = 'bg-warning';
+            } else if (strength >= 2) {
+                strengthText = 'Zayıf';
+                strengthColor = 'bg-danger';
+            }
+
+            const strengthBar = document.querySelector('.strength-bar');
+            const strengthTextElement = document.querySelector('.strength-text');
+
+            strengthBar.style.width = percentage + '%';
+            strengthBar.className = `progress-bar ${strengthColor}`;
+            strengthTextElement.textContent = strengthText;
+            strengthTextElement.className = `strength-text ${strengthColor.replace('bg-', 'text-')}`;
+        });
+    }
+</script>
 {% endblock %}
