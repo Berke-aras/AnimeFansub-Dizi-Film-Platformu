@@ -3,6 +3,10 @@
 
 {% block title %}Etkinlikleri Yönet{% endblock %}
 
+{% block head_extra %}
+<script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
+{% endblock %}
+
 {% block content %}
 <div class="container mt-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
@@ -10,61 +14,83 @@
         <a href="{{ url_for('admin') }}" class="btn btn-secondary">Admin Paneline Dön</a>
     </div>
 
-    <div class="row">
-        <div class="col-md-8">
-            <div class="card shadow-sm">
-                <div class="card-header">
-                    <h4>Mevcut Etkinlikler</h4>
-                </div>
-                <div class="list-group list-group-flush">
-                    {% for item in all_events %}
-                        <div class="list-group-item d-flex justify-content-between align-items-center">
-                            <div>
-                                <strong>{{ item.title }}</strong>
-                                <small class="d-block text-muted">{{ item.start_time.strftime('%d-%m-%Y %H:%M') }}</small>
-                            </div>
-                            <div>
-                                <a href="{{ url_for('edit_event', event_id=item.id) }}" class="btn btn-sm btn-warning">Düzenle</a>
-                                <form action="{{ url_for('delete_event', event_id=item.id) }}" method="POST" class="d-inline" onsubmit="return confirm('Bu etkinliği silmek istediğinizden emin misiniz?');">
-                                    <button type="submit" class="btn btn-sm btn-danger">Sil</button>
-                                </form>
-                            </div>
-                        </div>
-                    {% else %}
-                        <div class="list-group-item">Henüz etkinlik yok.</div>
-                    {% endfor %}
-                </ul>
-            </div>
+    <div class="card shadow-sm mb-4">
+        <div class="card-header">
+            <h4>Yeni Etkinlik Ekle</h4>
         </div>
-        <div class="col-md-4">
-            <div class="card shadow-sm">
-                <div class="card-header">
-                    <h4>Yeni Etkinlik Ekle</h4>
+        <div class="card-body">
+            <form method="POST" action="{{ url_for('manage_events') }}">
+                {{ form.hidden_tag() }}
+                <div class="mb-3">
+                    {{ form.title.label(class="form-label") }}
+                    {{ form.title(class="form-control") }}
                 </div>
-                <div class="card-body">
-                    <form method="POST" action="{{ url_for('manage_events') }}">
-                        {{ form.hidden_tag() }}
-                        <div class="mb-3">
-                            {{ form.title.label(class="form-label") }}
-                            {{ form.title(class="form-control") }}
-                        </div>
-                        <div class="mb-3">
-                            {{ form.description.label(class="form-label") }}
-                            {{ form.description(class="form-control", rows=5) }}
-                        </div>
-                        <div class="mb-3">
-                            {{ form.start_time.label(class="form-label") }}
-                            {{ form.start_time(class="form-control", type="datetime-local") }}
-                        </div>
-                        <div class="mb-3">
-                            {{ form.end_time.label(class="form-label") }}
-                            {{ form.end_time(class="form-control", type="datetime-local") }}
-                        </div>
-                        {{ form.submit(class="btn btn-primary w-100") }}
-                    </form>
+                <div class="mb-3">
+                    {{ form.description.label(class="form-label") }}
+                    {{ form.description(class="form-control", id="editor") }}
                 </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        {{ form.start_time.label(class="form-label") }}
+                        {{ form.start_time(class="form-control", type="datetime-local") }}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        {{ form.end_time.label(class="form-label") }}
+                        {{ form.end_time(class="form-control", type="datetime-local") }}
+                    </div>
+                </div>
+                {{ form.submit(class="btn btn-primary w-100") }}
+            </form>
+        </div>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-header">
+            <h4>Mevcut Etkinlikler</h4>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead>
+                        <tr>
+                            <th>Başlık</th>
+                            <th>Başlangıç Zamanı</th>
+                            <th>Bitiş Zamanı</th>
+                            <th class="text-end">Eylemler</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in all_events %}
+                        <tr>
+                            <td>{{ item.title }}</td>
+                            <td>{{ item.start_time.strftime('%d-%m-%Y %H:%M') }}</td>
+                            <td>{{ item.end_time.strftime('%d-%m-%Y %H:%M') if item.end_time else 'Belirtilmemiş' }}</td>
+                            <td class="text-end">
+                                <a href="{{ url_for('edit_event', event_id=item.id) }}" class="btn btn-sm btn-warning">
+                                    <i class="fas fa-edit me-1"></i> Düzenle
+                                </a>
+                                <form action="{{ url_for('delete_event', event_id=item.id) }}" method="POST" class="d-inline" onsubmit="return confirm('Bu etkinliği silmek istediğinizden emin misiniz?');">
+                                    <button type="submit" class="btn btn-sm btn-danger">
+                                        <i class="fas fa-trash-alt me-1"></i> Sil
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="4" class="text-center">Henüz etkinlik yok.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    CKEDITOR.replace('editor');
+</script>
 {% endblock %}

@@ -3,10 +3,16 @@
 
 {% block title %}Etkinliği Düzenle{% endblock %}
 
+{% block head_extra %}
+<script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
+{% endblock %}
+
 {% block content %}
 <div class="container mt-5">
-    <h1>Etkinliği Düzenle</h1>
     <div class="card shadow-sm">
+        <div class="card-header">
+            <h1>Etkinliği Düzenle</h1>
+        </div>
         <div class="card-body">
             <form method="POST" action="{{ url_for('edit_event', event_id=event_item.id) }}">
                 {{ form.hidden_tag() }}
@@ -16,15 +22,17 @@
                 </div>
                 <div class="mb-3">
                     {{ form.description.label(class="form-label") }}
-                    {{ form.description(class="form-control", rows=5) }}
+                    {{ form.description(class="form-control", id="editor") }}
                 </div>
-                <div class="mb-3">
-                    {{ form.start_time.label(class="form-label") }}
-                    {{ form.start_time(class="form-control", type="datetime-local", value=event_item.start_time.strftime('%Y-%m-%dT%H:%M')) }}
-                </div>
-                <div class="mb-3">
-                    {{ form.end_time.label(class="form-label") }}
-                    {{ form.end_time(class="form-control", type="datetime-local", value=event_item.end_time.strftime('%Y-%m-%dT%H:%M') if event_item.end_time else '') }}
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        {{ form.start_time.label(class="form-label") }}
+                        {{ form.start_time(class="form-control", type="datetime-local", value=event_item.start_time.strftime('%Y-%m-%dT%H:%M')) }}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        {{ form.end_time.label(class="form-label") }}
+                        {{ form.end_time(class="form-control", type="datetime-local", value=event_item.end_time.strftime('%Y-%m-%dT%H:%M') if event_item.end_time else '') }}
+                    </div>
                 </div>
                 <button type="submit" class="btn btn-primary">Güncelle</button>
                 <a href="{{ url_for('manage_events') }}" class="btn btn-secondary">İptal</a>
@@ -32,4 +40,10 @@
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    CKEDITOR.replace('editor');
+</script>
 {% endblock %}

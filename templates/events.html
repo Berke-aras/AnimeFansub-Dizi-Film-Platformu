@@ -2,16 +2,49 @@
 
 {% block title %}Etkinlik Takvimi{% endblock %}
 
+{% block head_extra %}
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/events.css') }}?v=1.1">
+{% endblock %}
+
 {% block content %}
-<div class="container mt-5">
-    <div class="card shadow-sm">
-        <div class="card-header">
-            <h1 class="mb-0">Etkinlik Takvimi</h1>
-        </div>
-        <div class="card-body">
-            <div id="calendar"></div>
-        </div>
+<div class="container my-5">
+    <div id="calendar-wrapper">
+        <div id="calendar"></div>
     </div>
+</div>
+
+<!-- Event Details Modal -->
+<div class="modal fade" id="eventDetailModal" tabindex="-1" aria-labelledby="eventDetailModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="eventDetailModalLabel"><i class="fas fa-calendar-day me-2"></i>Etkinlik Detayı</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Kapat"></button>
+      </div>
+      <div class="modal-body">
+        <h4 id="eventTitle" class="mb-3"></h4>
+        <p id="eventDescription" class="mb-4"></p>
+        <div class="event-times">
+            <div class="time-block">
+                <i class="fas fa-hourglass-start"></i>
+                <div>
+                    <strong>Başlangıç</strong>
+                    <span id="eventStart"></span>
+                </div>
+            </div>
+            <div class="time-block">
+                <i class="fas fa-hourglass-end"></i>
+                <div>
+                    <strong>Bitiş</strong>
+                    <span id="eventEnd"></span>
+                </div>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 {% endblock %}
 
@@ -23,17 +56,38 @@
       themeSystem: 'bootstrap5',
       locale: 'tr',
       initialView: 'dayGridMonth',
+      height: 'auto',
+      aspectRatio: 1.8,
       events: '{{ url_for("api_events") }}',
       headerToolbar: {
         left: 'prev,next today',
         center: 'title',
-        right: 'dayGridMonth,timeGridWeek,timeGridDay'
+        right: 'dayGridMonth,timeGridWeek,listWeek'
+      },
+      buttonText: {
+        today:    'Bugün',
+        month:    'Ay',
+        week:     'Hafta',
+        day:      'Gün',
+        list:     'Liste'
       },
       eventClick: function(info) {
-        info.jsEvent.preventDefault(); // prevent browser navigation
-        if (info.event.url) {
-          window.open(info.event.url, "_self");
-        }
+        info.jsEvent.preventDefault();
+        var event = info.event;
+        document.getElementById('eventTitle').textContent = event.title;
+        document.getElementById('eventDescription').innerHTML = event.extendedProps.description || 'Açıklama yok.';
+        
+        const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+        document.getElementById('eventStart').textContent = event.start ? new Date(event.start).toLocaleString('tr-TR', options) : 'Belirtilmemiş';
+        document.getElementById('eventEnd').textContent = event.end ? new Date(event.end).toLocaleString('tr-TR', options) : 'Belirtilmemiş';
+
+        var modal = new bootstrap.Modal(document.getElementById('eventDetailModal'));
+        modal.show();
+      },
+      windowResize: function(view) {
+        if (window.innerWidth < 768) {
+            calendar.changeView('listWeek');
+        } 
       }
     });
     calendar.render();

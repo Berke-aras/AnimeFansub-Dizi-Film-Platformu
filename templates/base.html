@@ -32,6 +32,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}">
     <link rel="icon" href="{{ url_for('static', filename='images/ico.ico') }}" type="image/x-icon" />
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
+    {% block head_extra %}{% endblock %}
 </head>
 
 <body>

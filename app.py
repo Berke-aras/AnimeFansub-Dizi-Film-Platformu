@@ -569,8 +569,7 @@ def pin_news(news_id):
 
 @app.route('/events')
 def events():
-    event_list = Event.query.order_by(Event.start_time.asc()).all()
-    return render_template('events.html', event_list=event_list)
+    return render_template('events.html')
 
 @app.route('/admin/events', methods=['GET', 'POST'])
 @login_required
@@ -627,7 +626,8 @@ def api_events():
             'title': event.title,
             'start': event.start_time.isoformat(),
             'end': event.end_time.isoformat() if event.end_time else None,
-            'url': url_for('edit_event', event_id=event.id) # Etkinlik detayları için bir URL
+            'description': event.description,
+            'url': url_for('edit_event', event_id=event.id)
         })
     return jsonify(event_list)
 
