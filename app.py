@@ -103,7 +103,6 @@ def fansub_index():
     return render_template('fansub_index.html', hero_animes=hero_animes, editor_picks=editor_picks, personalized_recs=personalized_recs, latest_animes=latest_animes, random_animes=random_animes)
 
 @app.route('/community')
-@login_required
 def community_hub():
     info = CommunityInfo.query.first()
     latest_news = News.query.order_by(News.timestamp.desc()).limit(5).all()

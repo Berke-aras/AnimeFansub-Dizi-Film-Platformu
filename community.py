@@ -38,21 +38,18 @@ class ForumPost(db.Model):
 
 # --- Rotalar ---
 @community_bp.route('/')
-@login_required
 def index():
     categories = ForumCategory.query.all()
     info = CommunityInfo.query.first()
     return render_template('community_index.html', categories=categories, info=info)
 
 @community_bp.route('/category/<int:category_id>')
-@login_required
 def view_category(category_id):
     category = ForumCategory.query.get_or_404(category_id)
     threads = ForumThread.query.filter_by(category_id=category_id).order_by(ForumThread.timestamp.desc()).all()
     return render_template('community_category.html', category=category, threads=threads)
 
 @community_bp.route('/thread/<int:thread_id>')
-@login_required
 def view_thread(thread_id):
     thread = ForumThread.query.get_or_404(thread_id)
     posts = ForumPost.query.filter_by(thread_id=thread_id).order_by(ForumPost.timestamp.asc()).all()
