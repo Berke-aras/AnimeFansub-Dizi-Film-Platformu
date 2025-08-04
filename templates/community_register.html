@@ -4,31 +4,168 @@
 
 {% block head_extra %}
 <style>
+    :root {
+        --primary-color: #e50914;
+        --dark-color: #141414;
+        --light-dark-color: #1c1c1c;
+        --text-color: #f5f5f5;
+        --text-muted-color: #a0a0a0;
+        --apple-radius: 12px;
+        --apple-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        --success-color: #28a745;
+        --danger-color: #dc3545;
+        --warning-color: #ffc107;
+        --info-color: #17a2b8;
+    }
+
+    body {
+        background: linear-gradient(135deg, var(--dark-color) 0%, var(--light-dark-color) 100%);
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        min-height: 100vh;
+    }
+
+    .community-container {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    .community-card {
+        background: rgba(28, 28, 28, 0.95);
+        backdrop-filter: blur(20px);
+        border-radius: var(--apple-radius);
+        box-shadow: var(--apple-shadow);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        overflow: hidden;
+        margin-bottom: 20px;
+    }
+
+    .community-header {
+        background: linear-gradient(135deg, var(--primary-color), #ff1e30);
+        color: white;
+        padding: 40px 30px;
+        text-align: center;
+        border: none;
+    }
+
+    .community-header h3 {
+        font-size: 2rem;
+        font-weight: 600;
+        margin-bottom: 10px;
+        letter-spacing: -0.5px;
+    }
+
+    .community-header p {
+        opacity: 0.9;
+        font-size: 1rem;
+        margin: 0;
+    }
+
+    .community-body {
+        padding: 40px;
+    }
+
+    .form-section {
+        margin-bottom: 30px;
+        padding: 25px;
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .section-title {
+        color: var(--primary-color);
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid var(--primary-color);
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+        margin-bottom: 20px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: var(--text-color);
+        margin-bottom: 8px;
+        font-size: 0.95rem;
+    }
+
+    .form-control {
+        border: 2px solid rgba(255, 255, 255, 0.2);
+        border-radius: 10px;
+        padding: 12px 16px;
+        font-size: 1rem;
+        transition: all 0.2s ease;
+        background: rgba(255, 255, 255, 0.05);
+        color: var(--text-color);
+        box-shadow: none;
+        width: 100%;
+    }
+
+    .form-control:focus {
+        border-color: var(--primary-color);
+        background: rgba(255, 255, 255, 0.1);
+        box-shadow: 0 0 0 4px rgba(229, 9, 20, 0.2);
+        outline: none;
+        color: var(--text-color);
+    }
+
+    .form-control::placeholder {
+        color: var(--text-muted-color);
+    }
+
+    .form-control.is-invalid {
+        border-color: var(--danger-color);
+        background: rgba(220, 53, 69, 0.1);
+    }
+
+    .error-message {
+        color: var(--danger-color);
+        font-size: 0.85rem;
+        margin-top: 6px;
+        padding: 8px 12px;
+        background: rgba(220, 53, 69, 0.1);
+        border-radius: 8px;
+        border-left: 3px solid var(--danger-color);
+    }
+
     .unit-selection {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
         gap: 15px;
-        margin-top: 10px;
+        margin-top: 15px;
     }
 
     .unit-card {
-        border: 2px solid #e0e0e0;
-        border-radius: 10px;
-        padding: 15px;
+        border: 2px solid rgba(255, 255, 255, 0.2);
+        border-radius: 12px;
+        padding: 20px;
         cursor: pointer;
         transition: all 0.3s ease;
-        background: #f8f9fa;
+        background: rgba(255, 255, 255, 0.05);
+        text-align: center;
     }
 
     .unit-card:hover {
-        border-color: #007bff;
-        background: #e3f2fd;
+        border-color: var(--primary-color);
+        background: rgba(229, 9, 20, 0.1);
+        transform: translateY(-2px);
     }
 
     .unit-card.selected {
-        border-color: #007bff;
-        background: #e3f2fd;
-        box-shadow: 0 0 10px rgba(0, 123, 255, 0.3);
+        border-color: var(--primary-color);
+        background: rgba(229, 9, 20, 0.15);
+        box-shadow: 0 0 20px rgba(229, 9, 20, 0.3);
     }
 
     .unit-card input[type="checkbox"] {
@@ -36,556 +173,469 @@
     }
 
     .unit-card .unit-icon {
-        font-size: 2rem;
-        text-align: center;
-        margin-bottom: 10px;
-        color: #007bff;
+        font-size: 2.5rem;
+        margin-bottom: 15px;
+        color: var(--primary-color);
     }
 
     .unit-card .unit-title {
-        font-weight: bold;
+        font-weight: 600;
+        color: var(--text-color);
+        font-size: 1rem;
+        margin: 0;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, var(--primary-color), #ff1e30);
+        border: none;
+        border-radius: 10px;
+        padding: 14px 30px;
+        font-weight: 600;
+        font-size: 1rem;
+        box-shadow: 0 4px 15px rgba(229, 9, 20, 0.4);
+        transition: all 0.2s ease;
+        color: white;
+        min-width: 200px;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(229, 9, 20, 0.5);
+        background: linear-gradient(135deg, #ff1e30, var(--primary-color));
+    }
+
+    .btn-primary:active {
+        transform: translateY(0);
+    }
+
+    .info-alert {
+        background: rgba(23, 162, 184, 0.15);
+        border: 1px solid rgba(23, 162, 184, 0.3);
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 25px;
+        color: var(--text-color);
+    }
+
+    .info-alert h5 {
+        color: var(--info-color);
+        margin-bottom: 10px;
+    }
+
+    .login-link {
         text-align: center;
-        color: #333;
+        margin-top: 25px;
+        padding-top: 20px;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .login-link a {
+        color: var(--primary-color);
+        text-decoration: none;
+        font-weight: 500;
+    }
+
+    .login-link a:hover {
+        text-decoration: underline;
+        color: #ff1e30;
+    }
+
+    .login-link p {
+        color: var(--text-muted-color);
+        margin-bottom: 8px;
+    }
+
+    .flash-messages {
+        margin-bottom: 20px;
+    }
+
+    .alert {
+        border-radius: 10px;
+        border: none;
+        padding: 12px 16px;
+        margin-bottom: 10px;
+    }
+
+    .alert-success {
+        background: rgba(40, 167, 69, 0.2);
+        color: #28a745;
+        border-left: 3px solid var(--success-color);
+    }
+
+    .alert-danger, .alert-error {
+        background: rgba(220, 53, 69, 0.2);
+        color: var(--danger-color);
+        border-left: 3px solid var(--danger-color);
     }
 
     .progress-bar {
         height: 4px;
-        background: #e0e0e0;
-        margin: 20px 0;
-        border-radius: 2px;
+        background: rgba(255, 255, 255, 0.1);
+        margin-bottom: 0;
+        border-radius: 0;
         overflow: hidden;
     }
 
     .progress-fill {
         height: 100%;
-        background: linear-gradient(45deg, #007bff, #0056b3);
+        background: linear-gradient(45deg, var(--primary-color), #ff1e30);
         width: 0%;
         transition: width 0.3s ease;
+    }
+
+    /* Responsive design */
+    @media (max-width: 768px) {
+        .community-body {
+            padding: 20px;
+        }
+        
+        .form-section {
+            padding: 20px;
+        }
+        
+        .form-row {
+            grid-template-columns: 1fr;
+        }
+        
+        .unit-selection {
+            grid-template-columns: 1fr;
+        }
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-10">
-            <div class="card shadow-lg border-0">
-                <div class="card-header bg-gradient text-white text-center"
-                    style="background: linear-gradient(45deg, #007bff, #0056b3);">
-                    <h3 class="mb-0">
-                        <i class="fas fa-users me-2"></i>Topluluk Üyeliği Başvuru Formu
-                    </h3>
-                    <p class="mb-0 small">Hacettepe Üniversitesi Anime ve Manga Topluluğu</p>
-                </div>
-
-                <div class="progress-bar">
-                    <div class="progress-fill" id="progressFill"></div>
-                </div>
-
-                <div class="card-body p-4">
-                    <div class="alert alert-info d-flex align-items-center mb-4">
-                        <i class="fas fa-info-circle fa-2x me-3"></i>
-                        <div>
-                            <strong>Topluluk Üyesi Olmanın Avantajları:</strong><br>
-                            <small>
-                                • Forum ve etkinlik takvimlerine tam erişim<br>
-                                • Topluluk etkinliklerine katılım hakkı<br>
-                                • Proje ve birim çalışmalarına dahil olma<br>
-                                • Özel topluluk içeriklerine erişim
-                            </small>
-                        </div>
+<div class="community-container">
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-messages">
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ 'danger' if category == 'error' else category }}">
+                        <i class="fas fa-{{ 'check-circle' if category == 'success' else 'exclamation-triangle' }} me-2"></i>
+                        {{ message }}
                     </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
 
-                    <form method="POST" id="communityForm">
-                        {{ form.hidden_tag() }}
+    <div class="community-card">
+        <div class="community-header">
+            <h3>
+                <i class="fas fa-users me-2"></i>Topluluk Üyeliği Başvuru
+            </h3>
+            <p>Hacettepe Üniversitesi Anime ve Manga Topluluğu</p>
+        </div>
 
-                        <!-- Giriş Bilgileri -->
-                        <div class="form-section mb-5">
-                            <h5 class="text-primary mb-3">
-                                <i class="fas fa-key me-2"></i>Giriş Bilgileri
-                            </h5>
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    {{ form.username.label(class="form-label") }}
-                                    <div class="input-group">
-                                        <span class="input-group-text"><i class="fas fa-user"></i></span>
-                                        {{ form.username(class="form-control", placeholder="Kullanıcı adınızı girin") }}
-                                    </div>
-                                    {% if form.username.errors %}
-                                    <div class="text-danger">
-                                        {% for error in form.username.errors %}
-                                        <small><i class="fas fa-exclamation-circle me-1"></i>{{ error }}</small>
-                                        {% endfor %}
-                                    </div>
-                                    {% endif %}
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+
+        <div class="community-body">
+            <div class="info-alert">
+                <h5><i class="fas fa-star me-2"></i>Topluluk Üyesi Olmanın Avantajları</h5>
+                <ul class="mb-0">
+                    <li>Forum ve etkinlik takvimlerine tam erişim</li>
+                    <li>Topluluk etkinliklerine katılım hakkı</li>
+                    <li>Proje ve birim çalışmalarına dahil olma</li>
+                    <li>Özel topluluk içeriklerine erişim</li>
+                </ul>
+            </div>
+
+            <form method="POST" id="communityForm">
+                {{ form.hidden_tag() }}
+
+                <!-- Giriş Bilgileri -->
+                <div class="form-section">
+                    <h4 class="section-title"><i class="fas fa-key me-2"></i>Giriş Bilgileri</h4>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            {{ form.username.label(class="form-label") }}
+                            {{ form.username(class="form-control" + (" is-invalid" if form.username.errors else ""), placeholder="Kullanıcı adınızı belirleyin") }}
+                            {% if form.username.errors %}
+                                <div class="error-message">
+                                    {% for error in form.username.errors %}
+                                        <i class="fas fa-exclamation-circle me-1"></i>{{ error }}
+                                    {% endfor %}
                                 </div>
-
-                                <div class="col-md-3 mb-3">
-                                    {{ form.password.label(class="form-label") }}
-                                    <div class="input-group">
-                                        {{ form.password(class="form-control", placeholder="Güçlü bir şifre oluşturun")
-                                        }}
-                                        <button class="btn btn-outline-secondary" type="button"
-                                            onclick="togglePassword('password')">
-                                            <i class="fas fa-eye"></i>
-                                        </button>
-                                    </div>
-                                    {% if form.password.errors %}
-                                    <div class="text-danger">
-                                        {% for error in form.password.errors %}
-                                        <small><i class="fas fa-exclamation-circle me-1"></i>{{ error }}</small>
-                                        {% endfor %}
-                                    </div>
-                                    {% endif %}
-                                </div>
-
-                                <div class="col-md-3 mb-3">
-                                    {{ form.password2.label(class="form-label") }}
-                                    <div class="input-group">
-                                        {{ form.password2(class="form-control", placeholder="Şifrenizi tekrar girin") }}
-                                        <button class="btn btn-outline-secondary" type="button"
-                                            onclick="togglePassword('password2')">
-                                            <i class="fas fa-eye"></i>
-                                        </button>
-                                    </div>
-                                    {% if form.password2.errors %}
-                                    <div class="text-danger">
-                                        {% for error in form.password2.errors %}
-                                        <small><i class="fas fa-exclamation-circle me-1"></i>{{ error }}</small>
-                                        {% endfor %}
-                                    </div>
-                                    {% endif %}
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Kişisel Bilgiler -->
-                        <div class="form-section mb-5">
-                            <h5 class="text-primary mb-3">
-                                <i class="fas fa-user me-2"></i>Kişisel Bilgiler
-                            </h5>
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    {{ form.email.label(class="form-label") }}
-                                    <div class="input-group">
-                                        <span class="input-group-text"><i class="fas fa-envelope"></i></span>
-                                        {{ form.email(class="form-control", placeholder="ornek@hacettepe.edu.tr") }}
-                                    </div>
-                                    {% if form.email.errors %}
-                                    <div class="text-danger">
-                                        {% for error in form.email.errors %}
-                                        <small><i class="fas fa-exclamation-circle me-1"></i>{{ error }}</small>
-                                        {% endfor %}
-                                    </div>
-                                    {% endif %}
-                                </div>
-
-                                <div class="col-md-3 mb-3">
-                                    {{ form.name.label(class="form-label") }}
-                                    {{ form.name(class="form-control", placeholder="Adınız") }}
-                                    {% if form.name.errors %}
-                                    <div class="text-danger">
-                                        {% for error in form.name.errors %}
-                                        <small><i class="fas fa-exclamation-circle me-1"></i>{{ error }}</small>
-                                        {% endfor %}
-                                    </div>
-                                    {% endif %}
-                                </div>
-
-                                <div class="col-md-3 mb-3">
-                                    {{ form.surname.label(class="form-label") }}
-                                    {{ form.surname(class="form-control", placeholder="Soyadınız") }}
-                                    {% if form.surname.errors %}
-                                    <div class="text-danger">
-                                        {% for error in form.surname.errors %}
-                                        <small><i class="fas fa-exclamation-circle me-1"></i>{{ error }}</small>
-                                        {% endfor %}
-                                    </div>
-                                    {% endif %}
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    {{ form.place_of_birth.label(class="form-label") }}
-                                    <div class="input-group">
-                                        <span class="input-group-text"><i class="fas fa-map-marker-alt"></i></span>
-                                        {{ form.place_of_birth(class="form-control", placeholder="Doğum yeriniz") }}
-                                    </div>
-                                    {% if form.place_of_birth.errors %}
-                                    <div class="text-danger">
-                                        {% for error in form.place_of_birth.errors %}
-                                        <small><i class="fas fa-exclamation-circle me-1"></i>{{ error }}</small>
-                                        {% endfor %}
-                                    </div>
-                                    {% endif %}
-                                </div>
-
-                                <div class="col-md-6 mb-3">
-                                    {{ form.date_of_birth.label(class="form-label") }}
-                                    <div class="input-group">
-                                        <span class="input-group-text"><i class="fas fa-calendar"></i></span>
-                                        {{ form.date_of_birth(class="form-control") }}
-                                    </div>
-                                    {% if form.date_of_birth.errors %}
-                                    <div class="text-danger">
-                                        {% for error in form.date_of_birth.errors %}
-                                        <small><i class="fas fa-exclamation-circle me-1"></i>{{ error }}</small>
-                                        {% endfor %}
-                                    </div>
-                                    {% endif %}
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    {{ form.current_residence.label(class="form-label") }}
-                                    <div class="input-group">
-                                        <span class="input-group-text"><i class="fas fa-home"></i></span>
-                                        {{ form.current_residence(class="form-control", placeholder="Mevcut adresiniz")
-                                        }}
-                                    </div>
-                                    {% if form.current_residence.errors %}
-                                    <div class="text-danger">
-                                        {% for error in form.current_residence.errors %}
-                                        <small><i class="fas fa-exclamation-circle me-1"></i>{{ error }}</small>
-                                        {% endfor %}
-                                    </div>
-                                    {% endif %}
-                                </div>
-
-                                <div class="col-md-6 mb-3">
-                                    {{ form.phone_number.label(class="form-label") }}
-                                    <div class="input-group">
-                                        <span class="input-group-text"><i class="fas fa-phone"></i></span>
-                                        {{ form.phone_number(class="form-control", placeholder="+905123456789") }}
-                                    </div>
-                                    {% if form.phone_number.errors %}
-                                    <div class="text-danger">
-                                        {% for error in form.phone_number.errors %}
-                                        <small><i class="fas fa-exclamation-circle me-1"></i>{{ error }}</small>
-                                        {% endfor %}
-                                    </div>
-                                    {% endif %}
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Akademik Bilgiler -->
-                        <div class="form-section mb-5">
-                            <h5 class="text-primary mb-3">
-                                <i class="fas fa-graduation-cap me-2"></i>Akademik Bilgiler
-                            </h5>
-                            <div class="row">
-                                <div class="col-md-4 mb-3">
-                                    {{ form.student_id.label(class="form-label") }}
-                                    <div class="input-group">
-                                        <span class="input-group-text"><i class="fas fa-id-card"></i></span>
-                                        {{ form.student_id(class="form-control", placeholder="21xxxxxxx") }}
-                                    </div>
-                                    {% if form.student_id.errors %}
-                                    <div class="text-danger">
-                                        {% for error in form.student_id.errors %}
-                                        <small><i class="fas fa-exclamation-circle me-1"></i>{{ error }}</small>
-                                        {% endfor %}
-                                    </div>
-                                    {% endif %}
-                                </div>
-
-                                <div class="col-md-4 mb-3">
-                                    {{ form.student_class.label(class="form-label") }}
-                                    {{ form.student_class(class="form-control", placeholder="1, 2, 3, 4, Yüksek
-                                    Lisans...") }}
-                                    {% if form.student_class.errors %}
-                                    <div class="text-danger">
-                                        {% for error in form.student_class.errors %}
-                                        <small><i class="fas fa-exclamation-circle me-1"></i>{{ error }}</small>
-                                        {% endfor %}
-                                    </div>
-                                    {% endif %}
-                                </div>
-
-                                <div class="col-md-4 mb-3">
-                                    {{ form.faculty.label(class="form-label") }}
-                                    {{ form.faculty(class="form-control", placeholder="Mühendislik Fakültesi") }}
-                                    {% if form.faculty.errors %}
-                                    <div class="text-danger">
-                                        {% for error in form.faculty.errors %}
-                                        <small><i class="fas fa-exclamation-circle me-1"></i>{{ error }}</small>
-                                        {% endfor %}
-                                    </div>
-                                    {% endif %}
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-12 mb-3">
-                                    {{ form.department.label(class="form-label") }}
-                                    <div class="input-group">
-                                        <span class="input-group-text"><i class="fas fa-university"></i></span>
-                                        {{ form.department(class="form-control", placeholder="Bilgisayar Mühendisliği")
-                                        }}
-                                    </div>
-                                    {% if form.department.errors %}
-                                    <div class="text-danger">
-                                        {% for error in form.department.errors %}
-                                        <small><i class="fas fa-exclamation-circle me-1"></i>{{ error }}</small>
-                                        {% endfor %}
-                                    </div>
-                                    {% endif %}
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Birim Seçimi -->
-                        <div class="form-section mb-5">
-                            <h5 class="text-primary mb-3">
-                                <i class="fas fa-users-cog me-2"></i>İlgilendiğiniz Birimler
-                            </h5>
-                            <p class="text-muted mb-3">
-                                <i class="fas fa-info-circle me-1"></i>
-                                Birden fazla birim seçebilirsiniz. Bu alan zorunlu değildir.
-                            </p>
-
-                            <div class="unit-selection">
-                                <div class="unit-card" data-value="drawing_unit">
-                                    <input type="checkbox" name="preferred_units" value="drawing_unit"
-                                        id="drawing_unit">
-                                    <div class="unit-icon">
-                                        <i class="fas fa-palette"></i>
-                                    </div>
-                                    <div class="unit-title">Çizim Birimi</div>
-                                    <div class="text-muted small text-center">Karakter tasarım, poster ve logo çizimleri
-                                    </div>
-                                </div>
-
-                                <div class="unit-card" data-value="cosplay_unit">
-                                    <input type="checkbox" name="preferred_units" value="cosplay_unit"
-                                        id="cosplay_unit">
-                                    <div class="unit-icon">
-                                        <i class="fas fa-mask"></i>
-                                    </div>
-                                    <div class="unit-title">Cosplay Birimi</div>
-                                    <div class="text-muted small text-center">Kostüm tasarım ve cosplay organizasyonu
-                                    </div>
-                                </div>
-
-                                <div class="unit-card" data-value="social_media_unit">
-                                    <input type="checkbox" name="preferred_units" value="social_media_unit"
-                                        id="social_media_unit">
-                                    <div class="unit-icon">
-                                        <i class="fas fa-share-alt"></i>
-                                    </div>
-                                    <div class="unit-title">Sosyal Medya Birimi</div>
-                                    <div class="text-muted small text-center">İçerik üretimi ve sosyal medya yönetimi
-                                    </div>
-                                </div>
-
-                                <div class="unit-card" data-value="translation_fansub">
-                                    <input type="checkbox" name="preferred_units" value="translation_fansub"
-                                        id="translation_fansub">
-                                    <div class="unit-icon">
-                                        <i class="fas fa-language"></i>
-                                    </div>
-                                    <div class="unit-title">Çeviri Birimi / Fansub</div>
-                                    <div class="text-muted small text-center">Anime/manga çeviri ve altyazı çalışmaları
-                                    </div>
-                                </div>
-
-                                <div class="unit-card" data-value="ninjutsu_unit">
-                                    <input type="checkbox" name="preferred_units" value="ninjutsu_unit"
-                                        id="ninjutsu_unit">
-                                    <div class="unit-icon">
-                                        <i class="fas fa-user-ninja"></i>
-                                    </div>
-                                    <div class="unit-title">Ninjutsu Birimi</div>
-                                    <div class="text-muted small text-center">Özel projeler ve teknoloji geliştirme
-                                    </div>
-                                </div>
-                            </div>
-
-                            {% if form.preferred_units.errors %}
-                            <div class="text-danger mt-2">
-                                {% for error in form.preferred_units.errors %}
-                                <small><i class="fas fa-exclamation-circle me-1"></i>{{ error }}</small>
-                                {% endfor %}
-                            </div>
                             {% endif %}
                         </div>
-
-                        <div class="d-grid gap-2">
-                            {{ form.submit(class="btn btn-primary btn-lg") }}
+                        
+                        <div class="form-group">
+                            {{ form.email.label(class="form-label") }}
+                            {{ form.email(class="form-control" + (" is-invalid" if form.email.errors else ""), placeholder="E-posta adresinizi girin") }}
+                            {% if form.email.errors %}
+                                <div class="error-message">
+                                    {% for error in form.email.errors %}
+                                        <i class="fas fa-exclamation-circle me-1"></i>{{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
                         </div>
-                    </form>
+                    </div>
 
-                    <div class="mt-4 text-center">
-                        <a href="{{ url_for('register') }}" class="text-muted text-decoration-none">
-                            <i class="fas fa-arrow-left me-1"></i>Normal kayıt olmak istiyorum
-                        </a>
+                    <div class="form-row">
+                        <div class="form-group">
+                            {{ form.password.label(class="form-label") }}
+                            {{ form.password(class="form-control" + (" is-invalid" if form.password.errors else ""), placeholder="Güçlü bir şifre oluşturun") }}
+                            {% if form.password.errors %}
+                                <div class="error-message">
+                                    {% for error in form.password.errors %}
+                                        <i class="fas fa-exclamation-circle me-1"></i>{{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="form-group">
+                            {{ form.password2.label(class="form-label") }}
+                            {{ form.password2(class="form-control" + (" is-invalid" if form.password2.errors else ""), placeholder="Şifrenizi tekrar girin") }}
+                            {% if form.password2.errors %}
+                                <div class="error-message">
+                                    {% for error in form.password2.errors %}
+                                        <i class="fas fa-exclamation-circle me-1"></i>{{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
                     </div>
                 </div>
+
+                <!-- Kişisel Bilgiler -->
+                <div class="form-section">
+                    <h4 class="section-title"><i class="fas fa-user me-2"></i>Kişisel Bilgiler</h4>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            {{ form.name.label(class="form-label") }}
+                            {{ form.name(class="form-control" + (" is-invalid" if form.name.errors else ""), placeholder="Adınızı girin") }}
+                            {% if form.name.errors %}
+                                <div class="error-message">
+                                    {% for error in form.name.errors %}
+                                        <i class="fas fa-exclamation-circle me-1"></i>{{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="form-group">
+                            {{ form.surname.label(class="form-label") }}
+                            {{ form.surname(class="form-control" + (" is-invalid" if form.surname.errors else ""), placeholder="Soyadınızı girin") }}
+                            {% if form.surname.errors %}
+                                <div class="error-message">
+                                    {% for error in form.surname.errors %}
+                                        <i class="fas fa-exclamation-circle me-1"></i>{{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            {{ form.place_of_birth.label(class="form-label") }}
+                            {{ form.place_of_birth(class="form-control" + (" is-invalid" if form.place_of_birth.errors else ""), placeholder="Doğum yerinizi girin") }}
+                            {% if form.place_of_birth.errors %}
+                                <div class="error-message">
+                                    {% for error in form.place_of_birth.errors %}
+                                        <i class="fas fa-exclamation-circle me-1"></i>{{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="form-group">
+                            {{ form.date_of_birth.label(class="form-label") }}
+                            {{ form.date_of_birth(class="form-control" + (" is-invalid" if form.date_of_birth.errors else "")) }}
+                            {% if form.date_of_birth.errors %}
+                                <div class="error-message">
+                                    {% for error in form.date_of_birth.errors %}
+                                        <i class="fas fa-exclamation-circle me-1"></i>{{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        {{ form.current_residence.label(class="form-label") }}
+                        {{ form.current_residence(class="form-control" + (" is-invalid" if form.current_residence.errors else ""), placeholder="Mevcut adresinizi girin") }}
+                        {% if form.current_residence.errors %}
+                            <div class="error-message">
+                                {% for error in form.current_residence.errors %}
+                                    <i class="fas fa-exclamation-circle me-1"></i>{{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Akademik Bilgiler -->
+                <div class="form-section">
+                    <h4 class="section-title"><i class="fas fa-graduation-cap me-2"></i>Akademik Bilgiler</h4>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            {{ form.student_id.label(class="form-label") }}
+                            {{ form.student_id(class="form-control" + (" is-invalid" if form.student_id.errors else ""), placeholder="Öğrenci numaranızı girin") }}
+                            {% if form.student_id.errors %}
+                                <div class="error-message">
+                                    {% for error in form.student_id.errors %}
+                                        <i class="fas fa-exclamation-circle me-1"></i>{{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="form-group">
+                            {{ form.phone_number.label(class="form-label") }}
+                            {{ form.phone_number(class="form-control" + (" is-invalid" if form.phone_number.errors else ""), placeholder="+905123456789") }}
+                            {% if form.phone_number.errors %}
+                                <div class="error-message">
+                                    {% for error in form.phone_number.errors %}
+                                        <i class="fas fa-exclamation-circle me-1"></i>{{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            {{ form.student_class.label(class="form-label") }}
+                            {{ form.student_class(class="form-control" + (" is-invalid" if form.student_class.errors else ""), placeholder="Sınıfınızı girin") }}
+                            {% if form.student_class.errors %}
+                                <div class="error-message">
+                                    {% for error in form.student_class.errors %}
+                                        <i class="fas fa-exclamation-circle me-1"></i>{{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="form-group">
+                            {{ form.faculty.label(class="form-label") }}
+                            {{ form.faculty(class="form-control" + (" is-invalid" if form.faculty.errors else ""), placeholder="Fakültenizi girin") }}
+                            {% if form.faculty.errors %}
+                                <div class="error-message">
+                                    {% for error in form.faculty.errors %}
+                                        <i class="fas fa-exclamation-circle me-1"></i>{{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        {{ form.department.label(class="form-label") }}
+                        {{ form.department(class="form-control" + (" is-invalid" if form.department.errors else ""), placeholder="Bölümünüzü girin") }}
+                        {% if form.department.errors %}
+                            <div class="error-message">
+                                {% for error in form.department.errors %}
+                                    <i class="fas fa-exclamation-circle me-1"></i>{{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Birim Seçimi -->
+                <div class="form-section">
+                    <h4 class="section-title"><i class="fas fa-users-cog me-2"></i>İlgilendiğiniz Birimler</h4>
+                    <p style="color: var(--text-muted-color); margin-bottom: 15px;">
+                        Katılmak istediğiniz birimleri seçin (birden fazla seçebilirsiniz):
+                    </p>
+                    
+                    <div class="unit-selection">
+                        {% for choice in form.preferred_units.choices %}
+                            <div class="unit-card" data-unit="{{ choice[0] }}">
+                                <input type="checkbox" name="preferred_units" value="{{ choice[0] }}" id="unit_{{ choice[0] }}">
+                                <div class="unit-icon">
+                                    {% if choice[0] == 'drawing_unit' %}
+                                        <i class="fas fa-paint-brush"></i>
+                                    {% elif choice[0] == 'cosplay_unit' %}
+                                        <i class="fas fa-mask"></i>
+                                    {% elif choice[0] == 'social_media_unit' %}
+                                        <i class="fas fa-share-alt"></i>
+                                    {% elif choice[0] == 'translation_fansub' %}
+                                        <i class="fas fa-language"></i>
+                                    {% elif choice[0] == 'ninjutsu_unit' %}
+                                        <i class="fas fa-fist-raised"></i>
+                                    {% endif %}
+                                </div>
+                                <h5 class="unit-title">{{ choice[1] }}</h5>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div style="text-align: center; margin-top: 30px;">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-paper-plane me-2"></i>Başvuru Gönder
+                    </button>
+                </div>
+            </form>
+
+            <div class="login-link">
+                <p>Zaten hesabınız var mı? 
+                    <a href="{{ url_for('login') }}">Giriş yapın</a>
+                </p>
+                <p>
+                    <a href="{{ url_for('register') }}">Normal kullanıcı olarak kayıt ol</a>
+                </p>
             </div>
         </div>
     </div>
 </div>
 
 <script>
-    // Password toggle functionality
-    function togglePassword(fieldName) {
-        const field = document.querySelector(`input[name="${fieldName}"]`);
-        const button = field.nextElementSibling;
-        const icon = button.querySelector('i');
-
-        if (field.type === 'password') {
-            field.type = 'text';
-            icon.classList.remove('fa-eye');
-            icon.classList.add('fa-eye-slash');
-        } else {
-            field.type = 'password';
-            icon.classList.remove('fa-eye-slash');
-            icon.classList.add('fa-eye');
-        }
-    }
-
-    // Unit selection functionality
-    document.querySelectorAll('.unit-card').forEach(card => {
-        card.addEventListener('click', function () {
-            const checkbox = this.querySelector('input[type="checkbox"]');
-            checkbox.checked = !checkbox.checked;
-
-            if (checkbox.checked) {
-                this.classList.add('selected');
-            } else {
-                this.classList.remove('selected');
-            }
-
-            updateProgress();
-        });
-    });
-
-    // Progress bar functionality
+// Form progress tracking
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('communityForm');
+    const progressFill = document.getElementById('progressFill');
+    const inputs = form.querySelectorAll('input[required], select[required], textarea[required]');
+    
     function updateProgress() {
-        const totalFields = document.querySelectorAll('input[required], select[required]').length;
-        const filledRequiredFields = Array.from(document.querySelectorAll('input[required], select[required]')).filter(field => {
-            return field.value && field.value.trim() !== '';
-        }).length;
-
-        const allFields = document.querySelectorAll('input:not([type="checkbox"]), select').length;
-        const filledAllFields = Array.from(document.querySelectorAll('input:not([type="checkbox"]), select')).filter(field => {
-            return field.value && field.value.trim() !== '';
-        }).length;
-
-        const percentage = (filledAllFields / allFields) * 100;
-        document.getElementById('progressFill').style.width = percentage + '%';
+        let filled = 0;
+        inputs.forEach(input => {
+            if (input.value.trim() !== '') {
+                filled++;
+            }
+        });
+        
+        const percentage = (filled / inputs.length) * 100;
+        progressFill.style.width = percentage + '%';
     }
-
-    // Real-time validation
-    document.querySelectorAll('input, select').forEach(input => {
+    
+    inputs.forEach(input => {
         input.addEventListener('input', updateProgress);
         input.addEventListener('change', updateProgress);
     });
+    
+    updateProgress();
+});
 
-    // Form validation
-    document.getElementById('communityForm').addEventListener('submit', function (e) {
-        const username = document.querySelector('input[name="username"]').value;
-        const password = document.querySelector('input[name="password"]').value;
-        const password2 = document.querySelector('input[name="password2"]').value;
-        const email = document.querySelector('input[name="email"]').value;
-        const phone = document.querySelector('input[name="phone_number"]').value;
-        const studentId = document.querySelector('input[name="student_id"]').value;
-        const name = document.querySelector('input[name="name"]').value;
-        const surname = document.querySelector('input[name="surname"]').value;
-
-        let errors = [];
-
-        // Kullanıcı adı validasyonu
-        if (!/^[a-zA-Z0-9_]+$/.test(username)) {
-            errors.push('Kullanıcı adı sadece harf, rakam ve alt çizgi (_) içermelidir.');
-        }
-
-        if (/^\d/.test(username)) {
-            errors.push('Kullanıcı adı rakamla başlayamaz.');
-        }
-
-        // Şifre validasyonu
-        if (!/(?=.*[a-z])/.test(password)) {
-            errors.push('Şifre en az bir küçük harf içermelidir.');
-        }
-
-        if (!/(?=.*[A-Z])/.test(password)) {
-            errors.push('Şifre en az bir büyük harf içermelidir.');
-        }
-
-        if (!/(?=.*\d)/.test(password)) {
-            errors.push('Şifre en az bir rakam içermelidir.');
-        }
-
-        // Şifre eşleşme kontrolü
-        if (password !== password2) {
-            errors.push('Şifreler eşleşmiyor.');
-        }
-
-        // E-posta validasyonu
-        if (!email.includes('@') || !email.includes('.')) {
-            errors.push('Lütfen geçerli bir e-posta adresi girin.');
-        }
-
-        // Telefon validasyonu
-        if (!phone.startsWith('+')) {
-            errors.push('Telefon numarası ülke kodu ile başlamalıdır (örn: +905123456789)');
-        } else if (!/^\+\d{10,15}$/.test(phone)) {
-            errors.push('Telefon numarası geçerli formatta değil.');
-        }
-
-        // Öğrenci numarası validasyonu
-        if (!/^\d{7,10}$/.test(studentId)) {
-            errors.push('Öğrenci numarası 7-10 haneli rakam olmalıdır.');
-        }
-
-        // İsim validasyonu
-        if (!/^[a-zA-ZğĞıİöÖüÜşŞçÇ\s]+$/.test(name)) {
-            errors.push('İsim sadece harf ve boşluk içermelidir.');
-        }
-
-        // Soyisim validasyonu
-        if (!/^[a-zA-ZğĞıİöÖüÜşŞçÇ\s]+$/.test(surname)) {
-            errors.push('Soyisim sadece harf ve boşluk içermelidir.');
-        }
-
-        if (errors.length > 0) {
-            e.preventDefault();
-
-            // Hata mesajlarını göster
-            const errorHtml = errors.map(error => `<li>${error}</li>`).join('');
-            const errorDiv = document.createElement('div');
-            errorDiv.className = 'alert alert-danger mt-3';
-            errorDiv.innerHTML = `
-            <h6><i class="fas fa-exclamation-triangle"></i> Lütfen aşağıdaki hataları düzeltin:</h6>
-            <ul class="mb-0">${errorHtml}</ul>
-        `;
-
-            // Mevcut hata mesajını kaldır
-            const existingError = document.querySelector('.alert-danger');
-            if (existingError) {
-                existingError.remove();
-            }
-
-            // Forma hata mesajını ekle
-            this.appendChild(errorDiv);
-
-            // Sayfayı en üste kaydır
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-
-            return false;
+// Unit selection
+document.querySelectorAll('.unit-card').forEach(card => {
+    card.addEventListener('click', function() {
+        const checkbox = this.querySelector('input[type="checkbox"]');
+        checkbox.checked = !checkbox.checked;
+        
+        if (checkbox.checked) {
+            this.classList.add('selected');
         } else {
-            // Loading state
-            const submitBtn = this.querySelector('button[type="submit"]');
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Başvuru Gönderiliyor...';
-            submitBtn.disabled = true;
+            this.classList.remove('selected');
         }
     });
+});
 
-    // Initialize progress
-    updateProgress();
+// Initialize selected units
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.unit-card input[type="checkbox"]:checked').forEach(checkbox => {
+        checkbox.closest('.unit-card').classList.add('selected');
+    });
+});
 </script>
 {% endblock %}
