@@ -3,6 +3,10 @@
 
 {% block title %}Haberleri Yönet{% endblock %}
 
+{% block head_extra %}
+<script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
+{% endblock %}
+
 {% block content %}
 <div class="container mt-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
@@ -10,64 +14,89 @@
         <a href="{{ url_for('admin') }}" class="btn btn-secondary">Admin Paneline Dön</a>
     </div>
 
-    <div class="row">
-        <div class="col-md-8">
-            <div class="card shadow-sm">
-                <div class="card-header">
-                    <h4>Mevcut Haberler</h4>
-                </div>
-                <div class="list-group list-group-flush">
-                    {% for item in all_news %}
-                        <div class="list-group-item d-flex justify-content-between align-items-center">
-                            <div>
-                                <a href="{{ url_for('view_news', news_id=item.id) }}" class="text-decoration-none">{{ item.title }}</a>
-                                <small class="d-block text-muted">{{ item.timestamp.strftime('%d-%m-%Y') }}</small>
-                            </div>
-                            <div>
-                                <form action="{{ url_for('pin_news', news_id=item.id) }}" method="POST" class="d-inline">
-                                    <button type="submit" class="btn btn-sm btn-info">{% if item.is_pinned %}Sabitlemeyi Kaldır{% else %}Sabitle{% endif %}</button>
-                                </form>
-                                <a href="{{ url_for('edit_news', news_id=item.id) }}" class="btn btn-sm btn-warning">Düzenle</a>
-                                <form action="{{ url_for('delete_news', news_id=item.id) }}" method="POST" class="d-inline" onsubmit="return confirm('Bu haberi silmek istediğinizden emin misiniz?');">
-                                    <button type="submit" class="btn btn-sm btn-danger">Sil</button>
-                                </form>
-                            </div>
-                        </div>
-                    {% else %}
-                        <div class="list-group-item">Henüz haber yok.</div>
-                    {% endfor %}
-                </ul>
-            </div>
+    <div class="card shadow-sm mb-4">
+        <div class="card-header">
+            <h4>Yeni Haber Ekle</h4>
         </div>
-        <div class="col-md-4">
-            <div class="card shadow-sm">
-                <div class="card-header">
-                    <h4>Yeni Haber Ekle</h4>
+        <div class="card-body">
+            <form method="POST" action="{{ url_for('manage_news') }}">
+                {{ form.hidden_tag() }}
+                <div class="mb-3">
+                    {{ form.title.label(class="form-label") }}
+                    {{ form.title(class="form-control") }}
                 </div>
-                <div class="card-body">
-                    <form method="POST" action="{{ url_for('manage_news') }}">
-                        {{ form.hidden_tag() }}
-                        <div class="mb-3">
-                            {{ form.title.label(class="form-label") }}
-                            {{ form.title(class="form-control") }}
-                        </div>
-                        <div class="mb-3">
-                            {{ form.content.label(class="form-label") }}
-                            {{ form.content(class="form-control", rows=10) }}
-                        </div>
-                        <div class="mb-3">
-                            {{ form.image_url.label(class="form-label") }}
-                            {{ form.image_url(class="form-control") }}
-                        </div>
-                        <div class="mb-3 form-check">
-                            {{ form.is_pinned(class="form-check-input") }}
-                            {{ form.is_pinned.label(class="form-check-label") }}
-                        </div>
-                        {{ form.submit(class="btn btn-primary w-100") }}
-                    </form>
+                <div class="mb-3">
+                    {{ form.content.label(class="form-label") }}
+                    {{ form.content(class="form-control", id="editor") }}
                 </div>
+                <div class="mb-3">
+                    {{ form.image_url.label(class="form-label") }}
+                    {{ form.image_url(class="form-control") }}
+                </div>
+                <div class="mb-3 form-check">
+                    {{ form.is_pinned.label(class="form-check-label") }}
+                    {{ form.is_pinned(class="form-check-input") }}
+                </div>
+                {{ form.submit(class="btn btn-primary w-100") }}
+            </form>
+        </div>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-header">
+            <h4>Mevcut Haberler</h4>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead>
+                        <tr>
+                            <th>Başlık</th>
+                            <th>Yazar</th>
+                            <th>Tarih</th>
+                            <th class="text-center">Sabitlenmiş</th>
+                            <th class="text-end">Eylemler</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in all_news %}
+                        <tr>
+                            <td><a href="{{ url_for('view_news', news_id=item.id) }}" class="text-decoration-none">{{ item.title }}</a></td>
+                            <td>{{ item.author.username }}</td>
+                            <td>{{ item.timestamp.strftime('%d-%m-%Y') }}</td>
+                            <td class="text-center">
+                                <form action="{{ url_for('pin_news', news_id=item.id) }}" method="POST" class="d-inline">
+                                    <button type="submit" class="btn btn-sm {% if item.is_pinned %}btn-success{% else %}btn-outline-secondary{% endif %}">
+                                        <i class="fas {% if item.is_pinned %}fa-check-circle{% else %}fa-thumbtack{% endif %}"></i>
+                                    </button>
+                                </form>
+                            </td>
+                            <td class="text-end">
+                                <a href="{{ url_for('edit_news', news_id=item.id) }}" class="btn btn-sm btn-warning">
+                                    <i class="fas fa-edit me-1"></i> Düzenle
+                                </a>
+                                <form action="{{ url_for('delete_news', news_id=item.id) }}" method="POST" class="d-inline" onsubmit="return confirm('Bu haberi silmek istediğinizden emin misiniz?');">
+                                    <button type="submit" class="btn btn-sm btn-danger">
+                                        <i class="fas fa-trash-alt me-1"></i> Sil
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="5" class="text-center">Henüz haber yok.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    CKEDITOR.replace('editor');
+</script>
 {% endblock %}

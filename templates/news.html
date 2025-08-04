@@ -3,36 +3,36 @@
 
 {% block title %}Haberler{% endblock %}
 
+{% block head_extra %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/news.css') }}">
+{% endblock %}
+
 {% block content %}
 <div class="container mt-5">
-    <h1 class="mb-4">Haberler</h1>
-    <div class="row">
+    {% set featured_news = news_list[0] %}
+    {% if featured_news %}
+    <a href="{{ url_for('view_news', news_id=featured_news.id) }}" class="news-hero mb-5 d-block text-decoration-none" style="background-image: url({{ featured_news.image_url or '' }});">
+        <div class="news-hero-content">
+            <h1>{{ featured_news.title }}</h1>
+            <p class="lead">{{ featured_news.content|striptags|truncate(150) }}</p>
+        </div>
+    </a>
+    {% endif %}
+
+    <h2 class="mb-4">Tüm Haberler</h2>
+    <div class="news-grid">
         {% for news_item in news_list %}
-        <div class="col-md-12">
-            <div class="card mb-4 shadow-sm {% if news_item.is_pinned %}border-primary{% endif %}">
-                <div class="card-body">
-                    <div class="row">
-                        {% if news_item.image_url %}
-                        <div class="col-md-4">
-                            <img src="{{ news_item.image_url }}" class="img-fluid rounded" alt="Haber Resmi" style="max-height: 200px; object-fit: cover;">
-                        </div>
-                        <div class="col-md-8">
-                        {% else %}
-                        <div class="col-md-12">
-                        {% endif %}
-                            <h2 class="card-title">{{ news_item.title }} {% if news_item.is_pinned %}<span class="badge bg-primary">Sabitlenmiş</span>{% endif %}</h2>
-                            <p class="card-text text-muted">Yayınlanma Tarihi: {{ news_item.timestamp.strftime('%d-%m-%Y') }} | Yazar: {{ news_item.author.username }}</p>
-                            <p class="card-text">{{ news_item.content|truncate(200, True) }}</p>
-                            <a href="{{ url_for('view_news', news_id=news_item.id) }}" class="btn btn-primary">Devamını Oku</a>
-                        </div>
-                    </div>
+        <a href="{{ url_for('view_news', news_id=news_item.id) }}" class="text-decoration-none">
+            <div class="news-card">
+                <img src="{{ news_item.image_url or url_for('static', filename='images/logo.png') }}" class="news-card-img" alt="{{ news_item.title }}">
+                <div class="news-card-body">
+                    <h5 class="news-card-title">{{ news_item.title }}</h5>
+                    <p class="news-card-text text-muted">{{ news_item.timestamp.strftime('%d %B %Y') }}</p>
                 </div>
             </div>
-        </div>
+        </a>
         {% else %}
-        <div class="col">
-            <p>Henüz hiç haber yayınlanmamış.</p>
-        </div>
+        <p>Henüz hiç haber yayınlanmamış.</p>
         {% endfor %}
     </div>
 </div>

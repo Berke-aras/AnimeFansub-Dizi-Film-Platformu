@@ -3,26 +3,32 @@
 
 {% block title %}{{ news_item.title }}{% endblock %}
 
+{% block head_extra %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/news.css') }}">
+{% endblock %}
+
 {% block content %}
-<div class="container mt-5">
-    <div class="card shadow-lg">
-        <div class="card-body p-5">
-            <h1 class="card-title display-5">{{ news_item.title }}</h1>
-            <p class="card-text text-muted mb-4">
-                <i class="fas fa-calendar-alt me-2"></i>Yayınlanma Tarihi: {{ news_item.timestamp.strftime('%d-%m-%Y %H:%M') }}
-                <span class="mx-2">|</span>
-                <i class="fas fa-user me-2"></i>Yazar: {{ news_item.author.username }}
-            </p>
-            <hr>
-            {% if news_item.image_url %}
-            <img src="{{ news_item.image_url }}" class="img-fluid rounded mb-4" alt="Haber Resmi">
-            {% endif %}
-            <div class="mt-4 fs-5">
+<div class="container-fluid px-0">
+    {% if news_item.image_url %}
+    <div class="news-article-hero" style="background-image: url({{ news_item.image_url }});"></div>
+    {% endif %}
+
+    <div class="container py-5">
+        <div class="news-article-content">
+            <h1 class="display-4 mb-3">{{ news_item.title }}</h1>
+            <div class="news-article-meta">
+                <span><i class="fas fa-user me-2"></i>{{ news_item.author.username }}</span>
+                <span class="mx-3">|</span>
+                <span><i class="fas fa-calendar-alt me-2"></i>{{ news_item.timestamp.strftime('%d %B %Y') }}</span>
+            </div>
+            <hr class="my-4">
+            <div class="fs-5">
                 {{ news_item.content|safe }}
             </div>
-        </div>
-        <div class="card-footer text-center">
-            <a href="{{ url_for('news') }}" class="btn btn-secondary"><i class="fas fa-arrow-left me-2"></i>Tüm Haberlere Dön</a>
+            <hr class="my-5">
+            <div class="text-center">
+                <a href="{{ url_for('news') }}" class="btn btn-outline-light"><i class="fas fa-arrow-left me-2"></i>Tüm Haberlere Dön</a>
+            </div>
         </div>
     </div>
 </div>
