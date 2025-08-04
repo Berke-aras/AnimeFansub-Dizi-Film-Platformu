@@ -18,7 +18,12 @@ div {
 }
 
 /* Ensure headings also have the correct color */
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
     color: #f5f5f5 !important; /* --forum-text-primary */
 }
 
@@ -45,11 +50,11 @@ a {
     color: #f5f5f5 !important;
 }
 
-.ck-content h1, 
-.ck-content h2, 
-.ck-content h3, 
-.ck-content h4, 
-.ck-content h5, 
+.ck-content h1,
+.ck-content h2,
+.ck-content h3,
+.ck-content h4,
+.ck-content h5,
 .ck-content h6 {
     color: #f5f5f5 !important;
 }
