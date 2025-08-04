@@ -145,6 +145,7 @@ def community_register():
             existing_email = CommunityMember.query.filter_by(email=form.email.data).first()
             existing_student_id = CommunityMember.query.filter_by(student_id=form.student_id.data).first()
             existing_phone = CommunityMember.query.filter_by(phone_number=form.phone_number.data).first()
+            existing_username = CommunityMember.query.filter_by(username=form.username.data).first()
             
             if existing_email:
                 flash('Bu e-posta adresi zaten kayıtlı.', 'error')
@@ -157,8 +158,17 @@ def community_register():
             if existing_phone:
                 flash('Bu telefon numarası zaten kayıtlı.', 'error')
                 return render_template('community_register.html', title='Topluluk Üyeliği Başvuru', form=form)
+                
+            if existing_username:
+                flash('Bu kullanıcı adı zaten kayıtlı.', 'error')
+                return render_template('community_register.html', title='Topluluk Üyeliği Başvuru', form=form)
+            
+            # Şifreyi hashle
+            hashed_password = generate_password_hash(form.password.data, method='pbkdf2:sha256')
             
             community_member = CommunityMember(
+                username=form.username.data.strip().lower(),
+                password=hashed_password,
                 email=form.email.data.lower().strip(),
                 name=form.name.data.strip().title(),
                 surname=form.surname.data.strip().title(),
@@ -175,7 +185,7 @@ def community_register():
             db.session.add(community_member)
             db.session.commit()
             
-            flash('Topluluk üyeliği başvurunuz başarıyla alındı! Başvurunuz incelendikten sonra giriş yapabileceksiniz.', 'success')
+            flash('Topluluk üyeliği başvurunuz başarıyla alındı! Başvurunuz onaylandığında sisteme giriş yapabileceksiniz.', 'success')
             return redirect(url_for('index'))
             
         except Exception as e:
@@ -362,12 +372,17 @@ def anime(anime_id):
 def login():
     form = LoginForm()
     if form.validate_on_submit():
-        user = User.query.filter_by(username=form.username.data).first()
+        # Kullanıcı adı veya e-posta ile giriş
+        user = User.query.filter(
+            (User.username == form.username.data) | 
+            (User.email == form.username.data)
+        ).first()
+        
         if user and check_password_hash(user.password, form.password.data):
             login_user(user)
             return redirect(url_for('index'))
         else:
-            flash('Giriş başarısız. Lütfen kullanıcı adınızı ve şifrenizi kontrol edin.', 'danger')
+            flash('Giriş başarısız. Lütfen kullanıcı adınızı/e-postanızı ve şifrenizi kontrol edin.', 'danger')
     return render_template('login.html', form=form)
 
 @app.route('/admin', methods=['GET', 'POST'])
@@ -766,35 +781,36 @@ def manage_community_members():
 def approve_community_member(member_id):
     member = CommunityMember.query.get_or_404(member_id)
     
-    # Onaylanan üyeye otomatik bir kullanıcı hesabı oluştur
-    username = f"{member.name.lower()}.{member.surname.lower()}"
-    # Eğer username zaten varsa, sonuna sayı ekle
-    counter = 1
-    original_username = username
-    while User.query.filter_by(username=username).first():
-        username = f"{original_username}{counter}"
-        counter += 1
+    try:
+        # Topluluk üyesinin seçtiği kullanıcı adının mevcut User tablosunda olup olmadığını kontrol et
+        existing_user = User.query.filter_by(username=member.username).first()
+        if existing_user:
+            flash(f'Kullanıcı adı "{member.username}" zaten sistemde mevcut. Üyeye farklı bir kullanıcı adı seçmesini söyleyin.', 'error')
+            return redirect(url_for('manage_community_members'))
+        
+        # Topluluk üyesinin bilgilerini kullanarak User kaydı oluştur
+        new_user = User(
+            username=member.username,
+            email=member.email,
+            password=member.password,  # Zaten hashlenmiş şifre
+            is_community_member=True
+        )
+        db.session.add(new_user)
+        db.session.flush()  # ID'yi almak için
+        
+        # Topluluk üyesini güncelle
+        member.is_approved = True
+        member.user_id = new_user.id
+        
+        db.session.commit()
+        
+        flash(f'{member.name} {member.surname} onaylandı. Kullanıcı adı: {member.username} ile sisteme giriş yapabilir.', 'success')
+        
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Onay işlemi sırasında hata oluştu: {str(e)}', 'error')
+        app.logger.error(f"Community member approval error: {str(e)}")
     
-    # Geçici şifre oluştur (gerçek uygulamada e-posta ile gönderilmeli)
-    temp_password = f"temp{member.student_id}2024"
-    hashed_password = generate_password_hash(temp_password, method='pbkdf2:sha256')
-    
-    # Yeni kullanıcı oluştur
-    new_user = User(
-        username=username,
-        password=hashed_password,
-        is_community_member=True
-    )
-    db.session.add(new_user)
-    db.session.flush()  # ID'yi almak için
-    
-    # Topluluk üyesini güncelle
-    member.is_approved = True
-    member.user_id = new_user.id
-    
-    db.session.commit()
-    
-    flash(f'{member.name} {member.surname} onaylandı. Kullanıcı adı: {username}, Geçici şifre: {temp_password}', 'success')
     return redirect(url_for('manage_community_members'))
 
 @app.route('/admin/community_members/reject/<int:member_id>', methods=['POST'])
@@ -805,6 +821,45 @@ def reject_community_member(member_id):
     db.session.delete(member)
     db.session.commit()
     flash(f'{member.name} {member.surname} başvurusu reddedildi.', 'warning')
+    return redirect(url_for('manage_community_members'))
+
+@app.route('/admin/community_members/delete/<int:member_id>', methods=['POST'])
+@login_required
+@admin_required
+def delete_community_member(member_id):
+    if not current_user.can_delete:
+        flash('Bu işlemi gerçekleştirme yetkiniz yok.', 'danger')
+        return redirect(url_for('manage_community_members'))
+    
+    member = CommunityMember.query.get_or_404(member_id)
+    
+    try:
+        # Eğer topluluk üyesinin bir kullanıcı hesabı varsa, onu da sil
+        if member.user_id:
+            user = User.query.get(member.user_id)
+            if user:
+                # Kullanıcıya ait logları temizle (user_id'yi null yap)
+                logs = Log.query.filter_by(user_id=user.id).all()
+                for log in logs:
+                    log.user_id = None
+                
+                # Kullanıcıyı sil
+                db.session.delete(user)
+        
+        # Topluluk üyesini sil
+        member_name = f"{member.name} {member.surname}"
+        member_username = member.username
+        db.session.delete(member)
+        db.session.commit()
+        
+        flash(f'Topluluk üyesi {member_name} ({member_username}) başarıyla silindi.', 'success')
+        log_action('delete_community_member', f'Topluluk üyesi {member_name} ({member_username}) silindi.')
+        
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Silme işlemi sırasında hata oluştu: {str(e)}', 'error')
+        app.logger.error(f"Community member deletion error: {str(e)}")
+    
     return redirect(url_for('manage_community_members'))
 
 @app.route('/admin/community_members/view/<int:member_id>')

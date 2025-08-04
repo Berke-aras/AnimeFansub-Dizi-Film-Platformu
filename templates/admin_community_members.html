@@ -109,7 +109,17 @@
                             <td>{{ member.registration_date.strftime('%d.%m.%Y %H:%M') }}</td>
                             <td>
                                 <a href="{{ url_for('view_community_member', member_id=member.id) }}"
-                                    class="btn btn-info btn-sm">Detay</a>
+                                    class="btn btn-info btn-sm me-1">
+                                    <i class="fas fa-eye"></i> Detay
+                                </a>
+                                <form method="POST"
+                                    action="{{ url_for('delete_community_member', member_id=member.id) }}"
+                                    class="d-inline">
+                                    <button type="submit" class="btn btn-danger btn-sm"
+                                        onclick="return confirm('Bu topluluk üyesini silmek istediğinizden emin misiniz? Bu işlem geri alınamaz ve ilişkili kullanıcı hesabı da silinecektir.')">
+                                        <i class="fas fa-trash"></i> Sil
+                                    </button>
+                                </form>
                             </td>
                         </tr>
                         {% endfor %}

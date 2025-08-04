@@ -121,17 +121,27 @@ class CommunityInfo(db.Model):
 
 class CommunityMember(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    
+    # Giriş bilgileri
+    username = db.Column(db.String(80), unique=True, nullable=False)
+    password = db.Column(db.String(200), nullable=False)
+    
+    # Kişisel bilgiler
     email = db.Column(db.String(120), unique=True, nullable=False)
     name = db.Column(db.String(100), nullable=False)
     surname = db.Column(db.String(100), nullable=False)
     place_of_birth = db.Column(db.String(100), nullable=False)  # Doğum ili/ülke
     date_of_birth = db.Column(db.Date, nullable=False)
     current_residence = db.Column(db.String(100), nullable=False)
+    
+    # Akademik bilgiler
     student_id = db.Column(db.String(20), nullable=False)
     phone_number = db.Column(db.String(20), nullable=False)
     student_class = db.Column(db.String(50), nullable=False)
     faculty = db.Column(db.String(100), nullable=False)
     department = db.Column(db.String(100), nullable=False)
+    
+    # Birim ve onay bilgileri
     preferred_units = db.Column(db.Text, nullable=True)  # JSON string for multiple selections
     registration_date = db.Column(db.DateTime, default=datetime.utcnow)
     is_approved = db.Column(db.Boolean, default=False)

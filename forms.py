@@ -49,7 +49,7 @@ class RegistrationForm(FlaskForm):
             raise ValidationError('Şifre en az bir küçük harf içermelidir.')
 
 class LoginForm(FlaskForm):
-    username = StringField('Kullanıcı Adı', validators=[DataRequired()])
+    username = StringField('Kullanıcı Adı veya E-posta', validators=[DataRequired()])
     password = PasswordField('Şifre', validators=[DataRequired()])
     submit = SubmitField('Giriş Yap')
 
@@ -128,17 +128,27 @@ class EventForm(FlaskForm):
     submit = SubmitField('Etkinlik Oluştur')
 
 class CommunityRegistrationForm(FlaskForm):
+    # Giriş bilgileri
+    username = StringField('Kullanıcı Adı', validators=[DataRequired(), Length(min=4, max=20)])
+    password = PasswordField('Şifre', validators=[DataRequired(), Length(min=6)])
+    password2 = PasswordField('Şifre Tekrar', validators=[DataRequired(), EqualTo('password', message='Şifreler eşleşmiyor')])
+    
+    # Kişisel bilgiler
     email = StringField('E-posta Adresi', validators=[DataRequired(), Email()])
     name = StringField('Adınız (Name)', validators=[DataRequired(), Length(min=2, max=100)])
     surname = StringField('Soyadınız (Surname)', validators=[DataRequired(), Length(min=2, max=100)])
     place_of_birth = StringField('Doğum İliniz (Place of Birth, for international students: Country)', validators=[DataRequired(), Length(min=2, max=100)])
     date_of_birth = DateField('Doğum Tarihiniz (Date of Birth)', validators=[DataRequired()])
     current_residence = StringField('Mevcut Oturduğunuz Yer (Current Residence)', validators=[DataRequired(), Length(min=2, max=100)])
+    
+    # Akademik bilgiler
     student_id = StringField('Öğrenci Numaranız (Student ID)', validators=[DataRequired(), Length(min=1, max=20)])
     phone_number = StringField('Telefon Numaranız, boşluksuz, ülke alan kodlu Örn: +905123456789 (Phone No., without whitespace and country code)', validators=[DataRequired(), Length(min=10, max=20)])
     student_class = StringField('Sınıfınız (Class)', validators=[DataRequired(), Length(min=1, max=50)])
     faculty = StringField('Fakülteniz (Faculty/School/Institute)', validators=[DataRequired(), Length(min=2, max=100)])
     department = StringField('Bölümünüz (Department)', validators=[DataRequired(), Length(min=2, max=100)])
+    
+    # Birim seçimi
     preferred_units = SelectMultipleField('Hangi birimde çalışmak istersiniz? (Which unit do you want to participate to?)', 
                                         choices=[
                                             ('drawing_unit', 'Çizim Birimi'),
@@ -149,6 +159,25 @@ class CommunityRegistrationForm(FlaskForm):
                                         ], 
                                         validators=[Optional()])
     submit = SubmitField('Topluluk Üyeliği İçin Başvur')
+
+    def validate_username(self, username):
+        # Kullanıcı adı sadece harf, rakam ve alt çizgi içermeli
+        if not all(c.isalnum() or c == '_' for c in username.data):
+            raise ValidationError('Kullanıcı adı sadece harf, rakam ve alt çizgi (_) içermelidir.')
+            
+        # Kullanıcı adı rakamla başlamamalı
+        if username.data[0].isdigit():
+            raise ValidationError('Kullanıcı adı rakamla başlayamaz.')
+            
+        # Mevcut kullanıcı kontrolü
+        user = User.query.filter_by(username=username.data).first()
+        if user:
+            raise ValidationError('Bu kullanıcı adı zaten kullanılıyor. Lütfen farklı bir kullanıcı adı seçin.')
+            
+        # Topluluk üyesi başvuruları arasında da kontrol et
+        member = CommunityMember.query.filter_by(username=username.data).first()
+        if member:
+            raise ValidationError('Bu kullanıcı adı zaten kullanılıyor. Lütfen farklı bir kullanıcı adı seçin.')
 
     def validate_email(self, email):
         # E-posta format kontrolü

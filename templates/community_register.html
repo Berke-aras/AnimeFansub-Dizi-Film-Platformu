@@ -99,6 +99,66 @@
                     <form method="POST" id="communityForm">
                         {{ form.hidden_tag() }}
 
+                        <!-- Giriş Bilgileri -->
+                        <div class="form-section mb-5">
+                            <h5 class="text-primary mb-3">
+                                <i class="fas fa-key me-2"></i>Giriş Bilgileri
+                            </h5>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    {{ form.username.label(class="form-label") }}
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                        {{ form.username(class="form-control", placeholder="Kullanıcı adınızı girin") }}
+                                    </div>
+                                    {% if form.username.errors %}
+                                    <div class="text-danger">
+                                        {% for error in form.username.errors %}
+                                        <small><i class="fas fa-exclamation-circle me-1"></i>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="col-md-3 mb-3">
+                                    {{ form.password.label(class="form-label") }}
+                                    <div class="input-group">
+                                        {{ form.password(class="form-control", placeholder="Güçlü bir şifre oluşturun")
+                                        }}
+                                        <button class="btn btn-outline-secondary" type="button"
+                                            onclick="togglePassword('password')">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </div>
+                                    {% if form.password.errors %}
+                                    <div class="text-danger">
+                                        {% for error in form.password.errors %}
+                                        <small><i class="fas fa-exclamation-circle me-1"></i>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="col-md-3 mb-3">
+                                    {{ form.password2.label(class="form-label") }}
+                                    <div class="input-group">
+                                        {{ form.password2(class="form-control", placeholder="Şifrenizi tekrar girin") }}
+                                        <button class="btn btn-outline-secondary" type="button"
+                                            onclick="togglePassword('password2')">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </div>
+                                    {% if form.password2.errors %}
+                                    <div class="text-danger">
+                                        {% for error in form.password2.errors %}
+                                        <small><i class="fas fa-exclamation-circle me-1"></i>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- Kişisel Bilgiler -->
                         <div class="form-section mb-5">
                             <h5 class="text-primary mb-3">
@@ -370,6 +430,23 @@
 </div>
 
 <script>
+    // Password toggle functionality
+    function togglePassword(fieldName) {
+        const field = document.querySelector(`input[name="${fieldName}"]`);
+        const button = field.nextElementSibling;
+        const icon = button.querySelector('i');
+
+        if (field.type === 'password') {
+            field.type = 'text';
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+        } else {
+            field.type = 'password';
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+        }
+    }
+
     // Unit selection functionality
     document.querySelectorAll('.unit-card').forEach(card => {
         card.addEventListener('click', function () {
@@ -410,6 +487,9 @@
 
     // Form validation
     document.getElementById('communityForm').addEventListener('submit', function (e) {
+        const username = document.querySelector('input[name="username"]').value;
+        const password = document.querySelector('input[name="password"]').value;
+        const password2 = document.querySelector('input[name="password2"]').value;
         const email = document.querySelector('input[name="email"]').value;
         const phone = document.querySelector('input[name="phone_number"]').value;
         const studentId = document.querySelector('input[name="student_id"]').value;
@@ -417,6 +497,33 @@
         const surname = document.querySelector('input[name="surname"]').value;
 
         let errors = [];
+
+        // Kullanıcı adı validasyonu
+        if (!/^[a-zA-Z0-9_]+$/.test(username)) {
+            errors.push('Kullanıcı adı sadece harf, rakam ve alt çizgi (_) içermelidir.');
+        }
+
+        if (/^\d/.test(username)) {
+            errors.push('Kullanıcı adı rakamla başlayamaz.');
+        }
+
+        // Şifre validasyonu
+        if (!/(?=.*[a-z])/.test(password)) {
+            errors.push('Şifre en az bir küçük harf içermelidir.');
+        }
+
+        if (!/(?=.*[A-Z])/.test(password)) {
+            errors.push('Şifre en az bir büyük harf içermelidir.');
+        }
+
+        if (!/(?=.*\d)/.test(password)) {
+            errors.push('Şifre en az bir rakam içermelidir.');
+        }
+
+        // Şifre eşleşme kontrolü
+        if (password !== password2) {
+            errors.push('Şifreler eşleşmiyor.');
+        }
 
         // E-posta validasyonu
         if (!email.includes('@') || !email.includes('.')) {
