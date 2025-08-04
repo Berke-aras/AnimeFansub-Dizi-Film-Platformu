@@ -53,9 +53,15 @@
             --light-dark-color: #1c1c1c;
             --text-color: #f5f5f5;
             --text-muted-color: #a0a0a0;
-            --apple-radius: 16px;
-            --apple-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+            --accent-color: #3399ff;
             --success-color: #30d158;
+            --warning-color: #ffcc02;
+            --gradient-primary: linear-gradient(135deg, #e50914, #ff4158);
+            --gradient-secondary: linear-gradient(135deg, #3399ff, #00d4ff);
+            --glass-blur: blur(20px);
+            --shadow-primary: 0 20px 40px rgba(229, 9, 20, 0.3);
+            --shadow-secondary: 0 20px 40px rgba(51, 153, 255, 0.3);
+            --shadow-dark: 0 25px 50px rgba(0, 0, 0, 0.7);
         }
 
         * {
@@ -67,10 +73,49 @@
         body,
         html {
             height: 100%;
-            font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif;
-            background-color: var(--dark-color);
+            font-family: 'Inter', 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--dark-color);
             color: var(--text-color);
             overflow: hidden;
+            position: relative;
+        }
+
+        /* Animated background particles */
+        .bg-particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            background: radial-gradient(circle at 20% 80%, rgba(229, 9, 20, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(51, 153, 255, 0.1) 0%, transparent 50%),
+                var(--dark-color);
+        }
+
+        .bg-particles::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                radial-gradient(circle at 25% 25%, rgba(229, 9, 20, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 75% 75%, rgba(51, 153, 255, 0.05) 0%, transparent 50%);
+            animation: float 20s ease-in-out infinite;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0px) rotate(0deg);
+            }
+
+            50% {
+                transform: translateY(-20px) rotate(1deg);
+            }
         }
 
         .landing-container {
@@ -78,6 +123,7 @@
             height: 100vh;
             width: 100%;
             position: relative;
+            z-index: 1;
         }
 
         .platform-section {
@@ -90,185 +136,188 @@
             padding: 60px 40px;
             position: relative;
             overflow: hidden;
-            transition: all 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            transition: all 0.8s cubic-bezier(0.165, 0.84, 0.44, 1);
             cursor: pointer;
-            background: var(--dark-color);
+            background: rgba(20, 20, 20, 0.5);
+            backdrop-filter: var(--glass-blur);
         }
 
-        /* Enhanced background gradients */
-        .platform-section::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 1;
-            transition: all 0.7s ease;
-            z-index: 1;
-        }
-
-        .platform-section::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-size: cover;
-            background-position: center;
-            opacity: 0.05;
-            transition: all 0.7s ease;
-            z-index: 2;
-        }
-
-        .humat-section::before {
+        /* Dynamic gradient backgrounds */
+        .humat-section {
             background: linear-gradient(135deg,
-                    var(--dark-color) 0%,
-                    rgba(28, 28, 28, 0.98) 40%,
-                    rgba(45, 45, 45, 0.95) 100%);
+                    rgba(51, 153, 255, 0.05) 0%,
+                    rgba(20, 20, 20, 0.8) 50%,
+                    rgba(0, 212, 255, 0.05) 100%);
         }
 
-        .humat-section::after {
-            background-image: url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1?q=80&w=2070&auto=format&fit=crop');
-        }
-
-        .fansub-section::before {
+        .fansub-section {
             background: linear-gradient(135deg,
-                    var(--dark-color) 0%,
-                    rgba(229, 9, 20, 0.08) 40%,
-                    rgba(229, 9, 20, 0.15) 100%);
+                    rgba(229, 9, 20, 0.05) 0%,
+                    rgba(20, 20, 20, 0.8) 50%,
+                    rgba(255, 65, 88, 0.05) 100%);
         }
 
-        .fansub-section::after {
-            background-image: url('https://images.unsplash.com/photo-1578662996442-48f60103fc96?q=80&w=2070&auto=format&fit=crop');
-        }
-
-        /* Advanced hover effects */
+        /* Hover state transforms */
         .platform-section:hover {
-            flex: 1.6;
+            flex: 1.3;
             transform: scale(1.01);
-        }
-
-        .platform-section:hover::before {
-            opacity: 1;
-        }
-
-        .platform-section:hover::after {
-            opacity: 0.15;
-            transform: scale(1.05);
+            background: rgba(20, 20, 20, 0.9);
         }
 
         .platform-section:not(:hover) {
-            flex: 0.7;
-            filter: brightness(0.4) saturate(0.3);
+            flex: 0.85;
+            filter: brightness(0.6) saturate(0.7);
+            backdrop-filter: blur(5px);
         }
 
-        .fansub-section:hover::before {
+        .humat-section:hover {
             background: linear-gradient(135deg,
-                    rgba(229, 9, 20, 0.1) 0%,
-                    rgba(229, 9, 20, 0.25) 40%,
-                    rgba(229, 9, 20, 0.35) 100%);
+                    rgba(51, 153, 255, 0.15) 0%,
+                    rgba(20, 20, 20, 0.9) 50%,
+                    rgba(0, 212, 255, 0.15) 100%);
+            box-shadow: inset 0 0 100px rgba(51, 153, 255, 0.1);
         }
 
-        /* Content styling */
+        .fansub-section:hover {
+            background: linear-gradient(135deg,
+                    rgba(229, 9, 20, 0.15) 0%,
+                    rgba(20, 20, 20, 0.9) 50%,
+                    rgba(255, 65, 88, 0.15) 100%);
+            box-shadow: inset 0 0 100px rgba(229, 9, 20, 0.1);
+        }
+
+        /* Content container */
         .platform-content {
             position: relative;
             z-index: 3;
-            max-width: 450px;
-            transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            max-width: 500px;
+            transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+            transform: translateY(10px);
+            opacity: 0.9;
         }
 
         .platform-section:hover .platform-content {
-            transform: translateY(-8px);
+            transform: translateY(0);
+            opacity: 1;
         }
 
+        /* Enhanced icons with 3D effect */
         .platform-icon {
             width: 100px;
             height: 100px;
-            margin: 0 auto 30px;
+            margin: 0 auto 35px;
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: var(--apple-radius);
+            border-radius: 25px;
             font-size: 3rem;
-            background: rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(30px);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            box-shadow: var(--apple-shadow);
+            position: relative;
+            transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: var(--glass-blur);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .platform-icon::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 25px;
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.1), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .platform-section:hover .platform-icon::before {
+            opacity: 1;
         }
 
         .humat-section .platform-icon {
-            color: var(--text-color);
-            background: rgba(255, 255, 255, 0.08);
+            color: var(--accent-color);
+            border-color: rgba(51, 153, 255, 0.3);
+            box-shadow: var(--shadow-secondary);
         }
 
         .fansub-section .platform-icon {
             color: var(--primary-color);
-            background: rgba(229, 9, 20, 0.15);
-            border-color: rgba(229, 9, 20, 0.25);
-            box-shadow: 0 8px 32px rgba(229, 9, 20, 0.3);
+            border-color: rgba(229, 9, 20, 0.3);
+            box-shadow: var(--shadow-primary);
         }
 
         .platform-section:hover .platform-icon {
-            transform: scale(1.15) rotateY(5deg);
-            box-shadow: 0 16px 48px rgba(0, 0, 0, 0.8);
+            transform: translateY(-8px) rotateX(3deg) rotateY(3deg);
+            box-shadow: var(--shadow-dark);
+        }
+
+        .humat-section:hover .platform-icon {
+            box-shadow: 0 25px 50px rgba(51, 153, 255, 0.3);
+            background: rgba(51, 153, 255, 0.1);
         }
 
         .fansub-section:hover .platform-icon {
-            box-shadow: 0 16px 48px rgba(229, 9, 20, 0.5);
+            box-shadow: 0 25px 50px rgba(229, 9, 20, 0.3);
+            background: rgba(229, 9, 20, 0.1);
         }
 
+        /* Modern typography */
         .platform-title {
             font-size: clamp(2.5rem, 5vw, 4rem);
-            font-weight: 900;
+            font-weight: 800;
             margin-bottom: 20px;
             letter-spacing: -2px;
-            transition: all 0.4s ease;
-            text-shadow: 2px 2px 20px rgba(0, 0, 0, 0.5);
+            transition: all 0.5s ease;
+            position: relative;
+            text-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
         }
 
         .humat-section .platform-title {
-            color: var(--text-color);
-            background: linear-gradient(135deg, var(--text-color), #ffffff);
+            background: var(--gradient-secondary);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
 
         .fansub-section .platform-title {
-            background: linear-gradient(135deg, var(--primary-color), #ff4158);
+            background: var(--gradient-primary);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
 
         .platform-section:hover .platform-title {
-            transform: translateY(-5px);
-            text-shadow: 4px 4px 30px rgba(0, 0, 0, 0.7);
+            transform: translateY(-6px) scale(1.03);
+            text-shadow: 0 15px 40px rgba(0, 0, 0, 0.9);
         }
 
-        .platform-description {
+        .platform-subtitle {
             font-size: clamp(1rem, 1.3vw, 1.2rem);
             margin-bottom: 30px;
-            line-height: 1.6;
+            line-height: 1.7;
             color: var(--text-muted-color);
             transition: all 0.4s ease;
-            font-weight: 400;
+            font-weight: 300;
+            max-width: 380px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
-        .platform-section:hover .platform-description {
+        .platform-section:hover .platform-subtitle {
             color: var(--text-color);
             transform: translateY(-3px);
         }
 
+        /* Feature cards with glass effect */
         .platform-features {
             list-style: none;
             margin-bottom: 40px;
             opacity: 0;
-            transform: translateY(20px);
-            transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.1s;
+            transform: translateY(25px);
+            transition: all 0.8s cubic-bezier(0.165, 0.84, 0.44, 1) 0.2s;
+            display: grid;
+            gap: 12px;
         }
 
         .platform-section:hover .platform-features {
@@ -277,96 +326,130 @@
         }
 
         .platform-features li {
-            font-size: 1rem;
-            margin-bottom: 12px;
+            font-size: 0.95rem;
             display: flex;
             align-items: center;
-            justify-content: center;
-            background: rgba(255, 255, 255, 0.06);
-            padding: 10px 18px;
+            justify-content: flex-start;
+            background: rgba(255, 255, 255, 0.08);
+            padding: 12px 20px;
             border-radius: 20px;
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            margin: 8px auto;
-            max-width: 260px;
+            backdrop-filter: var(--glass-blur);
+            border: 1px solid rgba(255, 255, 255, 0.15);
             color: var(--text-muted-color);
-            transition: all 0.3s ease;
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
             font-weight: 500;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .platform-features li::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .platform-features li:hover::before {
+            left: 100%;
         }
 
         .platform-features li:hover {
-            background: rgba(255, 255, 255, 0.1);
-            border-color: rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(255, 255, 255, 0.25);
             color: var(--text-color);
-            transform: translateX(5px);
+            transform: translateX(8px) scale(1.01);
         }
 
         .platform-features li i {
-            margin-right: 10px;
-            color: var(--success-color);
-            font-size: 1rem;
-        }
-
-        .fansub-section .platform-features li {
-            background: rgba(229, 9, 20, 0.12);
-            border-color: rgba(229, 9, 20, 0.25);
-        }
-
-        .fansub-section .platform-features li:hover {
-            background: rgba(229, 9, 20, 0.2);
-            border-color: rgba(229, 9, 20, 0.4);
-        }
-
-        .platform-btn {
-            background: rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(30px);
-            border: 2px solid rgba(255, 255, 255, 0.15);
-            color: var(--text-color);
-            padding: 16px 32px;
-            border-radius: 30px;
-            font-weight: 700;
+            margin-right: 12px;
             font-size: 1.1rem;
+            width: 18px;
+            text-align: center;
+        }
+
+        .humat-section .platform-features li i {
+            color: var(--accent-color);
+        }
+
+        .fansub-section .platform-features li i {
+            color: var(--primary-color);
+        }
+
+        /* Call-to-action buttons */
+        .platform-btn {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: var(--glass-blur);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            color: var(--text-color);
+            padding: 15px 35px;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 1rem;
             text-decoration: none;
-            display: inline-block;
-            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            box-shadow: var(--apple-shadow);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+            text-transform: none;
+            letter-spacing: 0.5px;
             opacity: 0;
-            transform: translateY(20px);
+            transform: translateY(25px);
+            position: relative;
+            overflow: hidden;
         }
 
         .platform-section:hover .platform-btn {
             opacity: 1;
             transform: translateY(0);
-            transition-delay: 0.3s;
+            transition-delay: 0.4s;
+        }
+
+        .platform-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .platform-btn:hover::before {
+            left: 100%;
+        }
+
+        .humat-section .platform-btn {
+            border-color: rgba(51, 153, 255, 0.4);
+            background: rgba(51, 153, 255, 0.1);
         }
 
         .humat-section .platform-btn:hover {
-            background: rgba(255, 255, 255, 0.15);
-            border-color: rgba(255, 255, 255, 0.3);
-            transform: translateY(-3px) scale(1.05);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+            background: var(--accent-color);
+            border-color: var(--accent-color);
+            transform: translateY(-3px) scale(1.03);
+            box-shadow: var(--shadow-secondary);
+            color: white;
         }
 
         .fansub-section .platform-btn {
-            background: rgba(229, 9, 20, 0.15);
-            border-color: rgba(229, 9, 20, 0.3);
-            color: var(--text-color);
+            border-color: rgba(229, 9, 20, 0.4);
+            background: rgba(229, 9, 20, 0.1);
         }
 
         .fansub-section .platform-btn:hover {
             background: var(--primary-color);
             border-color: var(--primary-color);
-            transform: translateY(-3px) scale(1.05);
+            transform: translateY(-3px) scale(1.03);
+            box-shadow: var(--shadow-primary);
             color: white;
-            box-shadow: 0 20px 40px rgba(229, 9, 20, 0.6);
         }
 
-        /* Center divider - REMOVED */
-        /* .section-divider styles removed */
-
-        /* Mobile responsive */
+        /* Mobile responsive design */
         @media (max-width: 768px) {
 
             body,
@@ -383,13 +466,19 @@
             .platform-section {
                 flex: none;
                 min-height: 100vh;
-                padding: 50px 30px;
+                padding: 60px 30px;
             }
 
             .platform-section:hover,
             .platform-section:not(:hover) {
                 flex: none;
                 filter: none;
+                transform: none;
+            }
+
+            .platform-content {
+                transform: none;
+                opacity: 1;
             }
 
             .platform-features {
@@ -402,18 +491,10 @@
                 transform: translateY(0);
             }
 
-            .section-divider {
-                top: 50%;
-                left: 10%;
-                width: 80%;
-                height: 1px;
-                background: linear-gradient(to right,
-                        transparent 0%,
-                        rgba(255, 255, 255, 0.2) 20%,
-                        rgba(255, 255, 255, 0.4) 50%,
-                        rgba(255, 255, 255, 0.2) 80%,
-                        transparent 100%);
-                transform: translateY(-50%);
+            .platform-icon {
+                width: 85px;
+                height: 85px;
+                font-size: 2.5rem;
             }
         }
 
@@ -425,36 +506,38 @@
             }
         }
 
-        /* Loading animation */
+        /* Page loading animation */
         .landing-container {
-            animation: fadeIn 0.8s ease-out;
+            animation: slideIn 1s cubic-bezier(0.165, 0.84, 0.44, 1);
         }
 
-        @keyframes fadeIn {
+        @keyframes slideIn {
             from {
                 opacity: 0;
+                transform: translateY(30px);
             }
 
             to {
                 opacity: 1;
+                transform: translateY(0);
             }
         }
 
-        /* Page transition overlay */
+        /* Enhanced transition overlay */
         .page-transition-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
             height: 100vh;
-            background: var(--dark-color);
+            background: linear-gradient(135deg, var(--dark-color), var(--light-dark-color));
             z-index: 9999;
             display: flex;
             align-items: center;
             justify-content: center;
             opacity: 0;
             visibility: hidden;
-            transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            transition: all 0.8s cubic-bezier(0.165, 0.84, 0.44, 1);
         }
 
         .page-transition-overlay.active {
@@ -464,8 +547,8 @@
 
         .transition-content {
             text-align: center;
-            transform: translateY(20px);
-            transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.1s;
+            transform: translateY(30px);
+            transition: transform 0.8s cubic-bezier(0.165, 0.84, 0.44, 1) 0.2s;
         }
 
         .page-transition-overlay.active .transition-content {
@@ -473,40 +556,39 @@
         }
 
         .transition-icon {
-            width: 80px;
-            height: 80px;
-            margin: 0 auto 20px;
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 30px;
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: var(--apple-radius);
-            font-size: 2.5rem;
-            background: rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(30px);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            box-shadow: var(--apple-shadow);
+            border-radius: 25px;
+            font-size: 3rem;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: var(--glass-blur);
+            border: 2px solid rgba(255, 255, 255, 0.2);
             animation: pulse 2s infinite ease-in-out;
         }
 
         .transition-title {
-            font-size: 2rem;
+            font-size: 2.5rem;
             font-weight: 700;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
             color: var(--text-color);
             letter-spacing: -1px;
         }
 
         .transition-description {
-            font-size: 1rem;
+            font-size: 1.1rem;
             color: var(--text-muted-color);
-            margin-bottom: 30px;
+            margin-bottom: 40px;
         }
 
         .transition-loading {
-            width: 60px;
-            height: 4px;
+            width: 80px;
+            height: 6px;
             background: rgba(255, 255, 255, 0.1);
-            border-radius: 2px;
+            border-radius: 3px;
             margin: 0 auto;
             overflow: hidden;
             position: relative;
@@ -519,8 +601,9 @@
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, var(--primary-color), transparent);
+            background: var(--gradient-primary);
             animation: loading 1.5s infinite ease-in-out;
+            border-radius: 3px;
         }
 
         @keyframes pulse {
@@ -547,33 +630,29 @@
             }
         }
 
-        /* Enhanced section selection animation */
+        /* Selection animation */
         .platform-section.selecting {
-            transform: scale(1.02);
-            filter: brightness(1.2) !important;
+            transform: scale(1.03);
+            filter: brightness(1.3) !important;
             z-index: 100;
         }
 
-        .platform-section.selecting::before {
-            opacity: 1 !important;
-        }
-
         .platform-section.selecting .platform-icon {
-            transform: scale(1.2) rotateY(10deg);
-            animation: selectedPulse 0.6s ease-out;
+            transform: translateY(-15px) rotateX(10deg) rotateY(10deg) scale(1.1);
+            animation: selectedPulse 0.8s ease-out;
         }
 
         @keyframes selectedPulse {
             0% {
-                transform: scale(1.2) rotateY(10deg);
+                transform: translateY(-15px) rotateX(10deg) rotateY(10deg) scale(1.1);
             }
 
             50% {
-                transform: scale(1.3) rotateY(5deg);
+                transform: translateY(-20px) rotateX(5deg) rotateY(5deg) scale(1.15);
             }
 
             100% {
-                transform: scale(1.2) rotateY(10deg);
+                transform: translateY(-15px) rotateX(10deg) rotateY(10deg) scale(1.1);
             }
         }
     </style>
@@ -605,13 +684,16 @@
     </script>
 
     <main class="landing-container">
+        <!-- Animated Background -->
+        <div class="bg-particles"></div>
+
         <!-- Page Transition Overlay -->
         <div class="page-transition-overlay" id="transitionOverlay">
             <div class="transition-content">
                 <div class="transition-icon" id="transitionIcon">
-                    <i class="fas fa-spinner fa-spin"></i>
+                    <i class="fas fa-rocket"></i>
                 </div>
-                <h2 class="transition-title" id="transitionTitle">Yükleniyor...</h2>
+                <h2 class="transition-title" id="transitionTitle">Yolculuk Başlıyor...</h2>
                 <p class="transition-description" id="transitionDescription">Platform hazırlanıyor</p>
                 <div class="transition-loading"></div>
             </div>
@@ -621,20 +703,20 @@
         <div class="platform-section humat-section" data-url="{{ url_for('humat_index') }}">
             <div class="platform-content">
                 <div class="platform-icon">
-                    <i class="fas fa-users"></i>
+                    <i class="fas fa-users-cog"></i>
                 </div>
                 <h1 class="platform-title">HUMAT</h1>
-                <p class="platform-description">
-                    Hacettepe Üniversitesi öğrencileri ve mezunları için özel topluluk alanı
+                <p class="platform-subtitle">
+                    Hacettepe Üniversitesi'nin dijital kalbi - öğrenci yaşamının merkezi
                 </p>
                 <ul class="platform-features">
-                    <li><i class="fas fa-calendar"></i> Topluluk Etkinlikleri</li>
-                    <li><i class="fas fa-newspaper"></i> Güncel Haberler</li>
-                    <li><i class="fas fa-graduation-cap"></i> Öğrenci Ağı</li>
-                    <li><i class="fas fa-comments"></i> Forum Tartışmaları</li>
+                    <li><i class="fas fa-calendar-check"></i> Etkinlik Yönetimi</li>
+                    <li><i class="fas fa-newspaper"></i> Anlık Haberler</li>
+                    <li><i class="fas fa-comments"></i> İnteraktif Forum</li>
+                    <li><i class="fas fa-trophy"></i> Topluluk Rozetleri</li>
                 </ul>
                 <a href="{{ url_for('humat_index') }}" class="platform-btn">
-                    <i class="fas fa-arrow-right"></i> Topluluğa Katıl
+                    <i class="fas fa-door-open"></i> Topluluğa Kısmına Geçiş Yap
                 </a>
             </div>
         </div>
@@ -643,20 +725,20 @@
         <div class="platform-section fansub-section" data-url="{{ url_for('fansub_index') }}">
             <div class="platform-content">
                 <div class="platform-icon">
-                    <i class="fas fa-play-circle"></i>
+                    <i class="fas fa-film"></i>
                 </div>
                 <h1 class="platform-title">FANSUB</h1>
-                <p class="platform-description">
-                    Yüksek kaliteli anime çevirileri
+                <p class="platform-subtitle">
+                    Anime tutkunları için özel olarak hazırlanmış premium deneyim
                 </p>
                 <ul class="platform-features">
-                    <li><i class="fas fa-hd-video"></i> HD Kalitede Anime</li>
-                    <li><i class="fas fa-closed-captioning"></i> Türkçe Altyazı</li>
-                    <li><i class="fas fa-clock"></i> Güncel Sezon Takibi</li>
-                    <li><i class="fas fa-heart"></i> Kişisel İzleme Listesi</li>
+                    <li><i class="fas fa-tv"></i> Ultra HD Kalite</li>
+                    <li><i class="fas fa-language"></i> Özel Çeviriler</li>
+                    <li><i class="fas fa-bookmark"></i> Akıllı Takip</li>
+                    <li><i class="fas fa-star"></i> Özel İçerikler</li>
                 </ul>
                 <a href="{{ url_for('fansub_index') }}" class="platform-btn">
-                    <i class="fas fa-play"></i> İzlemeye Başla
+                    <i class="fas fa-play"></i> Fansuba Kısmına Geçiş Yap
                 </a>
             </div>
         </div>
@@ -665,12 +747,12 @@
     <!-- JavaScript for enhanced UX -->
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            // Simple loading animation
+            // Enhanced loading animation with stagger effect
             document.body.style.opacity = '0';
             setTimeout(() => {
-                document.body.style.transition = 'opacity 0.6s ease';
+                document.body.style.transition = 'opacity 0.8s cubic-bezier(0.165, 0.84, 0.44, 1)';
                 document.body.style.opacity = '1';
-            }, 100);
+            }, 150);
 
             // Get transition elements
             const transitionOverlay = document.getElementById('transitionOverlay');
@@ -678,126 +760,272 @@
             const transitionTitle = document.getElementById('transitionTitle');
             const transitionDescription = document.getElementById('transitionDescription');
 
-            // Section data for transitions
+            // Enhanced section data for smoother transitions
             const sectionData = {
                 'humat_index': {
-                    icon: 'fas fa-users',
-                    title: 'HUMAT\'a Geçiş Yapılıyor',
-                    description: 'Topluluk platformu yükleniyor...'
+                    icon: 'fas fa-users-cog',
+                    title: 'HUMAT\'a Yönlendiriliyorsunuz',
+                    description: 'Topluluk deneyimi yükleniyor...'
                 },
                 'fansub_index': {
-                    icon: 'fas fa-play-circle',
-                    title: 'FANSUB\'a Geçiş Yapılıyor',
-                    description: 'Anime platformu yükleniyor...'
+                    icon: 'fas fa-film',
+                    title: 'FANSUB\'a Yönlendiriliyorsunuz',
+                    description: 'Anime dünyası açılıyor...'
                 }
             };
 
-            // Enhanced section click with animation
+            // Advanced navigation with dynamic content
             function navigateWithTransition(url, sectionType) {
                 const data = sectionData[sectionType];
                 if (!data) return;
 
-                // Update transition content
-                transitionIcon.innerHTML = `<i class="${data.icon}"></i>`;
-                transitionTitle.textContent = data.title;
-                transitionDescription.textContent = data.description;
+                // Update transition content with smooth animation
+                transitionIcon.style.transform = 'scale(0.8) rotate(180deg)';
+                setTimeout(() => {
+                    transitionIcon.innerHTML = `<i class="${data.icon}"></i>`;
+                    transitionIcon.style.transform = 'scale(1) rotate(0deg)';
+                }, 200);
 
-                // Show transition overlay
+                transitionTitle.style.opacity = '0';
+                transitionDescription.style.opacity = '0';
+
+                setTimeout(() => {
+                    transitionTitle.textContent = data.title;
+                    transitionDescription.textContent = data.description;
+                    transitionTitle.style.opacity = '1';
+                    transitionDescription.style.opacity = '1';
+                }, 300);
+
+                // Show transition overlay with enhanced timing
                 transitionOverlay.classList.add('active');
 
-                // Navigate after animation
+                // Navigate after optimal animation duration
                 setTimeout(() => {
                     window.location.href = url;
-                }, 1200);
+                }, 1400);
             }
 
-            // Section click navigation with enhanced animations
+            // Enhanced section interactions
             const sections = document.querySelectorAll('.platform-section');
-            sections.forEach(section => {
+            let isNavigating = false;
+
+            sections.forEach((section, index) => {
+                // Staggered entrance animation
+                section.style.animationDelay = `${index * 0.2}s`;
+
                 section.addEventListener('click', function () {
+                    if (isNavigating) return;
+
                     const url = this.getAttribute('data-url');
                     if (url) {
-                        // Add selection animation
+                        isNavigating = true;
+
+                        // Enhanced selection animation
                         this.classList.add('selecting');
 
-                        // Fade other sections
+                        // Smooth fade effect for non-selected sections
                         sections.forEach(otherSection => {
                             if (otherSection !== this) {
-                                otherSection.style.opacity = '0.3';
-                                otherSection.style.transform = 'scale(0.95)';
+                                otherSection.style.transition = 'all 0.8s cubic-bezier(0.165, 0.84, 0.44, 1)';
+                                otherSection.style.opacity = '0.2';
+                                otherSection.style.transform = 'scale(0.95) translateY(10px)';
+                                otherSection.style.filter = 'blur(3px)';
                             }
                         });
 
-                        // Get section type from URL
+                        // Extract section type and initiate transition
                         const sectionType = url.split('/').pop();
 
-                        // Start transition after selection animation
                         setTimeout(() => {
                             navigateWithTransition(url, sectionType);
-                        }, 600);
+                        }, 700);
                     }
                 });
 
-                // Enhanced touch support
+                // Enhanced touch support with haptic-like feedback
                 section.addEventListener('touchstart', function (e) {
                     e.preventDefault();
                     this.style.transform = 'scale(0.98)';
+                    this.style.transition = 'transform 0.1s ease';
+
+                    // Vibration feedback if available
+                    if (navigator.vibrate) {
+                        navigator.vibrate(50);
+                    }
                 });
 
                 section.addEventListener('touchend', function (e) {
                     e.preventDefault();
                     this.style.transform = 'scale(1)';
-                    this.click();
+                    setTimeout(() => this.click(), 100);
                 });
 
-                // Mouse enter/leave effects
+                // Advanced mouse interactions
                 section.addEventListener('mouseenter', function () {
-                    if (!this.classList.contains('selecting')) {
-                        this.style.transition = 'all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+                    if (!this.classList.contains('selecting') && !isNavigating) {
+                        this.style.transition = 'all 0.5s cubic-bezier(0.165, 0.84, 0.44, 1)';
+
+                        // Subtle parallax effect
+                        const icon = this.querySelector('.platform-icon');
+                        const title = this.querySelector('.platform-title');
+                        if (icon) icon.style.transform = 'translateY(-3px) rotateX(2deg)';
+                        if (title) title.style.transform = 'translateY(-2px)';
+                    }
+                });
+
+                section.addEventListener('mouseleave', function () {
+                    if (!this.classList.contains('selecting') && !isNavigating) {
+                        const icon = this.querySelector('.platform-icon');
+                        const title = this.querySelector('.platform-title');
+                        if (icon) icon.style.transform = '';
+                        if (title) title.style.transform = '';
+                    }
+                });
+
+                // Mouse movement parallax effect
+                section.addEventListener('mousemove', function (e) {
+                    if (!isNavigating) {
+                        const rect = this.getBoundingClientRect();
+                        const centerX = rect.left + rect.width / 2;
+                        const centerY = rect.top + rect.height / 2;
+                        const deltaX = (e.clientX - centerX) / rect.width;
+                        const deltaY = (e.clientY - centerY) / rect.height;
+
+                        const content = this.querySelector('.platform-content');
+                        if (content) {
+                            content.style.transform = `perspective(1000px) rotateY(${deltaX * 1.5}deg) rotateX(${deltaY * 1.5}deg)`;
+                        }
                     }
                 });
             });
 
-            // Enhanced keyboard navigation
+            // Enhanced keyboard navigation with visual feedback
             document.addEventListener('keydown', function (e) {
-                if (e.key === 'ArrowLeft' || e.key === '1') {
-                    e.preventDefault();
-                    sections[0].click();
-                } else if (e.key === 'ArrowRight' || e.key === '2') {
-                    e.preventDefault();
-                    sections[1].click();
-                } else if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    // Focus on first section if no section is hovered
-                    const hoveredSection = document.querySelector('.platform-section:hover');
-                    if (hoveredSection) {
-                        hoveredSection.click();
-                    } else {
-                        sections[0].click();
-                    }
+                if (isNavigating) return;
+
+                let targetSection = null;
+
+                switch (e.key) {
+                    case 'ArrowLeft':
+                    case '1':
+                    case 'h':
+                    case 'H':
+                        e.preventDefault();
+                        targetSection = sections[0];
+                        break;
+                    case 'ArrowRight':
+                    case '2':
+                    case 'f':
+                    case 'F':
+                        e.preventDefault();
+                        targetSection = sections[1];
+                        break;
+                    case 'Enter':
+                    case ' ':
+                        e.preventDefault();
+                        const hoveredSection = document.querySelector('.platform-section:hover');
+                        targetSection = hoveredSection || sections[0];
+                        break;
+                }
+
+                if (targetSection) {
+                    // Visual feedback for keyboard selection
+                    targetSection.style.outline = '3px solid rgba(255, 255, 255, 0.5)';
+                    targetSection.style.outlineOffset = '10px';
+
+                    setTimeout(() => {
+                        targetSection.style.outline = '';
+                        targetSection.style.outlineOffset = '';
+                        targetSection.click();
+                    }, 200);
                 }
             });
 
-            // Prevent accidental double clicks
-            let isNavigating = false;
-            sections.forEach(section => {
-                section.addEventListener('click', function (e) {
-                    if (isNavigating) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        return false;
-                    }
-                    isNavigating = true;
+            // Parallax scrolling effect for mobile
+            if (window.innerWidth <= 768) {
+                window.addEventListener('scroll', function () {
+                    const scrolled = window.pageYOffset;
+                    const parallaxElements = document.querySelectorAll('.platform-icon');
+
+                    parallaxElements.forEach((element, index) => {
+                        const speed = 0.5;
+                        const yPos = -(scrolled * speed);
+                        element.style.transform = `translateY(${yPos}px)`;
+                    });
                 });
+            }
+
+            // Advanced page visibility handling
+            document.addEventListener('visibilitychange', function () {
+                const body = document.body;
+                if (document.hidden) {
+                    body.style.animationPlayState = 'paused';
+                    sections.forEach(section => {
+                        section.style.animationPlayState = 'paused';
+                    });
+                } else {
+                    body.style.animationPlayState = 'running';
+                    sections.forEach(section => {
+                        section.style.animationPlayState = 'running';
+                    });
+                }
             });
 
-            // Handle page visibility for better UX
-            document.addEventListener('visibilitychange', function () {
-                if (document.hidden) {
-                    // Pause any ongoing animations when tab is not visible
-                    document.body.style.animationPlayState = 'paused';
-                } else {
-                    document.body.style.animationPlayState = 'running';
+            // Performance optimization for transitions
+            const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+            if (prefersReducedMotion.matches) {
+                document.documentElement.style.setProperty('--transition-duration', '0.1s');
+            }
+
+            // Add subtle entrance animations for features
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, observerOptions);
+
+            // Observe feature lists for scroll animations
+            document.querySelectorAll('.platform-features li').forEach((feature, index) => {
+                feature.style.opacity = '0';
+                feature.style.transform = 'translateY(20px)';
+                feature.style.transition = `opacity 0.6s ease ${index * 0.1}s, transform 0.6s ease ${index * 0.1}s`;
+                observer.observe(feature);
+            });
+
+            // Easter egg: Konami code
+            let konamiCode = [];
+            const konamiSequence = [38, 38, 40, 40, 37, 39, 37, 39, 66, 65];
+
+            document.addEventListener('keydown', function (e) {
+                konamiCode.push(e.keyCode);
+                if (konamiCode.length > konamiSequence.length) {
+                    konamiCode.shift();
+                }
+
+                if (konamiCode.join('') === konamiSequence.join('')) {
+                    // Special animation for Konami code
+                    sections.forEach((section, index) => {
+                        setTimeout(() => {
+                            section.style.animation = 'pulse 0.5s ease-in-out';
+                        }, index * 100);
+                    });
+
+                    // Reset after animation
+                    setTimeout(() => {
+                        sections.forEach(section => {
+                            section.style.animation = '';
+                        });
+                    }, 1000);
+
+                    konamiCode = [];
                 }
             });
         });
