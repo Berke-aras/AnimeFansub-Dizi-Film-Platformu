@@ -71,7 +71,7 @@
     {% endfor %}
 
     <!-- Reply Form -->
-    {% if current_user.is_authenticated %}
+    {% if current_user.is_authenticated and (current_user.is_admin or current_user.is_community_member) %}
     <div class="card mt-4">
         <div class="card-header">
             <h5>Bir Cevap Yaz</h5>
@@ -85,6 +85,10 @@
             </form>
         </div>
     </div>
+    {% elif current_user.is_authenticated %}
+    <div class="alert alert-warning mt-4">
+        <i class="fas fa-lock me-2"></i>Cevap yazabilmek için topluluk üyesi olmanız gerekiyor.
+    </div>
     {% else %}
     <div class="alert alert-info mt-4">
         Cevap yazabilmek için <a href="{{ url_for('login', next=request.url) }}">giriş yapmalısınız</a>.
@@ -95,7 +99,7 @@
 
 {% block scripts %}
 {{ super() }}
-{% if current_user.is_authenticated %}
+{% if current_user.is_authenticated and (current_user.is_admin or current_user.is_community_member) %}
 <script src="https://cdn.ckeditor.com/ckeditor5/35.4.0/classic/ckeditor.js"></script>
 <script>
     ClassicEditor

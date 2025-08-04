@@ -12,6 +12,14 @@
         {% endif %}
     </div>
 
+    {% if not (current_user.is_admin or current_user.is_community_member) %}
+    <div class="alert alert-info mb-4">
+        <i class="fas fa-info-circle me-2"></i>
+        <strong>Forum Okuma Modu:</strong> Konuları okuyabilirsiniz ancak yeni konu açmak veya cevap yazmak için topluluk üyesi olmanız gerekiyor.
+        <a href="{{ url_for('community_register') }}" class="alert-link">Topluluk üyeliği için başvuru yapın</a>.
+    </div>
+    {% endif %}
+
     <div class="card">
         <div class="card-header">
             Kategoriler

@@ -60,7 +60,7 @@ def calendar_access_required(f):
     def decorated_function(*args, **kwargs):
         if not current_user.is_authenticated or not (current_user.is_admin or current_user.is_community_member):
             flash('Takvim erişimi için admin veya topluluk üyesi olmanız gerekiyor.', 'danger')
-            return redirect(url_for('index'))
+            return redirect(url_for('community.index'))
         return f(*args, **kwargs)
     return decorated_function
 

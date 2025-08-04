@@ -9,11 +9,27 @@
 {% endblock %}
 
 {% block content %}
+{% if current_user.is_authenticated and (current_user.is_admin or current_user.is_community_member) %}
 <div class="container my-5">
     <div id="calendar-wrapper">
         <div id="calendar"></div>
     </div>
 </div>
+{% else %}
+<div class="container my-5">
+    <div class="alert alert-warning text-center">
+        <i class="fas fa-lock fa-3x mb-3"></i>
+        <h4>Etkinlik Takvimi Erişimi Kısıtlı</h4>
+        <p>Etkinlik takvimine erişebilmek için admin yetkisine sahip olmalı veya topluluk üyesi olmalısınız.</p>
+        {% if current_user.is_authenticated %}
+            <a href="{{ url_for('community_register') }}" class="btn btn-primary">Topluluk Üyeliği İçin Başvur</a>
+        {% else %}
+            <a href="{{ url_for('login') }}" class="btn btn-primary me-2">Giriş Yap</a>
+            <a href="{{ url_for('community_register') }}" class="btn btn-outline-primary">Topluluk Üyeliği İçin Başvur</a>
+        {% endif %}
+    </div>
+</div>
+{% endif %}
 
 <!-- Event Details Modal -->
 <div class="modal fade" id="eventDetailModal" tabindex="-1" aria-labelledby="eventDetailModalLabel" aria-hidden="true">
@@ -49,11 +65,13 @@
 {% endblock %}
 
 {% block scripts %}
+{% if current_user.is_authenticated and (current_user.is_admin or current_user.is_community_member) %}
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/locales/tr.min.js"></script>
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
-    var calendarEl = document.getElementById('calendar');
-    var calendar = new FullCalendar.Calendar(calendarEl, {
-      themeSystem: 'bootstrap5',
+document.addEventListener('DOMContentLoaded', function() {
+  var calendarEl = document.getElementById('calendar');
+  var calendar = new FullCalendar.Calendar(calendarEl, {
       locale: 'tr',
       initialView: 'dayGridMonth',
       height: 'auto',
@@ -80,17 +98,13 @@
         const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
         document.getElementById('eventStart').textContent = event.start ? new Date(event.start).toLocaleString('tr-TR', options) : 'Belirtilmemiş';
         document.getElementById('eventEnd').textContent = event.end ? new Date(event.end).toLocaleString('tr-TR', options) : 'Belirtilmemiş';
-
+        
         var modal = new bootstrap.Modal(document.getElementById('eventDetailModal'));
         modal.show();
-      },
-      windowResize: function(view) {
-        if (window.innerWidth < 768) {
-            calendar.changeView('listWeek');
-        } 
       }
-    });
-    calendar.render();
   });
+  calendar.render();
+});
 </script>
+{% endif %}
 {% endblock %}
