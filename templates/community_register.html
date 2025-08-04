@@ -262,7 +262,8 @@
         border-left: 3px solid var(--success-color);
     }
 
-    .alert-danger, .alert-error {
+    .alert-danger,
+    .alert-error {
         background: rgba(220, 53, 69, 0.2);
         color: var(--danger-color);
         border-left: 3px solid var(--danger-color);
@@ -288,15 +289,15 @@
         .community-body {
             padding: 20px;
         }
-        
+
         .form-section {
             padding: 20px;
         }
-        
+
         .form-row {
             grid-template-columns: 1fr;
         }
-        
+
         .unit-selection {
             grid-template-columns: 1fr;
         }
@@ -308,16 +309,16 @@
 <div class="community-container">
     <!-- Flash Messages -->
     {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            <div class="flash-messages">
-                {% for category, message in messages %}
-                    <div class="alert alert-{{ 'danger' if category == 'error' else category }}">
-                        <i class="fas fa-{{ 'check-circle' if category == 'success' else 'exclamation-triangle' }} me-2"></i>
-                        {{ message }}
-                    </div>
-                {% endfor %}
-            </div>
-        {% endif %}
+    {% if messages %}
+    <div class="flash-messages">
+        {% for category, message in messages %}
+        <div class="alert alert-{{ 'danger' if category == 'error' else category }}">
+            <i class="fas fa-{{ 'check-circle' if category == 'success' else 'exclamation-triangle' }} me-2"></i>
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
     {% endwith %}
 
     <div class="community-card">
@@ -349,29 +350,31 @@
                 <!-- Giriş Bilgileri -->
                 <div class="form-section">
                     <h4 class="section-title"><i class="fas fa-key me-2"></i>Giriş Bilgileri</h4>
-                    
+
                     <div class="form-row">
                         <div class="form-group">
                             {{ form.username.label(class="form-label") }}
-                            {{ form.username(class="form-control" + (" is-invalid" if form.username.errors else ""), placeholder="Kullanıcı adınızı belirleyin") }}
+                            {{ form.username(class="form-control" + (" is-invalid" if form.username.errors else ""),
+                            placeholder="Kullanıcı adınızı belirleyin") }}
                             {% if form.username.errors %}
-                                <div class="error-message">
-                                    {% for error in form.username.errors %}
-                                        <i class="fas fa-exclamation-circle me-1"></i>{{ error }}
-                                    {% endfor %}
-                                </div>
+                            <div class="error-message">
+                                {% for error in form.username.errors %}
+                                <i class="fas fa-exclamation-circle me-1"></i>{{ error }}
+                                {% endfor %}
+                            </div>
                             {% endif %}
                         </div>
-                        
+
                         <div class="form-group">
                             {{ form.email.label(class="form-label") }}
-                            {{ form.email(class="form-control" + (" is-invalid" if form.email.errors else ""), placeholder="E-posta adresinizi girin") }}
+                            {{ form.email(class="form-control" + (" is-invalid" if form.email.errors else ""),
+                            placeholder="E-posta adresinizi girin") }}
                             {% if form.email.errors %}
-                                <div class="error-message">
-                                    {% for error in form.email.errors %}
-                                        <i class="fas fa-exclamation-circle me-1"></i>{{ error }}
-                                    {% endfor %}
-                                </div>
+                            <div class="error-message">
+                                {% for error in form.email.errors %}
+                                <i class="fas fa-exclamation-circle me-1"></i>{{ error }}
+                                {% endfor %}
+                            </div>
                             {% endif %}
                         </div>
                     </div>
@@ -379,25 +382,27 @@
                     <div class="form-row">
                         <div class="form-group">
                             {{ form.password.label(class="form-label") }}
-                            {{ form.password(class="form-control" + (" is-invalid" if form.password.errors else ""), placeholder="Güçlü bir şifre oluşturun") }}
+                            {{ form.password(class="form-control" + (" is-invalid" if form.password.errors else ""),
+                            placeholder="Güçlü bir şifre oluşturun") }}
                             {% if form.password.errors %}
-                                <div class="error-message">
-                                    {% for error in form.password.errors %}
-                                        <i class="fas fa-exclamation-circle me-1"></i>{{ error }}
-                                    {% endfor %}
-                                </div>
+                            <div class="error-message">
+                                {% for error in form.password.errors %}
+                                <i class="fas fa-exclamation-circle me-1"></i>{{ error }}
+                                {% endfor %}
+                            </div>
                             {% endif %}
                         </div>
-                        
+
                         <div class="form-group">
                             {{ form.password2.label(class="form-label") }}
-                            {{ form.password2(class="form-control" + (" is-invalid" if form.password2.errors else ""), placeholder="Şifrenizi tekrar girin") }}
+                            {{ form.password2(class="form-control" + (" is-invalid" if form.password2.errors else ""),
+                            placeholder="Şifrenizi tekrar girin") }}
                             {% if form.password2.errors %}
-                                <div class="error-message">
-                                    {% for error in form.password2.errors %}
-                                        <i class="fas fa-exclamation-circle me-1"></i>{{ error }}
-                                    {% endfor %}
-                                </div>
+                            <div class="error-message">
+                                {% for error in form.password2.errors %}
+                                <i class="fas fa-exclamation-circle me-1"></i>{{ error }}
+                                {% endfor %}
+                            </div>
                             {% endif %}
                         </div>
                     </div>
@@ -406,29 +411,31 @@
                 <!-- Kişisel Bilgiler -->
                 <div class="form-section">
                     <h4 class="section-title"><i class="fas fa-user me-2"></i>Kişisel Bilgiler</h4>
-                    
+
                     <div class="form-row">
                         <div class="form-group">
                             {{ form.name.label(class="form-label") }}
-                            {{ form.name(class="form-control" + (" is-invalid" if form.name.errors else ""), placeholder="Adınızı girin") }}
+                            {{ form.name(class="form-control" + (" is-invalid" if form.name.errors else ""),
+                            placeholder="Adınızı girin") }}
                             {% if form.name.errors %}
-                                <div class="error-message">
-                                    {% for error in form.name.errors %}
-                                        <i class="fas fa-exclamation-circle me-1"></i>{{ error }}
-                                    {% endfor %}
-                                </div>
+                            <div class="error-message">
+                                {% for error in form.name.errors %}
+                                <i class="fas fa-exclamation-circle me-1"></i>{{ error }}
+                                {% endfor %}
+                            </div>
                             {% endif %}
                         </div>
-                        
+
                         <div class="form-group">
                             {{ form.surname.label(class="form-label") }}
-                            {{ form.surname(class="form-control" + (" is-invalid" if form.surname.errors else ""), placeholder="Soyadınızı girin") }}
+                            {{ form.surname(class="form-control" + (" is-invalid" if form.surname.errors else ""),
+                            placeholder="Soyadınızı girin") }}
                             {% if form.surname.errors %}
-                                <div class="error-message">
-                                    {% for error in form.surname.errors %}
-                                        <i class="fas fa-exclamation-circle me-1"></i>{{ error }}
-                                    {% endfor %}
-                                </div>
+                            <div class="error-message">
+                                {% for error in form.surname.errors %}
+                                <i class="fas fa-exclamation-circle me-1"></i>{{ error }}
+                                {% endfor %}
+                            </div>
                             {% endif %}
                         </div>
                     </div>
@@ -436,38 +443,41 @@
                     <div class="form-row">
                         <div class="form-group">
                             {{ form.place_of_birth.label(class="form-label") }}
-                            {{ form.place_of_birth(class="form-control" + (" is-invalid" if form.place_of_birth.errors else ""), placeholder="Doğum yerinizi girin") }}
+                            {{ form.place_of_birth(class="form-control" + (" is-invalid" if form.place_of_birth.errors
+                            else ""), placeholder="Doğum yerinizi girin") }}
                             {% if form.place_of_birth.errors %}
-                                <div class="error-message">
-                                    {% for error in form.place_of_birth.errors %}
-                                        <i class="fas fa-exclamation-circle me-1"></i>{{ error }}
-                                    {% endfor %}
-                                </div>
+                            <div class="error-message">
+                                {% for error in form.place_of_birth.errors %}
+                                <i class="fas fa-exclamation-circle me-1"></i>{{ error }}
+                                {% endfor %}
+                            </div>
                             {% endif %}
                         </div>
-                        
+
                         <div class="form-group">
                             {{ form.date_of_birth.label(class="form-label") }}
-                            {{ form.date_of_birth(class="form-control" + (" is-invalid" if form.date_of_birth.errors else "")) }}
+                            {{ form.date_of_birth(class="form-control" + (" is-invalid" if form.date_of_birth.errors
+                            else "")) }}
                             {% if form.date_of_birth.errors %}
-                                <div class="error-message">
-                                    {% for error in form.date_of_birth.errors %}
-                                        <i class="fas fa-exclamation-circle me-1"></i>{{ error }}
-                                    {% endfor %}
-                                </div>
+                            <div class="error-message">
+                                {% for error in form.date_of_birth.errors %}
+                                <i class="fas fa-exclamation-circle me-1"></i>{{ error }}
+                                {% endfor %}
+                            </div>
                             {% endif %}
                         </div>
                     </div>
 
                     <div class="form-group">
                         {{ form.current_residence.label(class="form-label") }}
-                        {{ form.current_residence(class="form-control" + (" is-invalid" if form.current_residence.errors else ""), placeholder="Mevcut adresinizi girin") }}
+                        {{ form.current_residence(class="form-control" + (" is-invalid" if form.current_residence.errors
+                        else ""), placeholder="Mevcut adresinizi girin") }}
                         {% if form.current_residence.errors %}
-                            <div class="error-message">
-                                {% for error in form.current_residence.errors %}
-                                    <i class="fas fa-exclamation-circle me-1"></i>{{ error }}
-                                {% endfor %}
-                            </div>
+                        <div class="error-message">
+                            {% for error in form.current_residence.errors %}
+                            <i class="fas fa-exclamation-circle me-1"></i>{{ error }}
+                            {% endfor %}
+                        </div>
                         {% endif %}
                     </div>
                 </div>
@@ -475,29 +485,31 @@
                 <!-- Akademik Bilgiler -->
                 <div class="form-section">
                     <h4 class="section-title"><i class="fas fa-graduation-cap me-2"></i>Akademik Bilgiler</h4>
-                    
+
                     <div class="form-row">
                         <div class="form-group">
                             {{ form.student_id.label(class="form-label") }}
-                            {{ form.student_id(class="form-control" + (" is-invalid" if form.student_id.errors else ""), placeholder="Öğrenci numaranızı girin") }}
+                            {{ form.student_id(class="form-control" + (" is-invalid" if form.student_id.errors else ""),
+                            placeholder="Öğrenci numaranızı girin") }}
                             {% if form.student_id.errors %}
-                                <div class="error-message">
-                                    {% for error in form.student_id.errors %}
-                                        <i class="fas fa-exclamation-circle me-1"></i>{{ error }}
-                                    {% endfor %}
-                                </div>
+                            <div class="error-message">
+                                {% for error in form.student_id.errors %}
+                                <i class="fas fa-exclamation-circle me-1"></i>{{ error }}
+                                {% endfor %}
+                            </div>
                             {% endif %}
                         </div>
-                        
+
                         <div class="form-group">
                             {{ form.phone_number.label(class="form-label") }}
-                            {{ form.phone_number(class="form-control" + (" is-invalid" if form.phone_number.errors else ""), placeholder="+905123456789") }}
+                            {{ form.phone_number(class="form-control" + (" is-invalid" if form.phone_number.errors else
+                            ""), placeholder="+905123456789") }}
                             {% if form.phone_number.errors %}
-                                <div class="error-message">
-                                    {% for error in form.phone_number.errors %}
-                                        <i class="fas fa-exclamation-circle me-1"></i>{{ error }}
-                                    {% endfor %}
-                                </div>
+                            <div class="error-message">
+                                {% for error in form.phone_number.errors %}
+                                <i class="fas fa-exclamation-circle me-1"></i>{{ error }}
+                                {% endfor %}
+                            </div>
                             {% endif %}
                         </div>
                     </div>
@@ -505,38 +517,41 @@
                     <div class="form-row">
                         <div class="form-group">
                             {{ form.student_class.label(class="form-label") }}
-                            {{ form.student_class(class="form-control" + (" is-invalid" if form.student_class.errors else ""), placeholder="Sınıfınızı girin") }}
+                            {{ form.student_class(class="form-control" + (" is-invalid" if form.student_class.errors
+                            else ""), placeholder="Sınıfınızı girin") }}
                             {% if form.student_class.errors %}
-                                <div class="error-message">
-                                    {% for error in form.student_class.errors %}
-                                        <i class="fas fa-exclamation-circle me-1"></i>{{ error }}
-                                    {% endfor %}
-                                </div>
+                            <div class="error-message">
+                                {% for error in form.student_class.errors %}
+                                <i class="fas fa-exclamation-circle me-1"></i>{{ error }}
+                                {% endfor %}
+                            </div>
                             {% endif %}
                         </div>
-                        
+
                         <div class="form-group">
                             {{ form.faculty.label(class="form-label") }}
-                            {{ form.faculty(class="form-control" + (" is-invalid" if form.faculty.errors else ""), placeholder="Fakültenizi girin") }}
+                            {{ form.faculty(class="form-control" + (" is-invalid" if form.faculty.errors else ""),
+                            placeholder="Fakültenizi girin") }}
                             {% if form.faculty.errors %}
-                                <div class="error-message">
-                                    {% for error in form.faculty.errors %}
-                                        <i class="fas fa-exclamation-circle me-1"></i>{{ error }}
-                                    {% endfor %}
-                                </div>
+                            <div class="error-message">
+                                {% for error in form.faculty.errors %}
+                                <i class="fas fa-exclamation-circle me-1"></i>{{ error }}
+                                {% endfor %}
+                            </div>
                             {% endif %}
                         </div>
                     </div>
 
                     <div class="form-group">
                         {{ form.department.label(class="form-label") }}
-                        {{ form.department(class="form-control" + (" is-invalid" if form.department.errors else ""), placeholder="Bölümünüzü girin") }}
+                        {{ form.department(class="form-control" + (" is-invalid" if form.department.errors else ""),
+                        placeholder="Bölümünüzü girin") }}
                         {% if form.department.errors %}
-                            <div class="error-message">
-                                {% for error in form.department.errors %}
-                                    <i class="fas fa-exclamation-circle me-1"></i>{{ error }}
-                                {% endfor %}
-                            </div>
+                        <div class="error-message">
+                            {% for error in form.department.errors %}
+                            <i class="fas fa-exclamation-circle me-1"></i>{{ error }}
+                            {% endfor %}
+                        </div>
                         {% endif %}
                     </div>
                 </div>
@@ -547,26 +562,27 @@
                     <p style="color: var(--text-muted-color); margin-bottom: 15px;">
                         Katılmak istediğiniz birimleri seçin (birden fazla seçebilirsiniz):
                     </p>
-                    
+
                     <div class="unit-selection">
                         {% for choice in form.preferred_units.choices %}
-                            <div class="unit-card" data-unit="{{ choice[0] }}">
-                                <input type="checkbox" name="preferred_units" value="{{ choice[0] }}" id="unit_{{ choice[0] }}">
-                                <div class="unit-icon">
-                                    {% if choice[0] == 'drawing_unit' %}
-                                        <i class="fas fa-paint-brush"></i>
-                                    {% elif choice[0] == 'cosplay_unit' %}
-                                        <i class="fas fa-mask"></i>
-                                    {% elif choice[0] == 'social_media_unit' %}
-                                        <i class="fas fa-share-alt"></i>
-                                    {% elif choice[0] == 'translation_fansub' %}
-                                        <i class="fas fa-language"></i>
-                                    {% elif choice[0] == 'ninjutsu_unit' %}
-                                        <i class="fas fa-fist-raised"></i>
-                                    {% endif %}
-                                </div>
-                                <h5 class="unit-title">{{ choice[1] }}</h5>
+                        <div class="unit-card" data-unit="{{ choice[0] }}">
+                            <input type="checkbox" name="preferred_units" value="{{ choice[0] }}"
+                                id="unit_{{ choice[0] }}">
+                            <div class="unit-icon">
+                                {% if choice[0] == 'drawing_unit' %}
+                                <i class="fas fa-paint-brush"></i>
+                                {% elif choice[0] == 'cosplay_unit' %}
+                                <i class="fas fa-mask"></i>
+                                {% elif choice[0] == 'social_media_unit' %}
+                                <i class="fas fa-share-alt"></i>
+                                {% elif choice[0] == 'translation_fansub' %}
+                                <i class="fas fa-language"></i>
+                                {% elif choice[0] == 'ninjutsu_unit' %}
+                                <i class="fas fa-fist-raised"></i>
+                                {% endif %}
                             </div>
+                            <h5 class="unit-title">{{ choice[1] }}</h5>
+                        </div>
                         {% endfor %}
                     </div>
                 </div>
@@ -579,7 +595,7 @@
             </form>
 
             <div class="login-link">
-                <p>Zaten hesabınız var mı? 
+                <p>Zaten hesabınız var mı?
                     <a href="{{ url_for('login') }}">Giriş yapın</a>
                 </p>
                 <p>
@@ -591,51 +607,51 @@
 </div>
 
 <script>
-// Form progress tracking
-document.addEventListener('DOMContentLoaded', function() {
-    const form = document.getElementById('communityForm');
-    const progressFill = document.getElementById('progressFill');
-    const inputs = form.querySelectorAll('input[required], select[required], textarea[required]');
-    
-    function updateProgress() {
-        let filled = 0;
+    // Form progress tracking
+    document.addEventListener('DOMContentLoaded', function () {
+        const form = document.getElementById('communityForm');
+        const progressFill = document.getElementById('progressFill');
+        const inputs = form.querySelectorAll('input[required], select[required], textarea[required]');
+
+        function updateProgress() {
+            let filled = 0;
+            inputs.forEach(input => {
+                if (input.value.trim() !== '') {
+                    filled++;
+                }
+            });
+
+            const percentage = (filled / inputs.length) * 100;
+            progressFill.style.width = percentage + '%';
+        }
+
         inputs.forEach(input => {
-            if (input.value.trim() !== '') {
-                filled++;
+            input.addEventListener('input', updateProgress);
+            input.addEventListener('change', updateProgress);
+        });
+
+        updateProgress();
+    });
+
+    // Unit selection
+    document.querySelectorAll('.unit-card').forEach(card => {
+        card.addEventListener('click', function () {
+            const checkbox = this.querySelector('input[type="checkbox"]');
+            checkbox.checked = !checkbox.checked;
+
+            if (checkbox.checked) {
+                this.classList.add('selected');
+            } else {
+                this.classList.remove('selected');
             }
         });
-        
-        const percentage = (filled / inputs.length) * 100;
-        progressFill.style.width = percentage + '%';
-    }
-    
-    inputs.forEach(input => {
-        input.addEventListener('input', updateProgress);
-        input.addEventListener('change', updateProgress);
     });
-    
-    updateProgress();
-});
 
-// Unit selection
-document.querySelectorAll('.unit-card').forEach(card => {
-    card.addEventListener('click', function() {
-        const checkbox = this.querySelector('input[type="checkbox"]');
-        checkbox.checked = !checkbox.checked;
-        
-        if (checkbox.checked) {
-            this.classList.add('selected');
-        } else {
-            this.classList.remove('selected');
-        }
+    // Initialize selected units
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('.unit-card input[type="checkbox"]:checked').forEach(checkbox => {
+            checkbox.closest('.unit-card').classList.add('selected');
+        });
     });
-});
-
-// Initialize selected units
-document.addEventListener('DOMContentLoaded', function() {
-    document.querySelectorAll('.unit-card input[type="checkbox"]:checked').forEach(checkbox => {
-        checkbox.closest('.unit-card').classList.add('selected');
-    });
-});
 </script>
 {% endblock %}
