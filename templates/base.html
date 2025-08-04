@@ -53,12 +53,24 @@
                         <li class="nav-item">
                             <a class="nav-link" href="{{ url_for('animes') }}">Keşfet</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('support') }}">Bizi Destekle</a>
+                        </li>
                     </ul>
                     <form class="d-flex me-3" action="{{ url_for('animes') }}" method="GET">
                         <input class="form-control me-2" type="search" name="query" placeholder="Anime Ara..." aria-label="Search">
                     </form>
                     <ul class="navbar-nav">
                         {% if current_user.is_authenticated %}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link" href="#" id="notificationBell" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-bell"></i>
+                                <span class="badge rounded-pill bg-danger" id="notification-count" style="display: none;"></span>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end notification-dropdown" aria-labelledby="notificationBell" id="notification-list">
+                                <!-- Notifications will be loaded here -->
+                            </ul>
+                        </li>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="fas fa-user me-1"></i> {{ current_user.username }}
@@ -129,6 +141,59 @@
             observer.observe(shelf);
         });
     </script>
+    {% if current_user.is_authenticated %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const notificationBell = document.getElementById('notificationBell');
+            const notificationCount = document.getElementById('notification-count');
+            const notificationList = document.getElementById('notification-list');
+
+            function fetchNotifications() {
+                fetch('{{ url_for("get_notifications") }}')
+                    .then(response => response.json())
+                    .then(data => {
+                        updateNotificationUI(data);
+                    });
+            }
+
+            function updateNotificationUI(notifications) {
+                notificationList.innerHTML = '';
+                let unreadCount = 0;
+                if (notifications.length === 0) {
+                    notificationList.innerHTML = '<li><a class="dropdown-item text-muted">Bildirim yok</a></li>';
+                } else {
+                    notifications.forEach(n => {
+                        if (!n.is_read) {
+                            unreadCount++;
+                        }
+                        const listItem = document.createElement('li');
+                        listItem.innerHTML = `<a class="dropdown-item ${n.is_read ? '' : 'fw-bold'}" href="/anime/${n.anime_id}">${n.message}</a>`;
+                        notificationList.appendChild(listItem);
+                    });
+                }
+
+                if (unreadCount > 0) {
+                    notificationCount.textContent = unreadCount;
+                    notificationCount.style.display = 'inline-block';
+                } else {
+                    notificationCount.style.display = 'none';
+                }
+            }
+
+            notificationBell.addEventListener('show.bs.dropdown', function () {
+                fetch('{{ url_for("mark_notifications_as_read") }}', { method: 'POST' })
+                    .then(() => {
+                        notificationCount.style.display = 'none';
+                        // Optionally, you can visually mark notifications as read without a full refresh
+                        setTimeout(fetchNotifications, 200); // Refresh after a short delay
+                    });
+            });
+
+            fetchNotifications();
+            setInterval(fetchNotifications, 60000); // Refresh every minute
+        });
+    </script>
+    {% endif %}
     {% block scripts %}{% endblock %}
 </body>
 

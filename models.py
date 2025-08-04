@@ -24,6 +24,7 @@ class User(db.Model):
     watchlist_animes = db.relationship('Anime', secondary=watchlist, lazy='subquery',
         backref=db.backref('watchlisted_by', lazy=True))
     ratings = db.relationship('Rating', backref='user', lazy=True)
+    notifications = db.relationship('Notification', backref='user', lazy=True, cascade="all, delete-orphan")
 
     def is_active(self):
         return True
@@ -80,3 +81,11 @@ class Log(db.Model):
     description = db.Column(db.Text, nullable=False)
     timestamp = db.Column(db.DateTime, server_default=db.func.now())
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
+
+class Notification(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    message = db.Column(db.String(255), nullable=False)
+    timestamp = db.Column(db.DateTime, server_default=db.func.now())
+    is_read = db.Column(db.Boolean, default=False, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    anime_id = db.Column(db.Integer, db.ForeignKey('anime.id'), nullable=True) # Optional: link notification to an anime

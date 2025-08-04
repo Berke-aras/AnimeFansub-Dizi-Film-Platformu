@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}Bizi Destekle - Humat Fansub{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="p-5 rounded-3" style="background-color: var(--light-dark-color);">
+                <h1 class="display-4 fw-bold text-center mb-4">Bizi Destekle</h1>
+                <p class="lead text-center mb-5">Projemizi ve sunucu masraflarımızı karşılamak için desteğinize ihtiyacımız var. Aşağıdaki yöntemleri kullanarak bize bağışta bulunabilirsiniz. Desteğiniz, projenin devamlılığı ve gelişimi için hayati önem taşımaktadır.</p>
+                
+                <div class="row text-center">
+                    <div class="col-md-6 mb-4">
+                        <div class="p-4 rounded-3 h-100" style="background-color: var(--dark-color);">
+                            <i class="fab fa-patreon fa-3x mb-3 text-danger"></i>
+                            <h4 class="fw-bold">Patreon</h4>
+                            <p>Aylık düzenli bağışlarla projemize sürekli destek olabilirsiniz.</p>
+                            <a href="#" class="btn btn-primary">Patreon Sayfamız</a>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-4">
+                        <div class="p-4 rounded-3 h-100" style="background-color: var(--dark-color);">
+                            <i class="fas fa-coffee fa-3x mb-3 text-warning"></i>
+                            <h4 class="fw-bold">Buy Me a Coffee</h4>
+                            <p>Tek seferlik bağışlarla bize bir kahve ısmarlayabilirsiniz.</p>
+                            <a href="#" class="btn btn-primary">Kahve Ismarla</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-5 text-center">
+                    <p class="text-muted">Herhangi bir sorunuz veya öneriniz varsa, lütfen bizimle iletişime geçmekten çekinmeyin.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

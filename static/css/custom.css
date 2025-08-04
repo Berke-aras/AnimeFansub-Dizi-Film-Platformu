@@ -561,6 +561,24 @@ footer a:hover {
     margin-left: 5px;
 }
 
+/* --- Notifications --- */
+.notification-dropdown {
+    width: 350px;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.notification-dropdown .dropdown-item {
+    white-space: normal; /* Allow text to wrap */
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.notification-dropdown .dropdown-item:last-child {
+    border-bottom: none;
+}
+
 /* --- Shelf Variations --- */
 .shelf-editors-pick {
     background: linear-gradient(to right, #1a1a1a, #141414);
