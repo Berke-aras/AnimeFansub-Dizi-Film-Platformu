@@ -2,6 +2,17 @@
 from flask import render_template, request, redirect, url_for, flash, Blueprint
 from flask_login import current_user, login_required
 from models import db, CommunityInfo
+from functools import wraps
+
+# Admin decorator'ı
+def admin_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not current_user.is_authenticated or not (current_user.can_add_user or current_user.can_edit or current_user.can_delete):
+            flash('Bu sayfaya erişim yetkiniz yok.', 'danger')
+            return redirect(url_for('community.index'))
+        return f(*args, **kwargs)
+    return decorated_function
 
 # Blueprint oluşturma
 community_bp = Blueprint('community', __name__,
@@ -97,12 +108,8 @@ def new_post(thread_id):
 # --- Admin Rotaları ---
 @community_bp.route('/admin/manage_categories', methods=['GET', 'POST'])
 @login_required
+@admin_required
 def manage_categories():
-    # Bu fonksiyonun başına admin yetki kontrolü eklenmeli!
-    # if not current_user.is_admin:
-    #     flash('Bu sayfaya erişim yetkiniz yok.', 'danger')
-    #     return redirect(url_for('community.index'))
-
     if request.method == 'POST':
         name = request.form['name']
         description = request.form['description']
@@ -119,8 +126,8 @@ def manage_categories():
 
 @community_bp.route('/admin/delete_category/<int:category_id>', methods=['POST'])
 @login_required
+@admin_required
 def delete_category(category_id):
-    # Admin yetki kontrolü
     category = ForumCategory.query.get_or_404(category_id)
     db.session.delete(category)
     db.session.commit()
@@ -129,8 +136,8 @@ def delete_category(category_id):
 
 @community_bp.route('/admin/delete_thread/<int:thread_id>', methods=['POST'])
 @login_required
+@admin_required
 def delete_thread(thread_id):
-    # Admin yetki kontrolü
     thread = ForumThread.query.get_or_404(thread_id)
     category_id = thread.category_id
     db.session.delete(thread)
@@ -140,8 +147,8 @@ def delete_thread(thread_id):
 
 @community_bp.route('/admin/delete_post/<int:post_id>', methods=['POST'])
 @login_required
+@admin_required
 def delete_post(post_id):
-    # Admin yetki kontrolü
     post = ForumPost.query.get_or_404(post_id)
     thread_id = post.thread_id
     db.session.delete(post)
@@ -151,11 +158,8 @@ def delete_post(post_id):
 
 @community_bp.route('/admin/community_info', methods=['GET', 'POST'])
 @login_required
+@admin_required
 def admin_community_info():
-    # if not current_user.is_admin:
-    #     flash('Bu sayfaya erişim yetkiniz yok.', 'danger')
-    #     return redirect(url_for('community.index'))
-    
     info = CommunityInfo.query.first()
     if request.method == 'POST':
         if not info:

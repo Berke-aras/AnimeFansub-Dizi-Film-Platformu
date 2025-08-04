@@ -26,3 +26,62 @@ h1, h2, h3, h4, h5, h6 {
 a {
     color: #e50914 !important; /* --forum-text-link */
 }
+
+/* CKEditor 5 specific content styling */
+.ck-content {
+    color: #f5f5f5 !important;
+    background-color: #1c1c1c !important;
+}
+
+.ck-content p {
+    color: #f5f5f5 !important;
+}
+
+.ck-content span {
+    color: #f5f5f5 !important;
+}
+
+.ck-content div {
+    color: #f5f5f5 !important;
+}
+
+.ck-content h1, 
+.ck-content h2, 
+.ck-content h3, 
+.ck-content h4, 
+.ck-content h5, 
+.ck-content h6 {
+    color: #f5f5f5 !important;
+}
+
+.ck-content a {
+    color: #e50914 !important;
+}
+
+/* CKEditor editor area styling */
+.ck-editor__editable {
+    color: #f5f5f5 !important;
+    background-color: #1c1c1c !important;
+}
+
+.ck-editor__editable p {
+    color: #f5f5f5 !important;
+}
+
+.ck-editor__editable span {
+    color: #f5f5f5 !important;
+}
+
+.ck-editor__editable div {
+    color: #f5f5f5 !important;
+}
+
+/* Override any default text color in the editor */
+.ck-editor__editable * {
+    color: #f5f5f5 !important;
+}
+
+/* Ensure placeholder text is visible */
+.ck-editor__editable.ck-placeholder::before {
+    color: #999 !important;
+}

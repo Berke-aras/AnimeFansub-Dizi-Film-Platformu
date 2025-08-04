@@ -288,10 +288,12 @@
 /* CKEditor editable area color fix */
 .ck.ck-editor__editable {
     color: var(--forum-text-primary) !important;
+    background-color: var(--forum-card-bg) !important;
 }
 
 .ck.ck-editor__editable.ck-rounded-corners.ck-editor__editable_inline {
     color: var(--forum-text-primary) !important;
+    background-color: var(--forum-card-bg) !important;
 }
 
 /* More specific CKEditor content styling */
@@ -308,5 +310,25 @@
 }
 
 .ck-editor__editable.ck-content div {
+    color: var(--forum-text-primary) !important;
+}
+
+/* Force all text in CKEditor to use correct color */
+.ck-editor__editable * {
+    color: var(--forum-text-primary) !important;
+}
+
+/* CKEditor typing area text color */
+.ck.ck-editor__editable.ck-focused {
+    color: var(--forum-text-primary) !important;
+}
+
+/* CKEditor placeholder text */
+.ck.ck-editor__editable.ck-placeholder::before {
+    color: #999 !important;
+}
+
+/* Ensure text color when typing */
+.ck-editor__editable p:not(.ck-placeholder) {
     color: var(--forum-text-primary) !important;
 }

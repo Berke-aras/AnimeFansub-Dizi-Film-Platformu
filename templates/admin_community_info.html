@@ -3,6 +3,42 @@
 
 {% block title %}Topluluk Bilgilerini Yönet{% endblock %}
 
+{% block head_extra %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/forum_revamp.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/ckeditor_content.css') }}">
+<style>
+    /* Force CKEditor text color for admin page */
+    .ck.ck-editor__editable {
+        color: #f5f5f5 !important;
+        background-color: #1c1c1c !important;
+    }
+    
+    .ck.ck-editor__editable * {
+        color: #f5f5f5 !important;
+    }
+    
+    .ck.ck-editor__editable p {
+        color: #f5f5f5 !important;
+    }
+    
+    .ck.ck-editor__editable span {
+        color: #f5f5f5 !important;
+    }
+    
+    .ck.ck-editor__editable div {
+        color: #f5f5f5 !important;
+    }
+    
+    .ck-content {
+        color: #f5f5f5 !important;
+    }
+    
+    .ck-content * {
+        color: #f5f5f5 !important;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
 <div class="container mt-5">
     <h2>Topluluk Bilgilerini Yönet</h2>
@@ -37,7 +73,46 @@
                 ]
             },
             extraAllowedContent: '*',
-            contentsCss: ['{{ url_for("static", filename="css/ckeditor_content.css") }}']
+            contentsCss: ['{{ url_for("static", filename="css/ckeditor_content.css") }}'],
+            toolbar: {
+                items: [
+                    'heading', '|',
+                    'bold', 'italic', 'link', '|',
+                    'bulletedList', 'numberedList', '|',
+                    'outdent', 'indent', '|',
+                    'blockQuote', 'insertTable', '|',
+                    'undo', 'redo'
+                ]
+            }
         } )
+        .then( editor => {
+            // Force text color in editor immediately
+            const editableElement = editor.ui.getEditableElement();
+            if (editableElement) {
+                editableElement.style.color = '#f5f5f5 !important';
+                editableElement.style.setProperty('color', '#f5f5f5', 'important');
+            }
+            
+            // Force text color on any change
+            editor.editing.view.document.on('change:data', () => {
+                const editableElement = editor.ui.getEditableElement();
+                if (editableElement) {
+                    editableElement.style.color = '#f5f5f5 !important';
+                    editableElement.style.setProperty('color', '#f5f5f5', 'important');
+                }
+            });
+            
+            // Force text color after editor is ready
+            editor.editing.view.document.on('ready', () => {
+                const editableElement = editor.ui.getEditableElement();
+                if (editableElement) {
+                    editableElement.style.color = '#f5f5f5 !important';
+                    editableElement.style.setProperty('color', '#f5f5f5', 'important');
+                }
+            });
+        })
+        .catch( error => {
+            console.error( error );
+        } );
 </script>
 {% endblock %}
