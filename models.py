@@ -21,6 +21,8 @@ class User(db.Model):
     can_delete = db.Column(db.Boolean, default=False)
     can_edit = db.Column(db.Boolean, default=False)
     can_add_user = db.Column(db.Boolean, default=False)
+    is_admin = db.Column(db.Boolean, default=False)
+    is_community_member = db.Column(db.Boolean, default=False)
     logs = db.relationship('Log', backref='user', lazy=True)
     watchlist_animes = db.relationship('Anime', secondary=watchlist, lazy='subquery',
         backref=db.backref('watchlisted_by', lazy=True))
@@ -115,3 +117,22 @@ class CommunityInfo(db.Model):
     title = db.Column(db.String(200), nullable=False)
     content = db.Column(db.Text, nullable=False)
     image_url = db.Column(db.String(200), nullable=True)
+
+class CommunityMember(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    name = db.Column(db.String(100), nullable=False)
+    surname = db.Column(db.String(100), nullable=False)
+    place_of_birth = db.Column(db.String(100), nullable=False)  # Doğum ili/ülke
+    date_of_birth = db.Column(db.Date, nullable=False)
+    current_residence = db.Column(db.String(100), nullable=False)
+    student_id = db.Column(db.String(20), nullable=False)
+    phone_number = db.Column(db.String(20), nullable=False)
+    student_class = db.Column(db.String(50), nullable=False)
+    faculty = db.Column(db.String(100), nullable=False)
+    department = db.Column(db.String(100), nullable=False)
+    preferred_units = db.Column(db.Text, nullable=True)  # JSON string for multiple selections
+    registration_date = db.Column(db.DateTime, default=datetime.utcnow)
+    is_approved = db.Column(db.Boolean, default=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)  # Link to User after approval
+    user = db.relationship('User', backref='community_profile')

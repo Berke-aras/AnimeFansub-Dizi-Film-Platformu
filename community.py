@@ -8,9 +8,19 @@ from functools import wraps
 def admin_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        if not current_user.is_authenticated or not (current_user.can_add_user or current_user.can_edit or current_user.can_delete):
+        if not current_user.is_authenticated or not (current_user.can_add_user or current_user.can_edit or current_user.can_delete or current_user.is_admin):
             flash('Bu sayfaya erişim yetkiniz yok.', 'danger')
             return redirect(url_for('community.index'))
+        return f(*args, **kwargs)
+    return decorated_function
+
+# Topluluk erişim decorator'ı
+def community_access_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not current_user.is_authenticated or not (current_user.is_admin or current_user.is_community_member):
+            flash('Bu sayfaya erişim için admin veya topluluk üyesi olmanız gerekiyor.', 'danger')
+            return redirect(url_for('index'))
         return f(*args, **kwargs)
     return decorated_function
 
@@ -49,18 +59,24 @@ class ForumPost(db.Model):
 
 # --- Rotalar ---
 @community_bp.route('/')
+@login_required
+@community_access_required
 def index():
     categories = ForumCategory.query.all()
     info = CommunityInfo.query.first()
     return render_template('community_index.html', categories=categories, info=info)
 
 @community_bp.route('/category/<int:category_id>')
+@login_required
+@community_access_required
 def view_category(category_id):
     category = ForumCategory.query.get_or_404(category_id)
     threads = ForumThread.query.filter_by(category_id=category_id).order_by(ForumThread.timestamp.desc()).all()
     return render_template('community_category.html', category=category, threads=threads)
 
 @community_bp.route('/thread/<int:thread_id>')
+@login_required
+@community_access_required
 def view_thread(thread_id):
     thread = ForumThread.query.get_or_404(thread_id)
     posts = ForumPost.query.filter_by(thread_id=thread_id).order_by(ForumPost.timestamp.asc()).all()
@@ -68,6 +84,7 @@ def view_thread(thread_id):
 
 @community_bp.route('/new_thread/<int:category_id>', methods=['GET', 'POST'])
 @login_required
+@community_access_required
 def new_thread(category_id):
     category = ForumCategory.query.get_or_404(category_id)
     if request.method == 'POST':
@@ -90,6 +107,7 @@ def new_thread(category_id):
 
 @community_bp.route('/new_post/<int:thread_id>', methods=['POST'])
 @login_required
+@community_access_required
 def new_post(thread_id):
     thread = ForumThread.query.get_or_404(thread_id)
     content = request.form['content']

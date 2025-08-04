@@ -25,6 +25,14 @@
                     {{ form.can_add_user(class="form-check-input") }}
                     {{ form.can_add_user.label(class="form-check-label") }}
                 </div>
+                <div class="form-check form-switch mb-3">
+                    {{ form.is_admin(class="form-check-input") }}
+                    {{ form.is_admin.label(class="form-check-label") }}
+                </div>
+                <div class="form-check form-switch mb-3">
+                    {{ form.is_community_member(class="form-check-input") }}
+                    {{ form.is_community_member.label(class="form-check-label") }}
+                </div>
                 <div class="d-grid mt-4">
                     {{ form.submit(class="btn btn-primary btn-lg") }}
                 </div>

@@ -3,8 +3,8 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user, UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
-from forms import LoginForm, AnimeForm, EpisodeForm, UserForm, EditUserForm, GenreForm, AnimeSearchForm, RegistrationForm, NewsForm, EventForm
-from models import db, User, Anime, Episode, Log, Genre, Rating, Notification, News, Event, CommunityInfo
+from forms import LoginForm, AnimeForm, EpisodeForm, UserForm, EditUserForm, GenreForm, AnimeSearchForm, RegistrationForm, NewsForm, EventForm, CommunityRegistrationForm
+from models import db, User, Anime, Episode, Log, Genre, Rating, Notification, News, Event, CommunityInfo, CommunityMember
 from community import community_bp, ForumThread
 import re
 import random
@@ -40,8 +40,26 @@ with app.app_context():
 def admin_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        if not current_user.is_authenticated or not (current_user.can_add_user or current_user.can_edit or current_user.can_delete):
+        if not current_user.is_authenticated or not (current_user.can_add_user or current_user.can_edit or current_user.can_delete or current_user.is_admin):
             flash('Bu sayfayı görüntüleme yetkiniz yok.', 'danger')
+            return redirect(url_for('index'))
+        return f(*args, **kwargs)
+    return decorated_function
+
+def community_access_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not current_user.is_authenticated or not (current_user.is_admin or current_user.is_community_member):
+            flash('Bu sayfaya erişim için admin veya topluluk üyesi olmanız gerekiyor.', 'danger')
+            return redirect(url_for('index'))
+        return f(*args, **kwargs)
+    return decorated_function
+
+def calendar_access_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not current_user.is_authenticated or not (current_user.is_admin or current_user.is_community_member):
+            flash('Takvim erişimi için admin veya topluluk üyesi olmanız gerekiyor.', 'danger')
             return redirect(url_for('index'))
         return f(*args, **kwargs)
     return decorated_function
@@ -82,6 +100,35 @@ def register():
         flash('Hesabınız oluşturuldu! Şimdi giriş yapabilirsiniz.', 'success')
         return redirect(url_for('login'))
     return render_template('register.html', title='Kayıt Ol', form=form)
+
+@app.route('/community/register', methods=['GET', 'POST'])
+def community_register():
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+    form = CommunityRegistrationForm()
+    if form.validate_on_submit():
+        # Seçilen birimleri JSON string olarak kaydet
+        preferred_units = ','.join(form.preferred_units.data) if form.preferred_units.data else ''
+        
+        community_member = CommunityMember(
+            email=form.email.data,
+            name=form.name.data,
+            surname=form.surname.data,
+            place_of_birth=form.place_of_birth.data,
+            date_of_birth=form.date_of_birth.data,
+            current_residence=form.current_residence.data,
+            student_id=form.student_id.data,
+            phone_number=form.phone_number.data,
+            student_class=form.student_class.data,
+            faculty=form.faculty.data,
+            department=form.department.data,
+            preferred_units=preferred_units
+        )
+        db.session.add(community_member)
+        db.session.commit()
+        flash('Topluluk üyeliği başvurunuz alındı! Onaylandığında e-posta ile bilgilendirileceksiniz.', 'success')
+        return redirect(url_for('index'))
+    return render_template('community_register.html', title='Topluluk Üyeliği Başvuru', form=form)
 
 @app.route('/')
 def index():
@@ -354,10 +401,18 @@ def add_user():
     form = UserForm()
     if form.validate_on_submit():
         hashed_password = generate_password_hash(form.password.data, method='pbkdf2:sha256')
-        new_user = User(username=form.username.data, password=hashed_password, can_delete=form.can_delete.data, can_edit=form.can_edit.data, can_add_user=form.can_add_user.data)
+        new_user = User(
+            username=form.username.data, 
+            password=hashed_password, 
+            can_delete=form.can_delete.data, 
+            can_edit=form.can_edit.data, 
+            can_add_user=form.can_add_user.data,
+            is_admin=form.is_admin.data,
+            is_community_member=form.is_community_member.data
+        )
         db.session.add(new_user)
         db.session.commit()
-        log_action('add_user', f'Yeni kullanıcı eklendi: {form.username.data}, Silme yetkisi: {form.can_delete.data}, Düzenleme yetkisi: {form.can_edit.data}, Kullanıcı ekleme yetkisi: {form.can_add_user.data}')
+        log_action('add_user', f'Yeni kullanıcı eklendi: {form.username.data}, Silme: {form.can_delete.data}, Düzenleme: {form.can_edit.data}, Kullanıcı ekleme: {form.can_add_user.data}, Admin: {form.is_admin.data}, Topluluk üyesi: {form.is_community_member.data}')
         flash('Kullanıcı başarıyla eklendi!', 'success')
         return redirect(url_for('admin'))
     return render_template('add_user.html', form=form)
@@ -397,8 +452,10 @@ def edit_user(user_id):
         user.can_delete = form.can_delete.data
         user.can_edit = form.can_edit.data
         user.can_add_user = form.can_add_user.data
+        user.is_admin = form.is_admin.data
+        user.is_community_member = form.is_community_member.data
         db.session.commit()
-        log_action('edit_user', f'Kullanıcı "{user.username}" güncellendi.')
+        log_action('edit_user', f'Kullanıcı "{user.username}" güncellendi. Admin: {user.is_admin}, Topluluk üyesi: {user.is_community_member}')
         flash('Kullanıcı başarıyla güncellendi.', 'success')
         return redirect(url_for('admin'))
     return render_template('edit_user.html', form=form, user=user)
@@ -567,6 +624,8 @@ def pin_news(news_id):
     return redirect(url_for('manage_news'))
 
 @app.route('/events')
+@login_required
+@calendar_access_required
 def events():
     return render_template('events.html')
 
@@ -629,6 +688,70 @@ def api_events():
             'url': url_for('edit_event', event_id=event.id)
         })
     return jsonify(event_list)
+
+@app.route('/admin/community_members')
+@login_required
+@admin_required
+def manage_community_members():
+    pending_members = CommunityMember.query.filter_by(is_approved=False).all()
+    approved_members = CommunityMember.query.filter_by(is_approved=True).all()
+    return render_template('admin_community_members.html', 
+                         pending_members=pending_members, 
+                         approved_members=approved_members)
+
+@app.route('/admin/community_members/approve/<int:member_id>', methods=['POST'])
+@login_required
+@admin_required
+def approve_community_member(member_id):
+    member = CommunityMember.query.get_or_404(member_id)
+    
+    # Onaylanan üyeye otomatik bir kullanıcı hesabı oluştur
+    username = f"{member.name.lower()}.{member.surname.lower()}"
+    # Eğer username zaten varsa, sonuna sayı ekle
+    counter = 1
+    original_username = username
+    while User.query.filter_by(username=username).first():
+        username = f"{original_username}{counter}"
+        counter += 1
+    
+    # Geçici şifre oluştur (gerçek uygulamada e-posta ile gönderilmeli)
+    temp_password = f"temp{member.student_id}2024"
+    hashed_password = generate_password_hash(temp_password, method='pbkdf2:sha256')
+    
+    # Yeni kullanıcı oluştur
+    new_user = User(
+        username=username,
+        password=hashed_password,
+        is_community_member=True
+    )
+    db.session.add(new_user)
+    db.session.flush()  # ID'yi almak için
+    
+    # Topluluk üyesini güncelle
+    member.is_approved = True
+    member.user_id = new_user.id
+    
+    db.session.commit()
+    
+    flash(f'{member.name} {member.surname} onaylandı. Kullanıcı adı: {username}, Geçici şifre: {temp_password}', 'success')
+    return redirect(url_for('manage_community_members'))
+
+@app.route('/admin/community_members/reject/<int:member_id>', methods=['POST'])
+@login_required
+@admin_required
+def reject_community_member(member_id):
+    member = CommunityMember.query.get_or_404(member_id)
+    db.session.delete(member)
+    db.session.commit()
+    flash(f'{member.name} {member.surname} başvurusu reddedildi.', 'warning')
+    return redirect(url_for('manage_community_members'))
+
+@app.route('/admin/community_members/view/<int:member_id>')
+@login_required
+@admin_required
+def view_community_member(member_id):
+    member = CommunityMember.query.get_or_404(member_id)
+    return render_template('view_community_member.html', member=member)
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5400)

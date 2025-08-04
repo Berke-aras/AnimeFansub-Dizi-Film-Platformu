@@ -1,8 +1,8 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, TextAreaField, SubmitField, BooleanField, SelectField, IntegerField, DateTimeField
-from wtforms.validators import DataRequired, Length, Optional, EqualTo, ValidationError
+from wtforms import StringField, PasswordField, TextAreaField, SubmitField, BooleanField, SelectField, IntegerField, DateTimeField, DateField, SelectMultipleField
+from wtforms.validators import DataRequired, Length, Optional, EqualTo, ValidationError, Email
 from wtforms_sqlalchemy.fields import QuerySelectMultipleField
-from models import Genre, User
+from models import Genre, User, CommunityMember
 
 def get_genres():
     return Genre.query.all()
@@ -70,6 +70,8 @@ class UserForm(FlaskForm):
     can_delete = BooleanField('Silme Yetkisi')
     can_edit = BooleanField('Düzenleme Yetkisi')
     can_add_user = BooleanField('Kullanıcı Ekleme Yetkisi')
+    is_admin = BooleanField('Admin Yetkisi')
+    is_community_member = BooleanField('Topluluk Üyesi')
     submit = SubmitField('Kullanıcı Ekle')
 
 class EditUserForm(FlaskForm):
@@ -77,6 +79,8 @@ class EditUserForm(FlaskForm):
     can_delete = BooleanField('Silme Yetkisi')
     can_edit = BooleanField('Düzenleme Yetkisi')
     can_add_user = BooleanField('Kullanıcı Ekleme Yetkisi')
+    is_admin = BooleanField('Admin Yetkisi')
+    is_community_member = BooleanField('Topluluk Üyesi')
     submit = SubmitField('Kullanıcıyı Güncelle')
 
 class NewsForm(FlaskForm):
@@ -92,3 +96,47 @@ class EventForm(FlaskForm):
     start_time = StringField('Başlangıç Zamanı', validators=[DataRequired()])
     end_time = StringField('Bitiş Zamanı', validators=[Optional()])
     submit = SubmitField('Etkinlik Oluştur')
+
+class CommunityRegistrationForm(FlaskForm):
+    email = StringField('E-posta Adresi', validators=[DataRequired(), Email()])
+    name = StringField('Adınız (Name)', validators=[DataRequired(), Length(min=2, max=100)])
+    surname = StringField('Soyadınız (Surname)', validators=[DataRequired(), Length(min=2, max=100)])
+    place_of_birth = StringField('Doğum İliniz (Place of Birth, for international students: Country)', validators=[DataRequired(), Length(min=2, max=100)])
+    date_of_birth = DateField('Doğum Tarihiniz (Date of Birth)', validators=[DataRequired()])
+    current_residence = StringField('Mevcut Oturduğunuz Yer (Current Residence)', validators=[DataRequired(), Length(min=2, max=100)])
+    student_id = StringField('Öğrenci Numaranız (Student ID)', validators=[DataRequired(), Length(min=1, max=20)])
+    phone_number = StringField('Telefon Numaranız, boşluksuz, ülke alan kodlu Örn: +905123456789 (Phone No., without whitespace and country code)', validators=[DataRequired(), Length(min=10, max=20)])
+    student_class = StringField('Sınıfınız (Class)', validators=[DataRequired(), Length(min=1, max=50)])
+    faculty = StringField('Fakülteniz (Faculty/School/Institute)', validators=[DataRequired(), Length(min=2, max=100)])
+    department = StringField('Bölümünüz (Department)', validators=[DataRequired(), Length(min=2, max=100)])
+    preferred_units = SelectMultipleField('Hangi birimde çalışmak istersiniz? (Which unit do you want to participate to?)', 
+                                        choices=[
+                                            ('anime_dubbing', 'Anime Dublaj'),
+                                            ('translation', 'Çeviri'),
+                                            ('editing', 'Editörlük'),
+                                            ('timing', 'Timing'),
+                                            ('quality_control', 'Kalite Kontrolü'),
+                                            ('social_media', 'Sosyal Medya'),
+                                            ('graphic_design', 'Grafik Tasarım'),
+                                            ('web_development', 'Web Geliştirme'),
+                                            ('project_management', 'Proje Yönetimi')
+                                        ], 
+                                        validators=[Optional()])
+    submit = SubmitField('Topluluk Üyeliği İçin Başvur')
+
+    def validate_email(self, email):
+        member = CommunityMember.query.filter_by(email=email.data).first()
+        if member:
+            raise ValidationError('Bu e-posta adresi zaten kayıtlı.')
+
+    def validate_student_id(self, student_id):
+        member = CommunityMember.query.filter_by(student_id=student_id.data).first()
+        if member:
+            raise ValidationError('Bu öğrenci numarası zaten kayıtlı.')
+
+    def validate_phone_number(self, phone_number):
+        if not phone_number.data.startswith('+'):
+            raise ValidationError('Telefon numarası ülke kodu ile başlamalıdır (örn: +905123456789)')
+        member = CommunityMember.query.filter_by(phone_number=phone_number.data).first()
+        if member:
+            raise ValidationError('Bu telefon numarası zaten kayıtlı.')

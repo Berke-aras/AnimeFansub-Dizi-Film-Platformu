@@ -1,10 +1,9 @@
-
 {% extends "humat_base.html" %}
 
 {% block title %}Topluluk Merkezi{% endblock %}
 
 {% block head_extra %}
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/forum_revamp.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/forum_revamp.css') }}">
 {% endblock %}
 
 {% block content %}
@@ -26,12 +25,13 @@
                     <div class="hub-content-card">
                         <div class="card-body ck-content">
                             {% if info %}
-                                {{ info.content|safe }}
+                            {{ info.content|safe }}
                             {% else %}
-                                <div class="text-center p-5">
-                                    <h2>Topluluk Merkezine Hoş Geldiniz!</h2>
-                                    <p class="lead text-muted">Burada toplulukla ilgili önemli bilgiler ve duyurular yer alacak.</p>
-                                </div>
+                            <div class="text-center p-5">
+                                <h2>Topluluk Merkezine Hoş Geldiniz!</h2>
+                                <p class="lead text-muted">Burada toplulukla ilgili önemli bilgiler ve duyurular yer
+                                    alacak.</p>
+                            </div>
                             {% endif %}
                         </div>
                     </div>
@@ -59,9 +59,9 @@
                 <div class="card h-100 hub-feature-card">
                     <div class="card-body text-center d-flex flex-column align-items-center justify-content-center">
                         <i class="fas fa-newspaper fa-3x mb-3"></i>
-                        <h5 class="card-title">Haberler</h5>
-                        <p class="card-text">En son anime ve topluluk haberlerini okuyun.</p>
-                        <a href="{{ url_for('news') }}" class="btn btn-outline-light mt-auto">Haberleri Oku</a>
+                        <h5 class="card-title">Duyuru & Haberler </h5>
+                        <p class="card-text">En son anime ve topluluk duyurularını okuyun.</p>
+                        <a href="{{ url_for('news') }}" class="btn btn-outline-light mt-auto"> Oku</a>
                     </div>
                 </div>
             </div>
@@ -85,15 +85,16 @@
                 <h4><i class="fas fa-fire me-2"></i>Son Forum Konuları</h4>
                 <div class="list-group recent-activity-list">
                     {% for thread in latest_threads %}
-                        <a href="{{ url_for('community.view_thread', thread_id=thread.id) }}" class="list-group-item list-group-item-action">
-                            <div class="d-flex w-100 justify-content-between">
-                                <h6 class="mb-1">{{ thread.title }}</h6>
-                                <small>{{ thread.timestamp.strftime('%d-%m') }}</small>
-                            </div>
-                            <small class="text-muted">{{ thread.user_username }} tarafından</small>
-                        </a>
+                    <a href="{{ url_for('community.view_thread', thread_id=thread.id) }}"
+                        class="list-group-item list-group-item-action">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1">{{ thread.title }}</h6>
+                            <small>{{ thread.timestamp.strftime('%d-%m') }}</small>
+                        </div>
+                        <small class="text-muted">{{ thread.user_username }} tarafından</small>
+                    </a>
                     {% else %}
-                        <p class="text-muted p-3">Henüz konu yok.</p>
+                    <p class="text-muted p-3">Henüz konu yok.</p>
                     {% endfor %}
                 </div>
             </div>
@@ -101,15 +102,16 @@
                 <h4><i class="fas fa-bullhorn me-2"></i>Son Haberler</h4>
                 <div class="list-group recent-activity-list">
                     {% for item in latest_news %}
-                        <a href="{{ url_for('view_news', news_id=item.id) }}" class="list-group-item list-group-item-action">
-                            <div class="d-flex w-100 justify-content-between">
-                                <h6 class="mb-1">{{ item.title }}</h6>
-                                <small>{{ item.timestamp.strftime('%d-%m') }}</small>
-                            </div>
-                            <small class="text-muted">{{ item.author.username }} tarafından</small>
-                        </a>
+                    <a href="{{ url_for('view_news', news_id=item.id) }}"
+                        class="list-group-item list-group-item-action">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1">{{ item.title }}</h6>
+                            <small>{{ item.timestamp.strftime('%d-%m') }}</small>
+                        </div>
+                        <small class="text-muted">{{ item.author.username }} tarafından</small>
+                    </a>
                     {% else %}
-                        <p class="text-muted p-3">Henüz haber yok.</p>
+                    <p class="text-muted p-3">Henüz haber yok.</p>
                     {% endfor %}
                 </div>
             </div>

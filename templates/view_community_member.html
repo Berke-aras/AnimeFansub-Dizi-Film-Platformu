@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+
+{% block title %}Topluluk Üyesi Detayları{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Topluluk Üyesi Detayları</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5 class="text-primary">Kişisel Bilgiler</h5>
+                            <table class="table table-sm">
+                                <tr>
+                                    <td><strong>Ad:</strong></td>
+                                    <td>{{ member.name }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Soyad:</strong></td>
+                                    <td>{{ member.surname }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>E-posta:</strong></td>
+                                    <td>{{ member.email }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Doğum Yeri:</strong></td>
+                                    <td>{{ member.place_of_birth }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Doğum Tarihi:</strong></td>
+                                    <td>{{ member.date_of_birth.strftime('%d.%m.%Y') }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Mevcut Adres:</strong></td>
+                                    <td>{{ member.current_residence }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Telefon:</strong></td>
+                                    <td>{{ member.phone_number }}</td>
+                                </tr>
+                            </table>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <h5 class="text-primary">Akademik Bilgiler</h5>
+                            <table class="table table-sm">
+                                <tr>
+                                    <td><strong>Öğrenci No:</strong></td>
+                                    <td>{{ member.student_id }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Sınıf:</strong></td>
+                                    <td>{{ member.student_class }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Fakülte:</strong></td>
+                                    <td>{{ member.faculty }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Bölüm:</strong></td>
+                                    <td>{{ member.department }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Başvuru Tarihi:</strong></td>
+                                    <td>{{ member.registration_date.strftime('%d.%m.%Y %H:%M') }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Durum:</strong></td>
+                                    <td>
+                                        {% if member.is_approved %}
+                                            <span class="badge bg-success">Onaylandı</span>
+                                        {% else %}
+                                            <span class="badge bg-warning">Beklemede</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% if member.user %}
+                                <tr>
+                                    <td><strong>Kullanıcı Adı:</strong></td>
+                                    <td><span class="badge bg-info">{{ member.user.username }}</span></td>
+                                </tr>
+                                {% endif %}
+                            </table>
+                        </div>
+                    </div>
+                    
+                    {% if member.preferred_units %}
+                    <div class="mt-4">
+                        <h5 class="text-primary">İlgilendiği Birimler</h5>
+                        <div class="d-flex flex-wrap gap-2">
+                            {% for unit in member.preferred_units.split(',') %}
+                                {% if unit %}
+                                    <span class="badge bg-secondary">
+                                        {% if unit == 'anime_dubbing' %}Anime Dublaj
+                                        {% elif unit == 'translation' %}Çeviri
+                                        {% elif unit == 'editing' %}Editörlük
+                                        {% elif unit == 'timing' %}Timing
+                                        {% elif unit == 'quality_control' %}Kalite Kontrolü
+                                        {% elif unit == 'social_media' %}Sosyal Medya
+                                        {% elif unit == 'graphic_design' %}Grafik Tasarım
+                                        {% elif unit == 'web_development' %}Web Geliştirme
+                                        {% elif unit == 'project_management' %}Proje Yönetimi
+                                        {% else %}{{ unit }}
+                                        {% endif %}
+                                    </span>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <div class="mt-4">
+                        {% if not member.is_approved %}
+                        <div class="btn-group" role="group">
+                            <form method="POST" action="{{ url_for('approve_community_member', member_id=member.id) }}" 
+                                  class="d-inline">
+                                <button type="submit" class="btn btn-success" 
+                                        onclick="return confirm('Bu üyeyi onaylamak istediğinizden emin misiniz?')">
+                                    Üyeyi Onayla
+                                </button>
+                            </form>
+                            <form method="POST" action="{{ url_for('reject_community_member', member_id=member.id) }}" 
+                                  class="d-inline">
+                                <button type="submit" class="btn btn-danger" 
+                                        onclick="return confirm('Bu başvuruyu reddetmek istediğinizden emin misiniz?')">
+                                    Başvuruyu Reddet
+                                </button>
+                            </form>
+                        </div>
+                        {% endif %}
+                        <a href="{{ url_for('manage_community_members') }}" class="btn btn-secondary">Geri Dön</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
