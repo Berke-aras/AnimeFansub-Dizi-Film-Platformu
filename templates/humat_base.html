@@ -1,7 +1,8 @@
 {% extends "base.html" %}
 
 {% block head_extra %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/forum_revamp.css') }}">
+    {{ super() }}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/forum_revamp.css') }}">
 {% endblock %}
 
 {# This block overrides the default header from base.html #}
@@ -25,6 +26,10 @@
                     <li class="nav-item">
                         <a class="nav-link {{ 'active' if request.endpoint.startswith('community') or request.endpoint in ['news', 'events'] else '' }}"
                             href="{{ url_for('community_hub') }}">Topluluk</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ 'active' if request.endpoint.startswith('community.') else '' }}"
+                            href="{{ url_for('community.index') }}">Forum</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link {{ 'active' if request.endpoint == 'support' else '' }}"
