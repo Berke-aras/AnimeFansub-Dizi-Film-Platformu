@@ -352,3 +352,408 @@
 .ck-editor__editable p:not(.ck-placeholder) {
     color: var(--forum-text-primary) !important;
 }
+
+/* Mobile Responsive Styles */
+@media (max-width: 768px) {
+    /* Container Mobile */
+    .forum-container,
+    .hub-container {
+        padding-top: 1rem;
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+    }
+
+    /* Hero Section Mobile */
+    .hub-hero {
+        height: 40vh;
+        min-height: 300px;
+    }
+
+    .hub-hero-overlay {
+        padding-bottom: 2rem;
+    }
+
+    .hub-hero .display-3 {
+        font-size: 2rem !important;
+        text-align: center;
+    }
+
+    .hub-content-wrapper {
+        margin-top: -40px;
+        padding-bottom: 2rem;
+    }
+
+    .hub-content-card .card-body {
+        padding: 1.5rem !important;
+    }
+
+    /* Cards Mobile */
+    .forum-container .card,
+    .hub-container .card {
+        margin-bottom: 1rem !important;
+        border-radius: 6px !important;
+    }
+
+    .forum-container .card-header,
+    .hub-container .card-header {
+        padding: 0.75rem 1rem !important;
+        font-size: 1rem !important;
+    }
+
+    /* Category List Mobile */
+    .forum-container .category-item {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        padding: 1rem !important;
+    }
+
+    .forum-container .category-icon {
+        margin-right: 0 !important;
+        margin-bottom: 0.5rem !important;
+        font-size: 1.5rem !important;
+    }
+
+    .forum-container .category-info {
+        width: 100% !important;
+        margin-bottom: 0.5rem !important;
+    }
+
+    .forum-container .category-info h5 {
+        font-size: 1.1rem !important;
+        margin-bottom: 0.25rem !important;
+    }
+
+    .forum-container .category-info p {
+        font-size: 0.85rem !important;
+        line-height: 1.4 !important;
+    }
+
+    .forum-container .category-stats {
+        margin-left: 0 !important;
+        text-align: left !important;
+        padding-left: 0 !important;
+        font-size: 0.85rem !important;
+    }
+
+    /* Thread List Mobile */
+    .forum-container .thread-list .card-header {
+        display: none !important;
+    }
+
+    .forum-container .thread-list .list-group-item {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        padding: 1rem !important;
+    }
+
+    .forum-container .thread-starter-avatar {
+        display: none !important;
+    }
+
+    .forum-container .thread-info {
+        width: 100% !important;
+        margin-right: 0 !important;
+        margin-bottom: 0.75rem !important;
+    }
+
+    .forum-container .thread-info h5 {
+        font-size: 1rem !important;
+        line-height: 1.3 !important;
+        margin-bottom: 0.5rem !important;
+    }
+
+    .forum-container .thread-meta {
+        font-size: 0.75rem !important;
+    }
+
+    .forum-container .thread-stats,
+    .forum-container .thread-last-post {
+        flex-basis: auto !important;
+        text-align: left !important;
+        font-size: 0.8rem !important;
+        width: 100% !important;
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        padding: 0.5rem 0 !important;
+        border-top: 1px solid var(--forum-border-color) !important;
+        margin-top: 0.5rem !important;
+    }
+
+    .forum-container .thread-stats {
+        border-top: none !important;
+        margin-top: 0 !important;
+    }
+
+    /* Post View Mobile */
+    .forum-container .post-card {
+        flex-direction: column !important;
+    }
+
+    .forum-container .post-user-panel {
+        flex: none !important;
+        padding: 1rem !important;
+        border-right: none !important;
+        border-bottom: 1px solid var(--forum-border-color) !important;
+        text-align: center !important;
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        justify-content: flex-start !important;
+    }
+
+    .forum-container .post-user-panel .fa-user-circle {
+        margin-right: 0.75rem !important;
+        font-size: 2rem !important;
+    }
+
+    .forum-container .post-user-panel h6 {
+        margin: 0 !important;
+        font-size: 0.9rem !important;
+    }
+
+    .forum-container .post-header {
+        padding: 0.5rem 1rem !important;
+        font-size: 0.8rem !important;
+    }
+
+    .forum-container .post-body {
+        padding: 1rem !important;
+    }
+
+    .forum-container .post-footer {
+        padding: 0.5rem 1rem !important;
+    }
+
+    /* Button Mobile */
+    .btn {
+        font-size: 0.9rem !important;
+        padding: 0.6rem 1rem !important;
+    }
+
+    /* Title and Header Mobile */
+    .forum-container h1,
+    .hub-container h1 {
+        font-size: 1.5rem !important;
+        margin-bottom: 0.5rem !important;
+    }
+
+    .forum-container h2,
+    .hub-container h2 {
+        font-size: 1.3rem !important;
+    }
+
+    /* Breadcrumb Mobile */
+    .breadcrumb {
+        font-size: 0.85rem !important;
+        margin-bottom: 0.75rem !important;
+    }
+
+    /* Alert Mobile */
+    .alert {
+        font-size: 0.9rem !important;
+        padding: 0.75rem !important;
+        margin-bottom: 1rem !important;
+    }
+
+    /* Feature Cards Mobile */
+    .hub-feature-card {
+        margin-bottom: 1rem !important;
+    }
+
+    .hub-feature-card .card-body {
+        padding: 1.25rem !important;
+    }
+
+    .hub-feature-card i {
+        font-size: 2rem !important;
+    }
+
+    /* Recent Activity Mobile */
+    .recent-activity-list .list-group-item {
+        padding: 0.75rem !important;
+        margin-bottom: 0.25rem !important;
+    }
+
+    .recent-activity-list .list-group-item h6 {
+        font-size: 0.9rem !important;
+        margin-bottom: 0.25rem !important;
+    }
+
+    /* Form Controls Mobile */
+    .form-control,
+    .form-select {
+        font-size: 1rem !important;
+        padding: 0.75rem !important;
+    }
+
+    /* CKEditor Mobile */
+    .ck.ck-editor__main > .ck-editor__editable {
+        min-height: 200px !important;
+        font-size: 0.9rem !important;
+    }
+
+    .ck.ck-toolbar {
+        font-size: 0.85rem !important;
+    }
+
+    .ck-content {
+        padding: 1rem !important;
+        line-height: 1.6 !important;
+    }
+}
+
+/* Extra Small Devices (phones, 576px and down) */
+@media (max-width: 576px) {
+    .forum-container,
+    .hub-container {
+        padding-left: 0.25rem;
+        padding-right: 0.25rem;
+    }
+
+    /* Hero Extra Small */
+    .hub-hero {
+        height: 35vh;
+        min-height: 250px;
+    }
+
+    .hub-hero .display-3 {
+        font-size: 1.75rem !important;
+        padding: 0 1rem;
+    }
+
+    /* Cards Extra Small */
+    .forum-container .card-header,
+    .hub-container .card-header {
+        padding: 0.5rem 0.75rem !important;
+        font-size: 0.95rem !important;
+    }
+
+    /* Category Extra Small */
+    .forum-container .category-item {
+        padding: 0.75rem !important;
+    }
+
+    .forum-container .category-info h5 {
+        font-size: 1rem !important;
+    }
+
+    .forum-container .category-info p {
+        font-size: 0.8rem !important;
+    }
+
+    /* Thread List Extra Small */
+    .forum-container .thread-list .list-group-item {
+        padding: 0.75rem !important;
+    }
+
+    .forum-container .thread-info h5 {
+        font-size: 0.95rem !important;
+    }
+
+    .forum-container .thread-meta {
+        font-size: 0.7rem !important;
+    }
+
+    /* Post Extra Small */
+    .forum-container .post-user-panel {
+        padding: 0.75rem !important;
+    }
+
+    .forum-container .post-body {
+        padding: 0.75rem !important;
+    }
+
+    /* Buttons Extra Small */
+    .btn {
+        font-size: 0.85rem !important;
+        padding: 0.5rem 0.75rem !important;
+    }
+
+    /* Typography Extra Small */
+    .forum-container h1,
+    .hub-container h1 {
+        font-size: 1.3rem !important;
+    }
+
+    /* Alert Extra Small */
+    .alert {
+        font-size: 0.85rem !important;
+        padding: 0.5rem !important;
+    }
+
+    /* Hub Content Extra Small */
+    .hub-content-card .card-body {
+        padding: 1rem !important;
+    }
+
+    /* CKEditor Extra Small */
+    .ck.ck-editor__main > .ck-editor__editable {
+        min-height: 150px !important;
+        font-size: 0.85rem !important;
+    }
+
+    .ck-content {
+        padding: 0.75rem !important;
+    }
+}
+
+/* Landscape Mobile Optimization */
+@media (max-width: 768px) and (orientation: landscape) {
+    .hub-hero {
+        height: 50vh;
+    }
+
+    .hub-hero .display-3 {
+        font-size: 1.8rem !important;
+    }
+
+    .forum-container .thread-list .list-group-item {
+        flex-direction: row !important;
+        align-items: center !important;
+    }
+
+    .forum-container .thread-info {
+        margin-bottom: 0 !important;
+        margin-right: 1rem !important;
+    }
+
+    .forum-container .thread-stats,
+    .forum-container .thread-last-post {
+        flex-direction: column !important;
+        text-align: center !important;
+        border-top: none !important;
+        margin-top: 0 !important;
+        padding: 0 !important;
+        flex-basis: 80px !important;
+    }
+}
+
+/* Touch Device Optimizations */
+@media (hover: none) and (pointer: coarse) {
+    .forum-container .category-item,
+    .forum-container .thread-list .list-group-item,
+    .recent-activity-list .list-group-item {
+        min-height: 44px;
+        touch-action: manipulation;
+    }
+
+    .btn {
+        min-height: 44px;
+        min-width: 44px;
+    }
+
+    .forum-container .category-info h5 a,
+    .forum-container .thread-info h5 a {
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+        padding: 0.25rem 0;
+    }
+
+    /* Larger touch targets for links */
+    .breadcrumb-item a {
+        padding: 0.5rem;
+        margin: -0.5rem;
+    }
+}

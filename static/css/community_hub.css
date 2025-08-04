@@ -1,4 +1,3 @@
-
 /* community_hub.css */
 
 .hub-container {
@@ -19,7 +18,12 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(to top, rgba(20, 20, 20, 1) 10%, rgba(20, 20, 20, 0.3) 70%, rgba(20, 20, 20, 0) 100%);
+    background: linear-gradient(
+        to top,
+        rgba(20, 20, 20, 1) 10%,
+        rgba(20, 20, 20, 0.3) 70%,
+        rgba(20, 20, 20, 0) 100%
+    );
     display: flex;
     align-items: flex-end; /* Align content to the bottom */
     justify-content: center;
@@ -56,8 +60,8 @@
     line-height: 1.8;
 }
 
-.hub-content-card .ck-content h1, 
-.hub-content-card .ck-content h2, 
+.hub-content-card .ck-content h1,
+.hub-content-card .ck-content h2,
 .hub-content-card .ck-content h3 {
     color: #ffffff;
     font-weight: 600;
@@ -111,3 +115,234 @@
     color: #ffffff;
 }
 
+/* Mobile Responsive Styles */
+@media (max-width: 768px) {
+    /* Hub Hero Mobile */
+    .hub-hero {
+        height: 40vh;
+        min-height: 300px;
+    }
+
+    .hub-hero-overlay {
+        padding-bottom: 2rem;
+        text-align: center;
+    }
+
+    .hub-hero .display-3 {
+        font-size: 2rem;
+        padding: 0 1rem;
+    }
+
+    /* Hub Content Mobile */
+    .hub-content-wrapper {
+        margin-top: -40px;
+        padding-bottom: 2rem;
+    }
+
+    .hub-content-card {
+        border-radius: 12px;
+        margin: 0 1rem;
+    }
+
+    .hub-content-card .card-body {
+        padding: 1.5rem 1.25rem;
+    }
+
+    /* CKEditor Content Mobile */
+    .hub-content-card .ck-content {
+        font-size: 0.9rem;
+        line-height: 1.6;
+    }
+
+    .hub-content-card .ck-content h1 {
+        font-size: 1.5rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .hub-content-card .ck-content h2 {
+        font-size: 1.3rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .hub-content-card .ck-content h3 {
+        font-size: 1.1rem;
+        margin-bottom: 0.75rem;
+    }
+
+    /* Feature Cards Mobile */
+    .hub-feature-card {
+        border-radius: 12px;
+        margin-bottom: 1.5rem;
+    }
+
+    .hub-feature-card:hover {
+        transform: none;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .hub-feature-card .card-body {
+        padding: 1.25rem;
+    }
+
+    .hub-feature-card .card-title {
+        font-size: 1.1rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .hub-feature-card i {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+    }
+
+    /* Buttons Mobile */
+    .btn {
+        padding: 0.7rem 1.4rem;
+        font-size: 0.9rem;
+        border-radius: 10px;
+        font-weight: 600;
+    }
+
+    /* Container Mobile */
+    .container,
+    .container-fluid {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+}
+
+/* Extra Small Devices (phones, 576px and down) */
+@media (max-width: 576px) {
+    /* Hub Hero Extra Small */
+    .hub-hero {
+        height: 35vh;
+        min-height: 250px;
+    }
+
+    .hub-hero-overlay {
+        padding-bottom: 1.5rem;
+    }
+
+    .hub-hero .display-3 {
+        font-size: 1.75rem;
+        padding: 0 0.75rem;
+    }
+
+    /* Hub Content Extra Small */
+    .hub-content-wrapper {
+        margin-top: -30px;
+        padding-bottom: 1.5rem;
+    }
+
+    .hub-content-card {
+        border-radius: 10px;
+        margin: 0 0.75rem;
+    }
+
+    .hub-content-card .card-body {
+        padding: 1.25rem 1rem;
+    }
+
+    /* CKEditor Content Extra Small */
+    .hub-content-card .ck-content {
+        font-size: 0.85rem;
+    }
+
+    .hub-content-card .ck-content h1 {
+        font-size: 1.3rem;
+    }
+
+    .hub-content-card .ck-content h2 {
+        font-size: 1.15rem;
+    }
+
+    .hub-content-card .ck-content h3 {
+        font-size: 1rem;
+    }
+
+    /* Feature Cards Extra Small */
+    .hub-feature-card {
+        border-radius: 10px;
+        margin-bottom: 1.25rem;
+    }
+
+    .hub-feature-card .card-body {
+        padding: 1rem;
+    }
+
+    .hub-feature-card .card-title {
+        font-size: 1rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .hub-feature-card i {
+        font-size: 1.75rem;
+        margin-bottom: 0.75rem;
+    }
+
+    /* Buttons Extra Small */
+    .btn {
+        padding: 0.6rem 1.2rem;
+        font-size: 0.85rem;
+        border-radius: 8px;
+    }
+
+    /* Container Extra Small */
+    .container,
+    .container-fluid {
+        padding-left: 0.75rem;
+        padding-right: 0.75rem;
+    }
+}
+
+/* Touch Device Optimizations */
+@media (hover: none) and (pointer: coarse) {
+    .btn {
+        min-height: 44px;
+        min-width: 44px;
+        touch-action: manipulation;
+    }
+
+    .hub-feature-card {
+        touch-action: manipulation;
+        transition: transform 0.2s ease;
+    }
+
+    .hub-feature-card:active {
+        transform: scale(0.98);
+    }
+
+    /* Remove hover effects for touch devices */
+    .hub-feature-card:hover {
+        transform: none;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    }
+}
+
+/* Landscape Mobile Optimization */
+@media (max-width: 768px) and (orientation: landscape) {
+    .hub-hero {
+        height: 50vh;
+        min-height: 200px;
+    }
+
+    .hub-hero-overlay {
+        padding-bottom: 1rem;
+    }
+
+    .hub-hero .display-3 {
+        font-size: 1.75rem;
+    }
+
+    .hub-content-wrapper {
+        margin-top: -20px;
+    }
+
+    /* Feature cards in landscape */
+    .row.g-4 {
+        margin-top: 1rem;
+    }
+
+    .hub-feature-card {
+        margin-bottom: 1rem;
+    }
+}

@@ -1,1 +1,271 @@
 /* Community specific styles */
+
+/* Mobile Responsive Styles */
+@media (max-width: 768px) {
+    /* Container Mobile */
+    .container,
+    .container-fluid {
+        max-width: 100%;
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+
+    /* Cards Mobile */
+    .card {
+        margin-bottom: 1.5rem;
+        border-radius: 12px;
+    }
+
+    .card-header {
+        padding: 1rem 1.25rem;
+        font-size: 1.1rem;
+    }
+
+    .card-body {
+        padding: 1.25rem;
+    }
+
+    .card-footer {
+        padding: 1rem 1.25rem;
+        font-size: 0.85rem;
+    }
+
+    /* Community Navigation Mobile */
+    .nav-tabs {
+        flex-wrap: wrap;
+    }
+
+    .nav-tabs .nav-link {
+        padding: 0.75rem 1rem;
+        font-size: 0.9rem;
+        margin-bottom: 0.5rem;
+    }
+
+    /* Community Lists Mobile */
+    .list-group-item {
+        padding: 1.25rem 1.5rem;
+        border-radius: 8px !important;
+    }
+
+    .list-group-item h5 {
+        font-size: 1rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .list-group-item p {
+        font-size: 0.85rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .list-group-item small {
+        font-size: 0.75rem;
+    }
+
+    /* Buttons Mobile */
+    .btn {
+        padding: 0.7rem 1.4rem;
+        font-size: 0.9rem;
+        border-radius: 10px;
+        font-weight: 600;
+    }
+
+    /* Forms Mobile */
+    .form-control,
+    .form-select {
+        padding: 0.75rem;
+        font-size: 1rem;
+        border-radius: 8px;
+    }
+
+    /* Typography Mobile */
+    h1 {
+        font-size: 1.75rem;
+    }
+
+    h2 {
+        font-size: 1.5rem;
+    }
+
+    h3 {
+        font-size: 1.25rem;
+    }
+
+    /* Community Stats Mobile */
+    .badge {
+        font-size: 0.7rem;
+        padding: 0.4em 0.6em;
+    }
+
+    /* Community Member Cards Mobile */
+    .member-card {
+        padding: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .member-avatar {
+        width: 50px;
+        height: 50px;
+    }
+
+    /* Community Search Mobile */
+    .search-box {
+        margin-bottom: 1.5rem;
+    }
+
+    .search-box .form-control {
+        border-radius: 25px;
+        padding: 0.75rem 1.5rem;
+    }
+}
+
+/* Extra Small Devices (phones, 576px and down) */
+@media (max-width: 576px) {
+    .container,
+    .container-fluid {
+        padding-left: 0.75rem;
+        padding-right: 0.75rem;
+    }
+
+    /* Cards Extra Small */
+    .card {
+        border-radius: 10px;
+        margin-bottom: 1.25rem;
+    }
+
+    .card-header {
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+    }
+
+    .card-body {
+        padding: 1rem;
+    }
+
+    .card-footer {
+        padding: 0.75rem 1rem;
+        font-size: 0.8rem;
+    }
+
+    /* Navigation Extra Small */
+    .nav-tabs .nav-link {
+        padding: 0.6rem 0.8rem;
+        font-size: 0.85rem;
+    }
+
+    /* List Items Extra Small */
+    .list-group-item {
+        padding: 1rem 1.25rem;
+    }
+
+    .list-group-item h5 {
+        font-size: 0.95rem;
+    }
+
+    .list-group-item p {
+        font-size: 0.8rem;
+    }
+
+    .list-group-item small {
+        font-size: 0.7rem;
+    }
+
+    /* Buttons Extra Small */
+    .btn {
+        padding: 0.6rem 1.2rem;
+        font-size: 0.85rem;
+        border-radius: 8px;
+    }
+
+    /* Forms Extra Small */
+    .form-control,
+    .form-select {
+        padding: 0.6rem;
+        font-size: 0.9rem;
+    }
+
+    /* Typography Extra Small */
+    h1 {
+        font-size: 1.5rem;
+    }
+
+    h2 {
+        font-size: 1.3rem;
+    }
+
+    h3 {
+        font-size: 1.1rem;
+    }
+
+    /* Member Cards Extra Small */
+    .member-card {
+        padding: 0.75rem;
+    }
+
+    .member-avatar {
+        width: 40px;
+        height: 40px;
+    }
+
+    /* Search Box Extra Small */
+    .search-box .form-control {
+        padding: 0.6rem 1.25rem;
+        font-size: 0.9rem;
+    }
+}
+
+/* Touch Device Optimizations */
+@media (hover: none) and (pointer: coarse) {
+    .btn {
+        min-height: 44px;
+        min-width: 44px;
+        touch-action: manipulation;
+    }
+
+    .list-group-item-action {
+        min-height: 44px;
+        touch-action: manipulation;
+    }
+
+    .nav-tabs .nav-link {
+        min-height: 44px;
+        touch-action: manipulation;
+    }
+
+    .form-control,
+    .form-select {
+        min-height: 44px;
+    }
+
+    /* Touch-friendly member interactions */
+    .member-card {
+        touch-action: manipulation;
+        transition: transform 0.2s ease;
+    }
+
+    .member-card:active {
+        transform: scale(0.98);
+    }
+}
+
+/* Landscape Mobile Optimization */
+@media (max-width: 768px) and (orientation: landscape) {
+    .nav-tabs {
+        justify-content: center;
+    }
+
+    .nav-tabs .nav-link {
+        margin-right: 0.5rem;
+        margin-left: 0.5rem;
+    }
+
+    /* Optimize member grid for landscape */
+    .member-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+    }
+
+    .member-card {
+        padding: 0.75rem;
+    }
+}

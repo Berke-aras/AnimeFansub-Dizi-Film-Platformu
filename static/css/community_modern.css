@@ -1,4 +1,3 @@
-
 /* community_modern.css */
 
 :root {
@@ -10,7 +9,8 @@
     --apple-text-primary: #1d1d1f;
     --apple-text-secondary: #6e6e73;
     --apple-card-background: #ffffff;
-    --apple-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --apple-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+        "Helvetica Neue", Arial, sans-serif;
 }
 
 body {
@@ -19,7 +19,8 @@ body {
     color: var(--apple-text-primary);
 }
 
-.container, .container-fluid {
+.container,
+.container-fluid {
     max-width: 960px; /* A more constrained width for content */
 }
 
@@ -156,7 +157,9 @@ body {
     line-height: 1.7;
 }
 
-.ck-content h2, .ck-content h3, .ck-content h4 {
+.ck-content h2,
+.ck-content h3,
+.ck-content h4 {
     font-weight: 700;
     margin-top: 1.8em;
     margin-bottom: 0.8em;
@@ -181,6 +184,291 @@ body {
     padding: 1.2em;
     border-radius: 12px;
     white-space: pre-wrap;
-    font-family: 'SF Mono', 'Menlo', 'Courier', monospace;
+    font-family: "SF Mono", "Menlo", "Courier", monospace;
     font-size: 0.95em;
+}
+
+/* Mobile Responsive Styles */
+@media (max-width: 768px) {
+    /* Container Mobile */
+    .container,
+    .container-fluid {
+        max-width: 100%;
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+
+    /* Cards Mobile */
+    .card {
+        border-radius: 12px;
+        margin-bottom: 1.5rem;
+    }
+
+    .card-header {
+        padding: 1rem 1.25rem;
+        font-size: 1.1rem;
+    }
+
+    .card-body {
+        padding: 1.25rem;
+    }
+
+    .card-footer {
+        padding: 1rem 1.25rem;
+        font-size: 0.85rem;
+    }
+
+    /* Buttons Mobile */
+    .btn {
+        border-radius: 10px;
+        font-weight: 600;
+        padding: 0.7rem 1.4rem;
+        font-size: 0.9rem;
+    }
+
+    /* List Items Mobile */
+    .list-group-item {
+        padding: 1.25rem 1.5rem;
+    }
+
+    .list-group-item-action:hover {
+        transform: none;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+    }
+
+    /* Post User Panel Mobile */
+    .post-user-panel {
+        flex-direction: row !important;
+        align-items: center !important;
+        justify-content: flex-start !important;
+        padding: 1.25rem !important;
+        border-right: none !important;
+        border-bottom: 1px solid var(--apple-gray-medium) !important;
+    }
+
+    .post-user-panel h5 {
+        margin-top: 0 !important;
+        margin-left: 1rem !important;
+        font-size: 0.95rem !important;
+    }
+
+    /* Breadcrumb Mobile */
+    .breadcrumb {
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+    }
+
+    /* CKEditor Mobile */
+    .ck.ck-editor__main > .ck-editor__editable {
+        min-height: 200px;
+        border-radius: 8px !important;
+    }
+
+    .ck.ck-toolbar {
+        border-radius: 8px !important;
+    }
+
+    .ck-content {
+        padding: 1.25rem;
+        line-height: 1.6;
+        font-size: 0.9rem;
+    }
+
+    .ck-content h2,
+    .ck-content h3,
+    .ck-content h4 {
+        margin-top: 1.5em;
+        margin-bottom: 0.7em;
+        font-size: 1.1rem;
+    }
+
+    .ck-content p {
+        margin-bottom: 1em;
+    }
+
+    .ck-content blockquote {
+        padding: 0.8em 1.2em;
+        margin: 1.2em 0;
+        font-size: 0.9rem;
+    }
+
+    .ck-content pre {
+        padding: 1em;
+        font-size: 0.85em;
+        border-radius: 8px;
+        overflow-x: auto;
+    }
+
+    /* Form Elements Mobile */
+    .form-control,
+    .form-select {
+        padding: 0.75rem;
+        font-size: 1rem;
+        border-radius: 8px;
+    }
+
+    /* Typography Mobile */
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        line-height: 1.3;
+    }
+
+    h1 {
+        font-size: 1.75rem;
+    }
+
+    h2 {
+        font-size: 1.5rem;
+    }
+
+    h3 {
+        font-size: 1.25rem;
+    }
+}
+
+/* Extra Small Devices (phones, 576px and down) */
+@media (max-width: 576px) {
+    .container,
+    .container-fluid {
+        padding-left: 0.75rem;
+        padding-right: 0.75rem;
+    }
+
+    /* Cards Extra Small */
+    .card {
+        border-radius: 10px;
+        margin-bottom: 1.25rem;
+    }
+
+    .card-header {
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+    }
+
+    .card-body {
+        padding: 1rem;
+    }
+
+    .card-footer {
+        padding: 0.75rem 1rem;
+        font-size: 0.8rem;
+    }
+
+    /* Buttons Extra Small */
+    .btn {
+        padding: 0.6rem 1.2rem;
+        font-size: 0.85rem;
+        border-radius: 8px;
+    }
+
+    /* List Items Extra Small */
+    .list-group-item {
+        padding: 1rem 1.25rem;
+    }
+
+    /* Post User Panel Extra Small */
+    .post-user-panel {
+        padding: 1rem !important;
+    }
+
+    .post-user-panel h5 {
+        font-size: 0.9rem !important;
+        margin-left: 0.75rem !important;
+    }
+
+    /* CKEditor Extra Small */
+    .ck.ck-editor__main > .ck-editor__editable {
+        min-height: 150px;
+    }
+
+    .ck-content {
+        padding: 1rem;
+        font-size: 0.85rem;
+    }
+
+    .ck-content h2,
+    .ck-content h3,
+    .ck-content h4 {
+        font-size: 1rem;
+        margin-top: 1.3em;
+        margin-bottom: 0.6em;
+    }
+
+    .ck-content blockquote {
+        padding: 0.6em 1em;
+        margin: 1em 0;
+        font-size: 0.85rem;
+    }
+
+    .ck-content pre {
+        padding: 0.8em;
+        font-size: 0.8em;
+    }
+
+    /* Typography Extra Small */
+    h1 {
+        font-size: 1.5rem;
+    }
+
+    h2 {
+        font-size: 1.3rem;
+    }
+
+    h3 {
+        font-size: 1.1rem;
+    }
+
+    /* Form Elements Extra Small */
+    .form-control,
+    .form-select {
+        padding: 0.6rem;
+        font-size: 0.9rem;
+    }
+}
+
+/* Touch Device Optimizations */
+@media (hover: none) and (pointer: coarse) {
+    .btn {
+        min-height: 44px;
+        min-width: 44px;
+    }
+
+    .list-group-item-action {
+        min-height: 44px;
+        touch-action: manipulation;
+    }
+
+    .form-control,
+    .form-select {
+        min-height: 44px;
+    }
+
+    /* Larger touch targets for CKEditor */
+    .ck.ck-toolbar .ck-button {
+        min-height: 40px !important;
+        min-width: 40px !important;
+    }
+}
+
+/* Landscape Mobile Optimization */
+@media (max-width: 768px) and (orientation: landscape) {
+    .post-user-panel {
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        text-align: center !important;
+    }
+
+    .post-user-panel h5 {
+        margin-left: 0 !important;
+        margin-top: 0.75rem !important;
+    }
+
+    .ck.ck-editor__main > .ck-editor__editable {
+        min-height: 120px;
+    }
 }
