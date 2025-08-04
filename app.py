@@ -3,8 +3,10 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user, UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
+from simple_cache import simple_cache
+from performance_monitor import monitor_performance, time_function
 from forms import LoginForm, AnimeForm, EpisodeForm, UserForm, EditUserForm, GenreForm, AnimeSearchForm, RegistrationForm, NewsForm, EventForm, CommunityRegistrationForm, CommunityMemberSearchForm
-from models import db, User, Anime, Episode, Log, Genre, Rating, Notification, News, Event, CommunityInfo, CommunityMember
+from models import db, User, Anime, Episode, Log, Genre, Rating, Notification, News, Event, CommunityInfo, CommunityMember, anime_genres
 from community import community_bp, ForumThread
 import re
 import random
@@ -22,8 +24,32 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///anime_site.db'
 app.config['SQLALCHEMY_BINDS'] = {
     'community': 'sqlite:///community.db'
 }
+
+# Cache Configuration - Using simple_cache
+# app.config['CACHE_TYPE'] = 'simple'
+# app.config['CACHE_DEFAULT_TIMEOUT'] = 300
+
+# Session Configuration
+app.config['SESSION_COOKIE_SECURE'] = False  # Set to True in production with HTTPS
+app.config['SESSION_COOKIE_HTTPONLY'] = True
+app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
+app.config['PERMANENT_SESSION_LIFETIME'] = 1800  # 30 minutes
+app.config['REMEMBER_COOKIE_DURATION'] = 1800  # 30 minutes
+app.config['REMEMBER_COOKIE_SECURE'] = False
+app.config['REMEMBER_COOKIE_HTTPONLY'] = True
+
+# Database optimizations
+app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
+    'pool_pre_ping': True,
+    'pool_recycle': 300,
+    'connect_args': {'check_same_thread': False}
+}
+
 db.init_app(app)
 migrate = Migrate(app, db)
+
+# Initialize performance monitoring
+monitor_performance(app)
 
 # Register the community blueprint
 app.register_blueprint(community_bp, url_prefix='/community/forum')
@@ -31,6 +57,9 @@ app.register_blueprint(community_bp, url_prefix='/community/forum')
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
+login_manager.login_message = 'Bu sayfaya erişmek için giriş yapmanız gerekiyor.'
+login_manager.login_message_category = 'info'
+login_manager.session_protection = 'strong'  # Güvenli session koruması
 
 SPECIAL_GENRES = ["Editörün Seçimi", "Hero Section"]
 
@@ -88,7 +117,29 @@ def log_action(action, description):
 
 @login_manager.user_loader
 def load_user(user_id):
-    return User.query.get(int(user_id))
+    try:
+        return db.session.get(User, int(user_id))
+    except (ValueError, TypeError):
+        return None
+
+# Session güvenliği için ek kontrol
+@app.before_request
+def before_request():
+    # Login, logout, register ve statik dosyalar için kontrol yapma
+    excluded_endpoints = ['login', 'logout', 'register', 'landing', 'static', 'community_register']
+    
+    if request.endpoint in excluded_endpoints:
+        return
+    
+    # Session güvenliği kontrolleri
+    if current_user.is_authenticated:
+        # User'ın hala mevcut olduğunu kontrol et
+        user = db.session.get(User, current_user.id)
+        if not user:
+            logout_user()
+            session.clear()
+            flash('Oturum süreniz dolmuş. Lütfen tekrar giriş yapın.', 'warning')
+            return redirect(url_for('login'))
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -118,8 +169,12 @@ def register():
             db.session.add(user)
             db.session.commit()
             
-            flash('Hesabınız başarıyla oluşturuldu! Şimdi giriş yapabilirsiniz.', 'success')
-            return redirect(url_for('login'))
+            # Otomatik login yap
+            login_user(user, remember=True)
+            session.permanent = True
+            
+            flash(f'Hesabınız başarıyla oluşturuldu! Hoş geldin, {user.username}!', 'success')
+            return redirect(url_for('index'))
             
         except Exception as e:
             db.session.rollback()
@@ -205,23 +260,71 @@ def community_register():
     return render_template('community_register.html', title='Topluluk Üyeliği Başvuru', form=form)
 
 @app.route('/')
-def index():
+@simple_cache.cached(timeout=60, key_prefix='route_')  # 1 dakika cache
+def landing():
     return render_template('landing.html')
 
 @app.route('/fansub')
-def fansub_index():
-    hero_animes = Anime.query.filter(Anime.genres.any(Genre.name == 'Hero Section')).limit(6).all()
-    editor_picks = Anime.query.filter(Anime.genres.any(Genre.name == 'Editörün Seçimi')).limit(6).all()
-    user_genres = session.get('user_genres', {})
+def index():
+    # Kullanıcı bazlı cache key oluştur
+    cache_key = f'fansub_index_{current_user.id if current_user.is_authenticated else "anonymous"}'
+    
+    # Cache'den veri almaya çalış
+    cached_data = simple_cache.get(cache_key)
+    if cached_data:
+        return render_template('fansub_index.html', **cached_data)
+    
+    # Optimized queries with joins
+    hero_animes = (Anime.query
+                  .join(anime_genres)
+                  .join(Genre)
+                  .filter(Genre.name == 'Hero Section')
+                  .limit(6)
+                  .all())
+    
+    editor_picks = (Anime.query
+                   .join(anime_genres)
+                   .join(Genre)
+                   .filter(Genre.name == 'Editörün Seçimi')
+                   .limit(6)
+                   .all())
+    
+    # Yeni eklenenler (son eklenen animeler)
+    latest_animes = (Anime.query
+                    .order_by(Anime.id.desc())
+                    .limit(8)
+                    .all())
+    
+    # Random animeler
+    random_animes = (Anime.query
+                    .order_by(db.func.random())
+                    .limit(8)
+                    .all())
+    
     personalized_recs = []
-    if user_genres:
-        sorted_genres = sorted(user_genres.items(), key=lambda x: x[1], reverse=True)
-        top_genre_ids = [int(g[0]) for g in sorted_genres[:3]]
-        if top_genre_ids:
-            personalized_recs = Anime.query.filter(Anime.genres.any(Genre.id.in_(top_genre_ids))).limit(6).all()
-    latest_animes = Anime.query.order_by(Anime.id.desc()).limit(6).all()
-    random_animes = random.sample(Anime.query.all(), min(len(Anime.query.all()), 6))
-    return render_template('fansub_index.html', hero_animes=hero_animes, editor_picks=editor_picks, personalized_recs=personalized_recs, latest_animes=latest_animes, random_animes=random_animes)
+    if current_user.is_authenticated:
+        user_ratings = db.session.query(Rating.anime_id, db.func.count(Rating.anime_id)).filter_by(user_id=current_user.id).group_by(Rating.anime_id).limit(3).all()
+        if user_ratings:
+            anime_ids = [rating[0] for rating in user_ratings]
+            genre_counts = db.session.query(Genre.id, db.func.count(Genre.id)).join(anime_genres).filter(anime_genres.c.anime_id.in_(anime_ids)).group_by(Genre.id).order_by(db.func.count(Genre.id).desc()).limit(3).all()
+            top_genre_ids = [genre[0] for genre in genre_counts]
+            personalized_recs = (Anime.query
+                                .join(anime_genres)
+                                .filter(anime_genres.c.genre_id.in_(top_genre_ids))
+                                .limit(6)
+                                .all())
+    
+    # Veriyi cache'e kaydet (2 dakika)
+    template_data = {
+        'hero_animes': hero_animes, 
+        'editor_picks': editor_picks, 
+        'latest_animes': latest_animes,
+        'random_animes': random_animes,
+        'personalized_recs': personalized_recs
+    }
+    simple_cache.set(cache_key, template_data, timeout=120)
+    
+    return render_template('fansub_index.html', **template_data)
 
 @app.route('/community')
 def community_hub():
@@ -242,28 +345,41 @@ def animes():
     if not is_admin:
         genres_query = genres_query.filter(Genre.name.notin_(SPECIAL_GENRES))
     form.genre.choices = [('', 'Tüm Türler')] + [(str(g.id), g.name) for g in genres_query.order_by('name').all()]
-    query = Anime.query
+    
+    # Optimized query with eager loading
+    query = Anime.query.options(db.joinedload(Anime.genres))
+    
     if form.validate_on_submit() or request.method == 'GET':
         search_query = form.query.data or request.args.get('query')
         if search_query:
             query = query.filter(Anime.name.ilike(f"%{search_query}%"))
+    
     if form.genre.data:
-        query = query.filter(Anime.genres.any(id=int(form.genre.data)))
+        query = query.join(anime_genres).filter(anime_genres.c.genre_id == int(form.genre.data))
+    
     if form.release_year.data:
-        query = query.filter_by(release_year=form.release_year.data)
+        query = query.filter(Anime.release_year == form.release_year.data)
+    
     if form.anime_type.data:
-        query = query.filter_by(anime_type=form.anime_type.data)
+        query = query.filter(Anime.anime_type == form.anime_type.data)
+    
+    # Optimized sorting
     sort_option = form.sort_by.data or 'name_asc'
-    if sort_option == 'name_asc':
-        query = query.order_by(Anime.name.asc())
-    elif sort_option == 'name_desc':
-        query = query.order_by(Anime.name.desc())
-    elif sort_option == 'rating_desc':
-        query = query.order_by(Anime.average_rating.desc())
-    elif sort_option == 'year_desc':
-        query = query.order_by(Anime.release_year.desc())
+    sort_mapping = {
+        'name_asc': Anime.name.asc(),
+        'name_desc': Anime.name.desc(),
+        'rating_desc': Anime.average_rating.desc(),
+        'year_desc': Anime.release_year.desc()
+    }
+    query = query.order_by(sort_mapping.get(sort_option, Anime.name.asc()))
+    
     page = request.args.get('page', 1, type=int)
-    animes = query.paginate(page=page, per_page=18, error_out=False)
+    animes = query.paginate(
+        page=page, 
+        per_page=18, 
+        error_out=False,
+        max_per_page=50
+    )
     return render_template('all_animes.html', animes=animes, form=form)
 
 @app.route('/episode/<int:episode_id>')
@@ -373,19 +489,39 @@ def anime(anime_id):
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    # Zaten giriş yapmış kullanıcıyı anasayfaya yönlendir
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+        
     form = LoginForm()
     if form.validate_on_submit():
         # Kullanıcı adı veya e-posta ile giriş
         user = User.query.filter(
-            (User.username == form.username.data) | 
-            (User.email == form.username.data)
+            (User.username == form.username.data.lower().strip()) | 
+            (User.email == form.username.data.lower().strip())
         ).first()
         
         if user and check_password_hash(user.password, form.password.data):
-            login_user(user)
+            login_user(user, remember=True)
+            
+            # Session'ı güçlendir
+            session.permanent = True
+            
+            # Eski cache'leri temizle
+            simple_cache.delete('fansub_index_anonymous')
+            simple_cache.delete(f'fansub_index_{user.id}')
+            
+            # Flash mesaj
+            flash(f'Hoş geldin, {user.username}!', 'success')
+            
+            # Bir sonraki sayfaya yönlendir
+            next_page = request.args.get('next')
+            if next_page and next_page.startswith('/'):
+                return redirect(next_page)
             return redirect(url_for('index'))
         else:
             flash('Giriş başarısız. Lütfen kullanıcı adınızı/e-postanızı ve şifrenizi kontrol edin.', 'danger')
+    
     return render_template('login.html', form=form)
 
 @app.route('/admin', methods=['GET', 'POST'])
@@ -619,10 +755,29 @@ def delete_user(user_id):
     return redirect(url_for('users'))
 
 @app.route('/logout')
-@login_required
 def logout():
-    logout_user()
-    return redirect(url_for('index'))
+    if current_user.is_authenticated:
+        username = current_user.username
+        user_id = current_user.id
+        
+        # Kullanıcı çıkış yap
+        logout_user()
+        
+        # Session'ı tamamen temizle
+        session.clear()
+        
+        # Kullanıcı bazlı cache'i temizle
+        user_cache_key = f'fansub_index_{user_id}'
+        simple_cache.delete(user_cache_key)
+        
+        # Anonymous cache'i de temizle
+        simple_cache.delete('fansub_index_anonymous')
+        
+        flash(f'Güvenle çıkış yaptınız, {username}.', 'info')
+    else:
+        flash('Zaten çıkış yapmışsınız.', 'info')
+    
+    return redirect(url_for('login'))
 
 @app.route('/support')
 def support():
@@ -774,9 +929,9 @@ def api_events():
 def manage_community_members():
     form = CommunityMemberSearchForm()
     
-    # Temel query'ler
-    pending_query = CommunityMember.query.filter_by(is_approved=False)
-    approved_query = CommunityMember.query.filter_by(is_approved=True)
+    # Temel query'ler - User relationship'ini de yükle
+    pending_query = CommunityMember.query.options(db.joinedload(CommunityMember.user)).filter_by(is_approved=False)
+    approved_query = CommunityMember.query.options(db.joinedload(CommunityMember.user)).filter_by(is_approved=True)
     
     # Arama parametreleri
     search_query = request.args.get('query', '').strip()
@@ -813,6 +968,14 @@ def manage_community_members():
     else:
         pending_members = pending_query.order_by(CommunityMember.registration_date.desc()).all()
         approved_members = approved_query.order_by(CommunityMember.registration_date.desc()).all()
+    
+    # Debug: Template'e gönderilen verileri logla
+    app.logger.info(f"Community Members Page - Search: '{search_query}', Status: '{status_filter}'")
+    app.logger.info(f"Pending members count: {len(pending_members)}")
+    app.logger.info(f"Approved members count: {len(approved_members)}")
+    
+    for member in approved_members:
+        app.logger.info(f"Approved member: ID={member.id}, Name={member.name} {member.surname}, Username={member.username}, User={member.user.username if member.user else 'None'}")
     
     return render_template('admin_community_members.html', 
                          pending_members=pending_members, 
@@ -852,6 +1015,9 @@ def approve_community_member(member_id):
         
         flash(f'{member.name} {member.surname} onaylandı. Kullanıcı adı: {member.username} ile sisteme giriş yapabilir.', 'success')
         
+        # Debug log ekle
+        log_action('community_member_approval', f'Üye onaylandı: {member.name} {member.surname} ({member.username}) - User ID: {new_user.id}, Community Member ID: {member.id}')
+        
     except Exception as e:
         db.session.rollback()
         flash(f'Onay işlemi sırasında hata oluştu: {str(e)}', 'error')
@@ -880,6 +1046,9 @@ def delete_community_member(member_id):
     member = CommunityMember.query.get_or_404(member_id)
     
     try:
+        # Debug: Silme öncesi durum
+        app.logger.info(f"Deleting community member: ID={member.id}, Name={member.name} {member.surname}, Username={member.username}, Approved={member.is_approved}, User_ID={member.user_id}")
+        
         # Eğer topluluk üyesinin bir kullanıcı hesabı varsa, onu da sil
         if member.user_id:
             user = User.query.get(member.user_id)
@@ -890,6 +1059,7 @@ def delete_community_member(member_id):
                     log.user_id = None
                 
                 # Kullanıcıyı sil
+                app.logger.info(f"Also deleting associated user: ID={user.id}, Username={user.username}")
                 db.session.delete(user)
         
         # Topluluk üyesini sil
@@ -1027,7 +1197,35 @@ def export_community_members():
         app.logger.error(f"Excel export error: {str(e)}")
         return redirect(url_for('manage_community_members'))
 
+# Cache clearing helper functions
+def clear_anime_cache():
+    """Clear anime-related cache"""
+    # Tüm fansub index cache'lerini temizle
+    for key in simple_cache.cache.keys():
+        if key.startswith('fansub_index_'):
+            simple_cache.delete(key)
+    simple_cache.delete('route_landing:()')
+
+def clear_community_cache():
+    """Clear community-related cache"""
+    simple_cache.delete('route_community_hub:()')
+
+# Add cache clearing to relevant functions
+@app.after_request
+def after_request(response):
+    # Clear cache on data modifications
+    if request.method in ['POST', 'PUT', 'DELETE'] and request.endpoint:
+        if 'anime' in request.endpoint:
+            clear_anime_cache()
+        elif 'community' in request.endpoint:
+            clear_community_cache()
+    return response
+
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5500)
+    # Production settings
+    import os
+    debug_mode = os.environ.get('FLASK_DEBUG', 'False').lower() == 'true'
+    port = int(os.environ.get('PORT', 5007))  # Port 5007 kullan
+    app.run(debug=debug_mode, host='0.0.0.0', port=port, threaded=True)
     
     

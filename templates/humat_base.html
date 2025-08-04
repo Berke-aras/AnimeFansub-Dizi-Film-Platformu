@@ -1,8 +1,8 @@
 {% extends "base.html" %}
 
 {% block head_extra %}
-    {{ super() }}
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/forum_revamp.css') }}">
+{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/forum_revamp.css') }}">
 {% endblock %}
 
 {# This block overrides the default header from base.html #}
@@ -20,8 +20,8 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link {{ 'active' if request.endpoint == 'fansub_index' else '' }}"
-                            href="{{ url_for('fansub_index') }}">Fansub</a>
+                        <a class="nav-link {{ 'active' if request.endpoint == 'index' else '' }}"
+                            href="{{ url_for('index') }}">Fansub</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link {{ 'active' if request.endpoint.startswith('community') or request.endpoint in ['news', 'events'] else '' }}"

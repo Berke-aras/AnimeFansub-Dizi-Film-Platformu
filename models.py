@@ -1,4 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
+from flask_login import UserMixin
 from datetime import datetime
 
 db = SQLAlchemy()
@@ -14,44 +15,43 @@ watchlist = db.Table('watchlist',
     db.Column('anime_id', db.Integer, db.ForeignKey('anime.id'), primary_key=True)
 )
 
-class User(db.Model):
+class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(80), unique=True, nullable=False)
-    email = db.Column(db.String(120), unique=True, nullable=True)
+    username = db.Column(db.String(80), unique=True, nullable=False, index=True)
+    email = db.Column(db.String(120), unique=True, nullable=True, index=True)
     password = db.Column(db.String(200), nullable=False)
     can_delete = db.Column(db.Boolean, default=False)
     can_edit = db.Column(db.Boolean, default=False)
     can_add_user = db.Column(db.Boolean, default=False)
     is_admin = db.Column(db.Boolean, default=False)
     is_community_member = db.Column(db.Boolean, default=False)
-    logs = db.relationship('Log', backref='user', lazy=True)
-    watchlist_animes = db.relationship('Anime', secondary=watchlist, lazy='subquery',
-        backref=db.backref('watchlisted_by', lazy=True))
-    ratings = db.relationship('Rating', backref='user', lazy=True)
-    notifications = db.relationship('Notification', backref='user', lazy=True, cascade="all, delete-orphan")
-
+    logs = db.relationship('Log', backref='user', lazy='dynamic')
+    watchlist_animes = db.relationship('Anime', secondary=watchlist, lazy='select',
+        backref=db.backref('watchlisted_by', lazy='select'))
+    ratings = db.relationship('Rating', backref='user', lazy='dynamic')
+    notifications = db.relationship('Notification', backref='user', lazy='dynamic', cascade="all, delete-orphan")
+    
     def is_active(self):
+        """Flask-Login için gerekli metod"""
         return True
-
+        
     def get_id(self):
+        """Flask-Login için gerekli metod"""
         return str(self.id)
-
-    def is_authenticated(self):
-        return True
 
 class Anime(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False)
+    name = db.Column(db.String(100), nullable=False, index=True)
     description = db.Column(db.Text, nullable=False)
     cover_image = db.Column(db.String(200), nullable=False)
-    episodes = db.relationship('Episode', backref='anime', lazy=True, cascade="all, delete-orphan")
+    episodes = db.relationship('Episode', backref='anime', lazy='select', cascade="all, delete-orphan")
     
-    release_year = db.Column(db.Integer, nullable=True)
-    status = db.Column(db.String(50), nullable=True)
-    anime_type = db.Column(db.String(50), nullable=True)
+    release_year = db.Column(db.Integer, nullable=True, index=True)
+    status = db.Column(db.String(50), nullable=True, index=True)
+    anime_type = db.Column(db.String(50), nullable=True, index=True)
 
     # Yeni Puanlama Alanları
-    average_rating = db.Column(db.Float, default=0.0)
+    average_rating = db.Column(db.Float, default=0.0, index=True)
     rating_count = db.Column(db.Integer, default=0)
 
     # MyAnimeList Integration
@@ -59,9 +59,9 @@ class Anime(db.Model):
     mal_score = db.Column(db.Float, nullable=True)
     mal_url = db.Column(db.String(200), nullable=True)
 
-    genres = db.relationship('Genre', secondary=anime_genres, lazy='subquery',
-        backref=db.backref('animes', lazy=True))
-    ratings = db.relationship('Rating', backref='anime', lazy=True, cascade="all, delete-orphan")
+    genres = db.relationship('Genre', secondary=anime_genres, lazy='select',
+        backref=db.backref('animes', lazy='select'))
+    ratings = db.relationship('Rating', backref='anime', lazy='dynamic', cascade="all, delete-orphan")
 
 class Episode(db.Model):
     id = db.Column(db.Integer, primary_key=True)
