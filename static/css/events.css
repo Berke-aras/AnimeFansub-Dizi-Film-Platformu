@@ -1,4 +1,3 @@
-
 /* Dark Theme Event Calendar Styles */
 
 :root {
@@ -32,7 +31,8 @@ body {
 
 /* FullCalendar Customizations */
 .fc {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+        Helvetica, Arial, sans-serif;
 }
 
 /* Header Toolbar */
@@ -57,13 +57,14 @@ body {
     font-weight: 500;
 }
 
-.fc .fc-button:hover, .fc .fc-button:focus {
+.fc .fc-button:hover,
+.fc .fc-button:focus {
     background-color: #2a2a2a;
     border-color: #444444;
     box-shadow: none;
 }
 
-.fc .fc-button-primary:not(:disabled).fc-button-active, 
+.fc .fc-button-primary:not(:disabled).fc-button-active,
 .fc .fc-button-primary:not(:disabled):active {
     background-color: var(--fc-accent-color);
     border-color: var(--fc-accent-color);
@@ -112,7 +113,7 @@ body {
 
 .fc-daygrid-event:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
 /* List View */
@@ -197,4 +198,295 @@ body {
 #eventDetailModal .time-block span {
     font-weight: 500;
     color: var(--fc-text-color);
+}
+
+/* Mobile Responsive Styles */
+@media (max-width: 768px) {
+    /* Calendar Wrapper Mobile */
+    #calendar-wrapper {
+        padding: 1rem;
+        margin: 0 10px;
+        border-radius: var(--border-radius-medium);
+    }
+
+    /* Header Toolbar Mobile */
+    .fc .fc-header-toolbar {
+        flex-direction: column;
+        gap: 1rem;
+        margin-bottom: 1.5rem !important;
+    }
+
+    .fc .fc-toolbar-chunk {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    .fc .fc-toolbar-title {
+        font-size: 1.25rem;
+        text-align: center;
+        margin: 0.5rem 0;
+        width: 100%;
+    }
+
+    /* Buttons Mobile */
+    .fc .fc-button {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.85rem;
+        white-space: nowrap;
+    }
+
+    .fc .fc-button-group .fc-button {
+        padding: 0.4rem 0.6rem;
+        font-size: 0.8rem;
+    }
+
+    /* Navigation Buttons */
+    .fc .fc-prev-button,
+    .fc .fc-next-button,
+    .fc .fc-today-button {
+        min-width: 60px;
+    }
+
+    /* Calendar Grid Mobile */
+    .fc .fc-daygrid-day {
+        min-height: 60px;
+        padding: 2px;
+    }
+
+    .fc .fc-daygrid-day-number {
+        font-size: 0.9rem;
+        padding: 4px;
+    }
+
+    /* Events Mobile */
+    .fc-daygrid-event {
+        font-size: 0.75rem;
+        padding: 1px 3px;
+        margin: 1px 0;
+        border-radius: 4px;
+    }
+
+    .fc-event-title {
+        font-size: 0.75rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    /* Week/List View Mobile */
+    .fc .fc-timegrid-slot-label {
+        font-size: 0.8rem;
+        padding: 2px 4px;
+    }
+
+    .fc .fc-list-event {
+        margin-bottom: 0.5rem;
+    }
+
+    .fc .fc-list-event-title {
+        font-size: 0.9rem;
+    }
+
+    .fc .fc-list-event-time {
+        font-size: 0.8rem;
+    }
+
+    /* Modal Mobile */
+    #eventDetailModal .modal-dialog {
+        margin: 1rem;
+        max-width: calc(100% - 2rem);
+    }
+
+    #eventDetailModal .modal-content {
+        border-radius: var(--border-radius-medium);
+    }
+
+    #eventDetailModal .modal-header {
+        padding: 1rem;
+        border-top-left-radius: var(--border-radius-medium);
+        border-top-right-radius: var(--border-radius-medium);
+    }
+
+    #eventDetailModal .modal-title {
+        font-size: 1.1rem;
+    }
+
+    #eventDetailModal .modal-body {
+        padding: 1.5rem;
+    }
+
+    #eventDetailModal #eventTitle {
+        font-size: 1.3rem;
+        margin-bottom: 1rem;
+    }
+
+    #eventDetailModal .event-times {
+        flex-direction: column;
+        gap: 1rem;
+        margin-top: 1rem;
+        padding-top: 1rem;
+    }
+
+    #eventDetailModal .time-block {
+        gap: 0.6rem;
+    }
+
+    #eventDetailModal .time-block i {
+        font-size: 1.2rem;
+    }
+
+    /* Container Mobile */
+    .container {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+
+    /* Alert Box Mobile */
+    .alert {
+        margin: 0 10px;
+        border-radius: var(--border-radius-medium);
+    }
+
+    .alert h4 {
+        font-size: 1.2rem;
+    }
+
+    .alert p {
+        font-size: 0.9rem;
+    }
+
+    .alert .btn {
+        font-size: 0.9rem;
+        padding: 0.5rem 1rem;
+    }
+
+    /* Calendar Height Mobile */
+    .fc {
+        max-width: 100%;
+        overflow-x: auto;
+    }
+
+    /* Week view mobile optimization */
+    .fc-timeGridWeek-view .fc-timegrid-axis {
+        width: 50px;
+    }
+
+    .fc-timeGridWeek-view .fc-timegrid-slot-label {
+        font-size: 0.7rem;
+    }
+}
+
+/* Extra small devices (phones, 576px and down) */
+@media (max-width: 576px) {
+    #calendar-wrapper {
+        padding: 0.75rem;
+        margin: 0 5px;
+    }
+
+    .fc .fc-toolbar-title {
+        font-size: 1.1rem;
+    }
+
+    .fc .fc-button {
+        padding: 0.3rem 0.6rem;
+        font-size: 0.8rem;
+    }
+
+    .fc .fc-button-group .fc-button {
+        padding: 0.3rem 0.5rem;
+        font-size: 0.75rem;
+    }
+
+    /* Very small calendar cells */
+    .fc .fc-daygrid-day {
+        min-height: 50px;
+        padding: 1px;
+    }
+
+    .fc .fc-daygrid-day-number {
+        font-size: 0.8rem;
+        padding: 2px;
+    }
+
+    .fc-daygrid-event {
+        font-size: 0.7rem;
+        padding: 1px 2px;
+    }
+
+    /* Modal extra small */
+    #eventDetailModal .modal-dialog {
+        margin: 0.5rem;
+        max-width: calc(100% - 1rem);
+    }
+
+    #eventDetailModal .modal-header,
+    #eventDetailModal .modal-body {
+        padding: 1rem;
+    }
+
+    #eventDetailModal #eventTitle {
+        font-size: 1.2rem;
+    }
+
+    /* Hide some view options on very small screens */
+    .fc-dayGridMonth-button,
+    .fc-timeGridWeek-button,
+    .fc-listWeek-button {
+        display: inline-block;
+    }
+
+    /* Optimize list view for mobile */
+    .fc-listWeek-button::after {
+        content: "Lista";
+    }
+
+    .fc-timeGridWeek-button::after {
+        content: "Hafta";
+    }
+
+    .fc-dayGridMonth-button::after {
+        content: "Ay";
+    }
+}
+
+/* Landscape mobile optimization */
+@media (max-width: 768px) and (orientation: landscape) {
+    .fc .fc-header-toolbar {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .fc .fc-toolbar-title {
+        font-size: 1.2rem;
+        width: auto;
+        margin: 0;
+    }
+
+    .fc .fc-daygrid-day {
+        min-height: 45px;
+    }
+}
+
+/* Touch device optimizations */
+@media (hover: none) and (pointer: coarse) {
+    .fc .fc-button {
+        min-height: 44px;
+        min-width: 44px;
+    }
+
+    .fc-daygrid-event {
+        min-height: 20px;
+        touch-action: manipulation;
+    }
+
+    .fc .fc-daygrid-day-number {
+        min-height: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
 }

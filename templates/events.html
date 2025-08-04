@@ -73,14 +73,14 @@
     var calendarEl = document.getElementById('calendar');
     var calendar = new FullCalendar.Calendar(calendarEl, {
       locale: 'tr',
-      initialView: 'dayGridMonth',
+      initialView: window.innerWidth < 768 ? 'listWeek' : 'dayGridMonth',
       height: 'auto',
-      aspectRatio: 1.8,
+      aspectRatio: window.innerWidth < 768 ? 1.0 : 1.8,
       events: '{{ url_for("api_events") }}',
       headerToolbar: {
-        left: 'prev,next today',
+        left: window.innerWidth < 768 ? 'prev,next' : 'prev,next today',
         center: 'title',
-        right: 'dayGridMonth,timeGridWeek,listWeek'
+        right: window.innerWidth < 768 ? 'dayGridMonth,listWeek' : 'dayGridMonth,timeGridWeek,listWeek'
       },
       buttonText: {
         today: 'Bugün',
@@ -88,6 +88,23 @@
         week: 'Hafta',
         day: 'Gün',
         list: 'Liste'
+      },
+      // Mobile responsive options
+      windowResizeDelay: 100,
+      eventDisplay: 'block',
+      dayMaxEvents: window.innerWidth < 768 ? 2 : 3,
+      moreLinkClick: 'listWeek',
+      eventTimeFormat: {
+        hour: '2-digit',
+        minute: '2-digit',
+        meridiem: false
+      },
+      eventDidMount: function (info) {
+        // Truncate long event titles on mobile
+        if (window.innerWidth < 768 && info.event.title.length > 15) {
+          info.el.querySelector('.fc-event-title').textContent =
+            info.event.title.substring(0, 12) + '...';
+        }
       },
       eventClick: function (info) {
         info.jsEvent.preventDefault();
@@ -104,6 +121,27 @@
       }
     });
     calendar.render();
+
+    // Handle window resize for responsive behavior
+    window.addEventListener('resize', function () {
+      const isMobile = window.innerWidth < 768;
+
+      // Update calendar options based on screen size
+      calendar.setOption('aspectRatio', isMobile ? 1.0 : 1.8);
+      calendar.setOption('dayMaxEvents', isMobile ? 2 : 3);
+
+      // Update header toolbar
+      calendar.setOption('headerToolbar', {
+        left: isMobile ? 'prev,next' : 'prev,next today',
+        center: 'title',
+        right: isMobile ? 'dayGridMonth,listWeek' : 'dayGridMonth,timeGridWeek,listWeek'
+      });
+
+      // Switch to list view on mobile if currently in week view
+      if (isMobile && calendar.view.type === 'timeGridWeek') {
+        calendar.changeView('listWeek');
+      }
+    });
   });
 </script>
 {% endif %}
