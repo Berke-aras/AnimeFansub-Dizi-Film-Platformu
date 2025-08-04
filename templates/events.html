@@ -15,7 +15,13 @@
     var calendarEl = document.getElementById('calendar');
     var calendar = new FullCalendar.Calendar(calendarEl, {
       initialView: 'dayGridMonth',
-      events: '{{ url_for("api_events") }}'
+      locale: 'tr',
+      events: '{{ url_for("api_events") }}',
+      headerToolbar: {
+        left: 'prev,next today',
+        center: 'title',
+        right: 'dayGridMonth,timeGridWeek,timeGridDay'
+      }
     });
     calendar.render();
   });

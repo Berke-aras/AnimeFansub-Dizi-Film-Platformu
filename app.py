@@ -523,7 +523,7 @@ def view_news(news_id):
 def manage_news():
     form = NewsForm()
     if form.validate_on_submit():
-        new_news = News(title=form.title.data, content=form.content.data, user_id=current_user.id)
+        new_news = News(title=form.title.data, content=form.content.data, image_url=form.image_url.data, user_id=current_user.id)
         db.session.add(new_news)
         db.session.commit()
         flash('Haber başarıyla eklendi.', 'success')
@@ -540,6 +540,7 @@ def edit_news(news_id):
     if form.validate_on_submit():
         news_item.title = form.title.data
         news_item.content = form.content.data
+        news_item.image_url = form.image_url.data
         news_item.is_pinned = form.is_pinned.data
         db.session.commit()
         flash('Haber başarıyla güncellendi.', 'success')
@@ -577,7 +578,11 @@ def events():
 def manage_events():
     form = EventForm()
     if form.validate_on_submit():
-        new_event = Event(title=form.title.data, description=form.description.data, start_time=form.start_time.data, end_time=form.end_time.data, user_id=current_user.id)
+        new_event = Event(title=form.title.data, 
+                            description=form.description.data, 
+                            start_time=form.start_time.data, 
+                            end_time=form.end_time.data, 
+                            user_id=current_user.id)
         db.session.add(new_event)
         db.session.commit()
         flash('Etkinlik başarıyla eklendi.', 'success')

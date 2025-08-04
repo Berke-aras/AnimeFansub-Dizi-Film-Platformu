@@ -82,6 +82,7 @@ class EditUserForm(FlaskForm):
 class NewsForm(FlaskForm):
     title = StringField('Başlık', validators=[DataRequired()])
     content = TextAreaField('İçerik', validators=[DataRequired()])
+    image_url = StringField("Resim URL'si")
     is_pinned = BooleanField('Başa Sabitle')
     submit = SubmitField('Yayınla')
 
