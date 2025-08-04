@@ -1,0 +1,40 @@
+{% extends "humat_base.html" %}
+
+{% block title %}Humat Topluluğu{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="p-5 rounded-3 text-center" style="background-color: var(--light-dark-color);">
+        <i class="fas fa-university fa-4x mb-4 text-primary"></i>
+        <h1 class="display-4 fw-bold">Humat Topluluğuna Hoş Geldiniz</h1>
+        <p class="lead col-lg-8 mx-auto">Bu alan, Hacettepe Üniversitesi topluluk üyeleri için bir buluşma noktasıdır. Etkinliklerimizi, duyurularımızı ve daha fazlasını burada bulabilirsiniz.</p>
+    </div>
+
+    <div class="row mt-5 g-4">
+        <div class="col-md-6">
+            <div class="p-4 rounded-3 h-100 d-flex flex-column" style="background-color: var(--light-dark-color);">
+                <h3 class="fw-bold"><i class="fas fa-calendar-alt me-2"></i>Etkinlik Takvimi</h3>
+                <p>Yaklaşan tüm etkinliklerimizi ve önemli tarihleri buradan takip edebilirsiniz.</p>
+                <a href="#" class="btn btn-outline-primary mt-auto">Takvimi Görüntüle</a>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="p-4 rounded-3 h-100 d-flex flex-column" style="background-color: var(--light-dark-color);">
+                <h3 class="fw-bold"><i class="fas fa-newspaper me-2"></i>Haberler ve Duyurular</h3>
+                <p>Topluluğumuzla ilgili en son haberler, güncellemeler ve önemli duyurular.</p>
+                <a href="#" class="btn btn-outline-primary mt-auto">Tüm Haberler</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-5 p-5 rounded-3 text-center" style="background-color: var(--dark-color);">
+        <h3 class="fw-bold">Bize Katılın!</h3>
+        <p>Sosyal medya hesaplarımızı takip ederek topluluğumuzun bir parçası olun.</p>
+        <div class="d-flex justify-content-center gap-4 fs-2">
+            <a href="#" class="text-light"><i class="fab fa-discord"></i></a>
+            <a href="#" class="text-light"><i class="fab fa-instagram"></i></a>
+            <a href="#" class="text-light"><i class="fab fa-twitter"></i></a>
+        </div>
+    </div>
+</div>
+{% endblock %}

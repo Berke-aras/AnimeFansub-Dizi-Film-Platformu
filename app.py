@@ -75,6 +75,10 @@ def register():
 
 @app.route('/')
 def index():
+    return render_template('landing.html')
+
+@app.route('/fansub')
+def fansub_index():
     hero_animes = Anime.query.filter(Anime.genres.any(Genre.name == 'Hero Section')).limit(6).all()
     editor_picks = Anime.query.filter(Anime.genres.any(Genre.name == 'Editörün Seçimi')).limit(6).all()
     user_genres = session.get('user_genres', {})
@@ -86,7 +90,11 @@ def index():
             personalized_recs = Anime.query.filter(Anime.genres.any(Genre.id.in_(top_genre_ids))).limit(6).all()
     latest_animes = Anime.query.order_by(Anime.id.desc()).limit(6).all()
     random_animes = random.sample(Anime.query.all(), min(len(Anime.query.all()), 6))
-    return render_template('index.html', hero_animes=hero_animes, editor_picks=editor_picks, personalized_recs=personalized_recs, latest_animes=latest_animes, random_animes=random_animes)
+    return render_template('fansub_index.html', hero_animes=hero_animes, editor_picks=editor_picks, personalized_recs=personalized_recs, latest_animes=latest_animes, random_animes=random_animes)
+
+@app.route('/humat')
+def humat_index():
+    return render_template('humat_index.html')
 
 @app.route('/animes', methods=['GET', 'POST'])
 def animes():
@@ -488,3 +496,5 @@ if __name__ == '__main__':
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5400)
+    
+    
