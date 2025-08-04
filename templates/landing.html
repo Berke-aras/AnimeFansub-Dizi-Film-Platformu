@@ -53,12 +53,9 @@
             --light-dark-color: #1c1c1c;
             --text-color: #f5f5f5;
             --text-muted-color: #a0a0a0;
-            --apple-radius: 20px;
-            --apple-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-            --apple-hover-shadow: 0 16px 48px rgba(0, 0, 0, 0.6);
+            --apple-radius: 16px;
+            --apple-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
             --success-color: #30d158;
-            --blue-color: #007aff;
-            --purple-color: #af52de;
         }
 
         * {
@@ -71,215 +68,512 @@
         html {
             height: 100%;
             font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, var(--dark-color) 0%, var(--light-dark-color) 100%);
+            background-color: var(--dark-color);
             color: var(--text-color);
-            overflow-x: hidden;
+            overflow: hidden;
         }
 
-        .landing-hero {
-            min-height: 100vh;
+        .landing-container {
+            display: flex;
+            height: 100vh;
+            width: 100%;
+            position: relative;
+        }
+
+        .platform-section {
+            flex: 1;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             text-align: center;
-            padding: 60px 20px 40px;
-            position: relative;
-        }
-
-        .hero-content {
-            max-width: 800px;
-            margin-bottom: 60px;
-            animation: fadeInUp 1s ease-out;
-        }
-
-        .hero-title {
-            font-size: clamp(2.5rem, 5vw, 4rem);
-            font-weight: 800;
-            margin-bottom: 20px;
-            background: linear-gradient(135deg, var(--text-color), var(--primary-color));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            line-height: 1.2;
-        }
-
-        .hero-subtitle {
-            font-size: clamp(1.1rem, 2vw, 1.3rem);
-            color: var(--text-muted-color);
-            margin-bottom: 40px;
-            line-height: 1.6;
-            font-weight: 400;
-        }
-
-        .platform-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 30px;
-            max-width: 1000px;
-            width: 100%;
-            padding: 0 20px;
-        }
-
-        .platform-card {
-            background: rgba(28, 28, 28, 0.8);
-            backdrop-filter: blur(20px);
-            border-radius: var(--apple-radius);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 40px 30px;
-            text-align: center;
-            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            cursor: pointer;
+            padding: 60px 40px;
             position: relative;
             overflow: hidden;
-            box-shadow: var(--apple-shadow);
+            transition: all 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            cursor: pointer;
+            background: var(--dark-color);
         }
 
-        .platform-card::before {
+        /* Enhanced background gradients */
+        .platform-section::before {
             content: '';
             position: absolute;
             top: 0;
             left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(135deg, transparent, rgba(255, 255, 255, 0.03));
-            opacity: 0;
-            transition: opacity 0.3s ease;
+            width: 100%;
+            height: 100%;
+            opacity: 1;
+            transition: all 0.7s ease;
+            z-index: 1;
         }
 
-        .platform-card:hover {
-            transform: translateY(-8px) scale(1.02);
-            box-shadow: var(--apple-hover-shadow);
-            border-color: rgba(255, 255, 255, 0.2);
+        .platform-section::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            opacity: 0.05;
+            transition: all 0.7s ease;
+            z-index: 2;
         }
 
-        .platform-card:hover::before {
+        .humat-section::before {
+            background: linear-gradient(135deg,
+                    var(--dark-color) 0%,
+                    rgba(28, 28, 28, 0.98) 40%,
+                    rgba(45, 45, 45, 0.95) 100%);
+        }
+
+        .humat-section::after {
+            background-image: url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1?q=80&w=2070&auto=format&fit=crop');
+        }
+
+        .fansub-section::before {
+            background: linear-gradient(135deg,
+                    var(--dark-color) 0%,
+                    rgba(229, 9, 20, 0.08) 40%,
+                    rgba(229, 9, 20, 0.15) 100%);
+        }
+
+        .fansub-section::after {
+            background-image: url('https://images.unsplash.com/photo-1578662996442-48f60103fc96?q=80&w=2070&auto=format&fit=crop');
+        }
+
+        /* Advanced hover effects */
+        .platform-section:hover {
+            flex: 1.6;
+            transform: scale(1.01);
+        }
+
+        .platform-section:hover::before {
             opacity: 1;
         }
 
+        .platform-section:hover::after {
+            opacity: 0.15;
+            transform: scale(1.05);
+        }
+
+        .platform-section:not(:hover) {
+            flex: 0.7;
+            filter: brightness(0.4) saturate(0.3);
+        }
+
+        .fansub-section:hover::before {
+            background: linear-gradient(135deg,
+                    rgba(229, 9, 20, 0.1) 0%,
+                    rgba(229, 9, 20, 0.25) 40%,
+                    rgba(229, 9, 20, 0.35) 100%);
+        }
+
+        /* Content styling */
+        .platform-content {
+            position: relative;
+            z-index: 3;
+            max-width: 450px;
+            transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .platform-section:hover .platform-content {
+            transform: translateY(-8px);
+        }
+
         .platform-icon {
-            width: 80px;
-            height: 80px;
-            margin: 0 auto 25px;
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 30px;
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 20px;
-            font-size: 2.5rem;
-            transition: transform 0.3s ease;
+            border-radius: var(--apple-radius);
+            font-size: 3rem;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(30px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            box-shadow: var(--apple-shadow);
         }
 
-        .platform-card:hover .platform-icon {
-            transform: scale(1.1);
+        .humat-section .platform-icon {
+            color: var(--text-color);
+            background: rgba(255, 255, 255, 0.08);
         }
 
-        .humat-card .platform-icon {
-            background: linear-gradient(135deg, var(--blue-color), var(--purple-color));
-            color: white;
-            box-shadow: 0 8px 24px rgba(0, 122, 255, 0.3);
+        .fansub-section .platform-icon {
+            color: var(--primary-color);
+            background: rgba(229, 9, 20, 0.15);
+            border-color: rgba(229, 9, 20, 0.25);
+            box-shadow: 0 8px 32px rgba(229, 9, 20, 0.3);
         }
 
-        .fansub-card .platform-icon {
-            background: linear-gradient(135deg, var(--primary-color), #ff1e30);
-            color: white;
-            box-shadow: 0 8px 24px rgba(229, 9, 20, 0.3);
+        .platform-section:hover .platform-icon {
+            transform: scale(1.15) rotateY(5deg);
+            box-shadow: 0 16px 48px rgba(0, 0, 0, 0.8);
+        }
+
+        .fansub-section:hover .platform-icon {
+            box-shadow: 0 16px 48px rgba(229, 9, 20, 0.5);
         }
 
         .platform-title {
-            font-size: 1.8rem;
-            font-weight: 700;
-            margin-bottom: 15px;
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 900;
+            margin-bottom: 20px;
+            letter-spacing: -2px;
+            transition: all 0.4s ease;
+            text-shadow: 2px 2px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .humat-section .platform-title {
             color: var(--text-color);
+            background: linear-gradient(135deg, var(--text-color), #ffffff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .fansub-section .platform-title {
+            background: linear-gradient(135deg, var(--primary-color), #ff4158);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .platform-section:hover .platform-title {
+            transform: translateY(-5px);
+            text-shadow: 4px 4px 30px rgba(0, 0, 0, 0.7);
         }
 
         .platform-description {
-            font-size: 1rem;
-            color: var(--text-muted-color);
-            line-height: 1.6;
+            font-size: clamp(1rem, 1.3vw, 1.2rem);
             margin-bottom: 30px;
+            line-height: 1.6;
+            color: var(--text-muted-color);
+            transition: all 0.4s ease;
+            font-weight: 400;
+        }
+
+        .platform-section:hover .platform-description {
+            color: var(--text-color);
+            transform: translateY(-3px);
         }
 
         .platform-features {
             list-style: none;
-            margin-bottom: 30px;
+            margin-bottom: 40px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.1s;
+        }
+
+        .platform-section:hover .platform-features {
+            opacity: 1;
+            transform: translateY(0);
         }
 
         .platform-features li {
-            font-size: 0.9rem;
-            color: var(--text-muted-color);
-            margin-bottom: 8px;
+            font-size: 1rem;
+            margin-bottom: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
+            background: rgba(255, 255, 255, 0.06);
+            padding: 10px 18px;
+            border-radius: 20px;
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            margin: 8px auto;
+            max-width: 260px;
+            color: var(--text-muted-color);
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .platform-features li:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
+            color: var(--text-color);
+            transform: translateX(5px);
         }
 
         .platform-features li i {
-            margin-right: 8px;
+            margin-right: 10px;
             color: var(--success-color);
-            font-size: 0.8rem;
+            font-size: 1rem;
+        }
+
+        .fansub-section .platform-features li {
+            background: rgba(229, 9, 20, 0.12);
+            border-color: rgba(229, 9, 20, 0.25);
+        }
+
+        .fansub-section .platform-features li:hover {
+            background: rgba(229, 9, 20, 0.2);
+            border-color: rgba(229, 9, 20, 0.4);
         }
 
         .platform-btn {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(30px);
+            border: 2px solid rgba(255, 255, 255, 0.15);
             color: var(--text-color);
-            padding: 14px 28px;
-            border-radius: 12px;
-            font-weight: 600;
-            font-size: 1rem;
+            padding: 16px 32px;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 1.1rem;
             text-decoration: none;
             display: inline-block;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: var(--apple-shadow);
+            opacity: 0;
+            transform: translateY(20px);
         }
 
-        .humat-card .platform-btn:hover {
-            background: linear-gradient(135deg, var(--blue-color), var(--purple-color));
-            border-color: var(--blue-color);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(0, 122, 255, 0.4);
+        .platform-section:hover .platform-btn {
+            opacity: 1;
+            transform: translateY(0);
+            transition-delay: 0.3s;
         }
 
-        .fansub-card .platform-btn:hover {
-            background: linear-gradient(135deg, var(--primary-color), #ff1e30);
+        .humat-section .platform-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.3);
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+        }
+
+        .fansub-section .platform-btn {
+            background: rgba(229, 9, 20, 0.15);
+            border-color: rgba(229, 9, 20, 0.3);
+            color: var(--text-color);
+        }
+
+        .fansub-section .platform-btn:hover {
+            background: var(--primary-color);
             border-color: var(--primary-color);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(229, 9, 20, 0.4);
+            transform: translateY(-3px) scale(1.05);
+            color: white;
+            box-shadow: 0 20px 40px rgba(229, 9, 20, 0.6);
         }
 
-        @keyframes fadeInUp {
+        /* Center divider - REMOVED */
+        /* .section-divider styles removed */
+
+        /* Mobile responsive */
+        @media (max-width: 768px) {
+
+            body,
+            html {
+                overflow-y: auto;
+            }
+
+            .landing-container {
+                flex-direction: column;
+                height: auto;
+                min-height: 100vh;
+            }
+
+            .platform-section {
+                flex: none;
+                min-height: 100vh;
+                padding: 50px 30px;
+            }
+
+            .platform-section:hover,
+            .platform-section:not(:hover) {
+                flex: none;
+                filter: none;
+            }
+
+            .platform-features {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            .platform-btn {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            .section-divider {
+                top: 50%;
+                left: 10%;
+                width: 80%;
+                height: 1px;
+                background: linear-gradient(to right,
+                        transparent 0%,
+                        rgba(255, 255, 255, 0.2) 20%,
+                        rgba(255, 255, 255, 0.4) 50%,
+                        rgba(255, 255, 255, 0.2) 80%,
+                        transparent 100%);
+                transform: translateY(-50%);
+            }
+        }
+
+        /* Reduced motion support */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation: none !important;
+                transition: none !important;
+            }
+        }
+
+        /* Loading animation */
+        .landing-container {
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        @keyframes fadeIn {
             from {
                 opacity: 0;
-                transform: translateY(30px);
             }
 
             to {
                 opacity: 1;
-                transform: translateY(0);
             }
         }
 
-        @media (max-width: 768px) {
-            .platform-grid {
-                grid-template-columns: 1fr;
-                gap: 20px;
+        /* Page transition overlay */
+        .page-transition-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: var(--dark-color);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .page-transition-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .transition-content {
+            text-align: center;
+            transform: translateY(20px);
+            transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.1s;
+        }
+
+        .page-transition-overlay.active .transition-content {
+            transform: translateY(0);
+        }
+
+        .transition-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--apple-radius);
+            font-size: 2.5rem;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(30px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: var(--apple-shadow);
+            animation: pulse 2s infinite ease-in-out;
+        }
+
+        .transition-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--text-color);
+            letter-spacing: -1px;
+        }
+
+        .transition-description {
+            font-size: 1rem;
+            color: var(--text-muted-color);
+            margin-bottom: 30px;
+        }
+
+        .transition-loading {
+            width: 60px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            margin: 0 auto;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .transition-loading::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, var(--primary-color), transparent);
+            animation: loading 1.5s infinite ease-in-out;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+                opacity: 1;
             }
 
-            .platform-card {
-                padding: 30px 20px;
-            }
-
-            .hero-content {
-                margin-bottom: 40px;
+            50% {
+                transform: scale(1.05);
+                opacity: 0.8;
             }
         }
 
-        /* Accessibility */
-        @media (prefers-reduced-motion: reduce) {
-            * {
-                animation-duration: 0.01ms !important;
-                animation-iteration-count: 1 !important;
-                transition-duration: 0.01ms !important;
+        @keyframes loading {
+            0% {
+                left: -100%;
+            }
+
+            100% {
+                left: 100%;
+            }
+        }
+
+        /* Enhanced section selection animation */
+        .platform-section.selecting {
+            transform: scale(1.02);
+            filter: brightness(1.2) !important;
+            z-index: 100;
+        }
+
+        .platform-section.selecting::before {
+            opacity: 1 !important;
+        }
+
+        .platform-section.selecting .platform-icon {
+            transform: scale(1.2) rotateY(10deg);
+            animation: selectedPulse 0.6s ease-out;
+        }
+
+        @keyframes selectedPulse {
+            0% {
+                transform: scale(1.2) rotateY(10deg);
+            }
+
+            50% {
+                transform: scale(1.3) rotateY(5deg);
+            }
+
+            100% {
+                transform: scale(1.2) rotateY(10deg);
             }
         }
     </style>
@@ -310,53 +604,59 @@
     }
     </script>
 
-    <main class="landing-hero">
-        <div class="hero-content">
-            <h1 class="hero-title">HUMAT</h1>
-            <p class="hero-subtitle">
-                Hacettepe Üniversitesi'nin resmi anime ve topluluk platformu.
-                Yüksek kaliteli çeviriler, topluluk etkinlikleri ve daha fazlası için doğru yerdesiniz.
-            </p>
+    <main class="landing-container">
+        <!-- Page Transition Overlay -->
+        <div class="page-transition-overlay" id="transitionOverlay">
+            <div class="transition-content">
+                <div class="transition-icon" id="transitionIcon">
+                    <i class="fas fa-spinner fa-spin"></i>
+                </div>
+                <h2 class="transition-title" id="transitionTitle">Yükleniyor...</h2>
+                <p class="transition-description" id="transitionDescription">Platform hazırlanıyor</p>
+                <div class="transition-loading"></div>
+            </div>
         </div>
 
-        <div class="platform-grid">
-            <!-- Humat Topluluğu Kartı -->
-            <div class="platform-card humat-card" data-url="{{ url_for('humat_index') }}">
+        <!-- Humat Section -->
+        <div class="platform-section humat-section" data-url="{{ url_for('humat_index') }}">
+            <div class="platform-content">
                 <div class="platform-icon">
                     <i class="fas fa-users"></i>
                 </div>
-                <h2 class="platform-title">HUMAT</h2>
+                <h1 class="platform-title">HUMAT</h1>
                 <p class="platform-description">
                     Hacettepe Üniversitesi öğrencileri ve mezunları için özel topluluk alanı
                 </p>
                 <ul class="platform-features">
-                    <li><i class="fas fa-check"></i> Topluluk Etkinlikleri</li>
-                    <li><i class="fas fa-check"></i> Güncel Haberler</li>
-                    <li><i class="fas fa-check"></i> Öğrenci Ağı</li>
-                    <li><i class="fas fa-check"></i> Forum Tartışmaları</li>
+                    <li><i class="fas fa-calendar"></i> Topluluk Etkinlikleri</li>
+                    <li><i class="fas fa-newspaper"></i> Güncel Haberler</li>
+                    <li><i class="fas fa-graduation-cap"></i> Öğrenci Ağı</li>
+                    <li><i class="fas fa-comments"></i> Forum Tartışmaları</li>
                 </ul>
                 <a href="{{ url_for('humat_index') }}" class="platform-btn">
-                    <i class="fas fa-arrow-right me-2"></i>Topluluğa Katıl
+                    <i class="fas fa-arrow-right"></i> Topluluğa Katıl
                 </a>
             </div>
+        </div>
 
-            <!-- Fansub Platformu Kartı -->
-            <div class="platform-card fansub-card" data-url="{{ url_for('fansub_index') }}">
+        <!-- Fansub Section -->
+        <div class="platform-section fansub-section" data-url="{{ url_for('fansub_index') }}">
+            <div class="platform-content">
                 <div class="platform-icon">
                     <i class="fas fa-play-circle"></i>
                 </div>
-                <h2 class="platform-title">Fansub</h2>
+                <h1 class="platform-title">FANSUB</h1>
                 <p class="platform-description">
-                    Yüksek kaliteli anime çevirileri ve geniş anime arşivi
+                    Yüksek kaliteli anime çevirileri
                 </p>
                 <ul class="platform-features">
-                    <li><i class="fas fa-check"></i> HD Kalitede Anime</li>
-                    <li><i class="fas fa-check"></i> Türkçe Altyazı</li>
-                    <li><i class="fas fa-check"></i> Güncel Sezom Takibi</li>
-                    <li><i class="fas fa-check"></i> Kişisel İzleme Listesi</li>
+                    <li><i class="fas fa-hd-video"></i> HD Kalitede Anime</li>
+                    <li><i class="fas fa-closed-captioning"></i> Türkçe Altyazı</li>
+                    <li><i class="fas fa-clock"></i> Güncel Sezon Takibi</li>
+                    <li><i class="fas fa-heart"></i> Kişisel İzleme Listesi</li>
                 </ul>
                 <a href="{{ url_for('fansub_index') }}" class="platform-btn">
-                    <i class="fas fa-play me-2"></i>İzlemeye Başla
+                    <i class="fas fa-play"></i> İzlemeye Başla
                 </a>
             </div>
         </div>
@@ -364,70 +664,143 @@
 
     <!-- JavaScript for enhanced UX -->
     <script>
-        // Add smooth scrolling and enhanced interactions
         document.addEventListener('DOMContentLoaded', function () {
-            // Add loading animation
+            // Simple loading animation
             document.body.style.opacity = '0';
             setTimeout(() => {
-                document.body.style.transition = 'opacity 0.5s ease';
+                document.body.style.transition = 'opacity 0.6s ease';
                 document.body.style.opacity = '1';
             }, 100);
 
-            // Enhanced card interactions
-            const cards = document.querySelectorAll('.platform-card');
-            cards.forEach(card => {
-                // Add click navigation
-                card.addEventListener('click', function () {
+            // Get transition elements
+            const transitionOverlay = document.getElementById('transitionOverlay');
+            const transitionIcon = document.getElementById('transitionIcon');
+            const transitionTitle = document.getElementById('transitionTitle');
+            const transitionDescription = document.getElementById('transitionDescription');
+
+            // Section data for transitions
+            const sectionData = {
+                'humat_index': {
+                    icon: 'fas fa-users',
+                    title: 'HUMAT\'a Geçiş Yapılıyor',
+                    description: 'Topluluk platformu yükleniyor...'
+                },
+                'fansub_index': {
+                    icon: 'fas fa-play-circle',
+                    title: 'FANSUB\'a Geçiş Yapılıyor',
+                    description: 'Anime platformu yükleniyor...'
+                }
+            };
+
+            // Enhanced section click with animation
+            function navigateWithTransition(url, sectionType) {
+                const data = sectionData[sectionType];
+                if (!data) return;
+
+                // Update transition content
+                transitionIcon.innerHTML = `<i class="${data.icon}"></i>`;
+                transitionTitle.textContent = data.title;
+                transitionDescription.textContent = data.description;
+
+                // Show transition overlay
+                transitionOverlay.classList.add('active');
+
+                // Navigate after animation
+                setTimeout(() => {
+                    window.location.href = url;
+                }, 1200);
+            }
+
+            // Section click navigation with enhanced animations
+            const sections = document.querySelectorAll('.platform-section');
+            sections.forEach(section => {
+                section.addEventListener('click', function () {
                     const url = this.getAttribute('data-url');
                     if (url) {
-                        window.location.href = url;
+                        // Add selection animation
+                        this.classList.add('selecting');
+
+                        // Fade other sections
+                        sections.forEach(otherSection => {
+                            if (otherSection !== this) {
+                                otherSection.style.opacity = '0.3';
+                                otherSection.style.transform = 'scale(0.95)';
+                            }
+                        });
+
+                        // Get section type from URL
+                        const sectionType = url.split('/').pop();
+
+                        // Start transition after selection animation
+                        setTimeout(() => {
+                            navigateWithTransition(url, sectionType);
+                        }, 600);
                     }
                 });
 
-                card.addEventListener('mouseenter', function () {
-                    this.style.transform = 'translateY(-8px) scale(1.02)';
+                // Enhanced touch support
+                section.addEventListener('touchstart', function (e) {
+                    e.preventDefault();
+                    this.style.transform = 'scale(0.98)';
                 });
 
-                card.addEventListener('mouseleave', function () {
-                    this.style.transform = 'translateY(0) scale(1)';
+                section.addEventListener('touchend', function (e) {
+                    e.preventDefault();
+                    this.style.transform = 'scale(1)';
+                    this.click();
                 });
 
-                // Add ripple effect on click
-                card.addEventListener('click', function (e) {
-                    const ripple = document.createElement('div');
-                    const rect = this.getBoundingClientRect();
-                    const size = Math.max(rect.width, rect.height);
-                    const x = e.clientX - rect.left - size / 2;
-                    const y = e.clientY - rect.top - size / 2;
-
-                    ripple.style.cssText = `
-                        position: absolute;
-                        width: ${size}px;
-                        height: ${size}px;
-                        background: rgba(255,255,255,0.1);
-                        border-radius: 50%;
-                        transform: translate(${x}px, ${y}px) scale(0);
-                        animation: ripple 0.6s ease-out;
-                        pointer-events: none;
-                    `;
-
-                    this.appendChild(ripple);
-                    setTimeout(() => ripple.remove(), 600);
+                // Mouse enter/leave effects
+                section.addEventListener('mouseenter', function () {
+                    if (!this.classList.contains('selecting')) {
+                        this.style.transition = 'all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+                    }
                 });
             });
-        });
 
-        // Add CSS for ripple animation
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes ripple {
-                to {
-                    transform: translate(var(--x), var(--y)) scale(2);
-                    opacity: 0;
+            // Enhanced keyboard navigation
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'ArrowLeft' || e.key === '1') {
+                    e.preventDefault();
+                    sections[0].click();
+                } else if (e.key === 'ArrowRight' || e.key === '2') {
+                    e.preventDefault();
+                    sections[1].click();
+                } else if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    // Focus on first section if no section is hovered
+                    const hoveredSection = document.querySelector('.platform-section:hover');
+                    if (hoveredSection) {
+                        hoveredSection.click();
+                    } else {
+                        sections[0].click();
+                    }
                 }
-            }
-        `;
-        document.head.appendChild(style);
+            });
+
+            // Prevent accidental double clicks
+            let isNavigating = false;
+            sections.forEach(section => {
+                section.addEventListener('click', function (e) {
+                    if (isNavigating) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        return false;
+                    }
+                    isNavigating = true;
+                });
+            });
+
+            // Handle page visibility for better UX
+            document.addEventListener('visibilitychange', function () {
+                if (document.hidden) {
+                    // Pause any ongoing animations when tab is not visible
+                    document.body.style.animationPlayState = 'paused';
+                } else {
+                    document.body.style.animationPlayState = 'running';
+                }
+            });
+        });
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
