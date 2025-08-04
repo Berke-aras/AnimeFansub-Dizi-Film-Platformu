@@ -5,16 +5,16 @@
 {% block content %}
 
 <!-- Hero Section -->
-{% if editor_picks %}
+{% if hero_animes %}
 <div id="heroCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel">
     <div class="carousel-indicators">
-        {% for anime in editor_picks %}
+        {% for anime in hero_animes %}
         <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="{{ loop.index0 }}"
             class="{{ 'active' if loop.first }}" aria-current="true" aria-label="Slide {{ loop.index }}"></button>
         {% endfor %}
     </div>
     <div class="carousel-inner">
-        {% for anime in editor_picks %}
+        {% for anime in hero_animes %}
         <div class="carousel-item {{ 'active' if loop.first }}">
             <div class="hero-background" style="background-image: url({{ anime.cover_image }});"></div>
             <div class="hero-overlay"></div>
@@ -41,7 +41,7 @@
 
     <!-- Anime Rafları -->
     {% if editor_picks %}
-    <section class="anime-shelf my-5">
+    <section class="anime-shelf shelf-editors-pick my-5">
         <h3 class="shelf-title">Editörün Seçimi</h3>
         <div class="shelf-scroll">
             {% for anime in editor_picks %}
@@ -66,7 +66,7 @@
     {% endif %}
 
     {% if latest_animes %}
-    <section class="anime-shelf my-5">
+    <section class="anime-shelf shelf-latest my-5">
         <h3 class="shelf-title">Son Eklenenler</h3>
         <div class="shelf-scroll">
             {% for anime in latest_animes %}
@@ -91,7 +91,7 @@
     {% endif %}
 
     {% if personalized_recs %}
-    <section class="anime-shelf my-5">
+    <section class="anime-shelf shelf-personalized my-5">
         <h3 class="shelf-title">Sana Özel Öneriler</h3>
         <div class="shelf-scroll">
             {% for anime in personalized_recs %}

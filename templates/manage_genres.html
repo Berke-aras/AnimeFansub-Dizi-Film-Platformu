@@ -26,9 +26,13 @@
                 {% for genre in genres %}
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     {{ genre.name }}
+                    {% if genre.name not in special_genres %}
                     <form action="{{ url_for('delete_genre', genre_id=genre.id) }}" method="post" onsubmit="return confirm('Bu türü silmek istediğinize emin misiniz?');">
                         <button type="submit" class="btn btn-sm btn-outline-danger">Sil</button>
                     </form>
+                    {% else %}
+                    <span class="badge bg-secondary">Özel Tür</span>
+                    {% endif %}
                 </li>
                 {% endfor %}
             </ul>

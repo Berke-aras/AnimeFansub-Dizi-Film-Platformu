@@ -560,3 +560,24 @@ footer a:hover {
 .genre-pill i {
     margin-left: 5px;
 }
+
+/* --- Shelf Variations --- */
+.shelf-editors-pick {
+    background: linear-gradient(to right, #1a1a1a, #141414);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.shelf-latest {
+    background-color: #161616;
+}
+
+.shelf-personalized {
+    border-left: 3px solid var(--primary-color);
+    background-color: transparent;
+    padding-left: 1.5rem;
+}
+
+/* Special style for the first item in editor's picks */
+.shelf-editors-pick .anime-card:first-child {
+    width: 250px;
+}

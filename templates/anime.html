@@ -19,7 +19,7 @@
                 {% if anime.anime_type %}<span class="badge bg-info me-2">{{ anime.anime_type }}</span>{% endif %}
                 {% if anime.status %}<span class="badge bg-success">{{ anime.status }}</span>{% endif %}
             </div>
-            <p class="text-muted">{{ anime.genres|map(attribute='name')|join(', ') }}</p>
+            <p class="text-muted">{{ anime.genres|rejectattr('name', 'in', ['Editörün Seçimi', 'Hero Section'])|map(attribute='name')|join(', ') }}</p>
             
             <!-- Puanlama ve İzleme Listesi -->
             <div class="d-flex align-items-center mb-4">
