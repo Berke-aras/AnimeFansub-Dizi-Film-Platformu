@@ -34,14 +34,54 @@
     </div>
 </div>
 
+
+{% extends "community_base.html" %}
+
+{% block title %}Yeni Konu Oluştur{% endblock %}
+
+{% block community_content %}
+<div class="forum-container">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ url_for('community.index') }}">Forum</a></li>
+            <li class="breadcrumb-item"><a href="{{ url_for('community.view_category', category_id=category.id) }}">{{ category.name }}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Yeni Konu</li>
+        </ol>
+    </nav>
+
+    <div class="card">
+        <div class="card-header">
+            Yeni Konu Oluştur: {{ category.name }}
+        </div>
+        <div class="card-body">
+            <form method="POST" action="{{ url_for('community.new_thread', category_id=category.id) }}">
+                <div class="mb-3">
+                    <label for="title" class="form-label">Konu Başlığı</label>
+                    <input type="text" class="form-control" id="title" name="title" required>
+                </div>
+                <div class="mb-3">
+                    <label for="content" class="form-label">Mesajınız</label>
+                    <textarea id="content" name="content"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Konuyu Oluştur</button>
+                <a href="{{ url_for('community.view_category', category_id=category.id) }}" class="btn btn-secondary">İptal</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
 {% block scripts %}
 {{ super() }}
 <script src="https://cdn.ckeditor.com/ckeditor5/35.4.0/classic/ckeditor.js"></script>
 <script>
     ClassicEditor
-        .create( document.querySelector( '#content' ) )
+        .create( document.querySelector( '#content' ), {
+            // CKEditor configuration can go here
+        } )
         .catch( error => {
             console.error( error );
         } );
 </script>
 {% endblock %}
+

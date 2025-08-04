@@ -1,3 +1,4 @@
+
 {% extends "base.html" %}
 
 {% block title %}Topluluk Bilgilerini Yönet{% endblock %}
@@ -12,7 +13,7 @@
         </div>
         <div class="mb-3">
             <label for="content" class="form-label">İçerik</label>
-            <textarea class="form-control" id="content" name="content" rows="10">{{ info.content if info else '' }}</textarea>
+            <textarea id="content" name="content">{{ info.content if info else '' }}</textarea>
         </div>
         <div class="mb-3">
             <label for="image_url" class="form-label">Arka Plan Resim URL'si</label>
@@ -24,8 +25,13 @@
 {% endblock %}
 
 {% block scripts %}
-<script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
+{{ super() }}
+<script src="https://cdn.ckeditor.com/ckeditor5/35.4.0/classic/ckeditor.js"></script>
 <script>
-    CKEDITOR.replace('content');
+    ClassicEditor
+        .create( document.querySelector( '#content' ) )
+        .catch( error => {
+            console.error( error );
+        } );
 </script>
 {% endblock %}

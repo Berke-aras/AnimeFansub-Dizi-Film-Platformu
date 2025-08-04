@@ -1,13 +1,8 @@
-{% extends "base.html" %}
 
-{% block head_extra %}
-{{ super() }}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/forum_revamp.css') }}">
-{% endblock %}
-
+{% extends "humat_base.html" %}
 
 {% block content %}
-<div class="container mt-5 pt-5"> 
+<div class="container mt-5 pt-5 forum-container"> 
     <div class="row">
         <div class="col-12">
             {% with messages = get_flashed_messages(with_categories=true) %}

@@ -1,102 +1,117 @@
-{% extends "base.html" %}
+
+{% extends "humat_base.html" %}
 
 {% block title %}Topluluk Merkezi{% endblock %}
 
+{% block head_extra %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/forum_revamp.css') }}">
+{% endblock %}
+
 {% block content %}
-
-{% if info and info.image_url %}
-<div class="community-hero" style="background-image: url('{{ info.image_url }}');">
-    <div class="community-hero-overlay">
-        <div class="container text-center text-white">
-            <h1 class="display-3 fw-bold">{{ info.title }}</h1>
-            <p class="lead fs-4">{{ info.content }}</p>
-            <a href="{{ url_for('community.index') }}" class="btn btn-primary btn-lg mt-3">Forumu Keşfet</a>
-        </div>
-    </div>
-</div>
-{% else %}
-<div class="container mt-5 pt-5">
-    <div class="text-center mb-5">
-        <h1 class="display-4">Topluluk Merkezine Hoş Geldiniz</h1>
-        <p class="lead text-muted">Tartışmalara katılın, son haberleri okuyun ve etkinlikleri takip edin.</p>
-    </div>
-</div>
-{% endif %}
-
-<div class="container mt-5">
-    <div class="row g-4">
-        <!-- Forum Kartı -->
-        <div class="col-md-4">
-            <div class="card h-100 shadow-sm text-center">
-                <div class="card-body d-flex flex-column justify-content-center">
-                    <i class="fas fa-comments fa-3x mb-3 text-primary"></i>
-                    <h5 class="card-title">Forum</h5>
-                    <p class="card-text">Diğer üyelerle sohbet edin ve tartışmalara katılın.</p>
-                    <a href="{{ url_for('community.index') }}" class="btn btn-primary mt-auto">Foruma Git</a>
-                </div>
-            </div>
-        </div>
-
-        <!-- Haberler Kartı -->
-        <div class="col-md-4">
-            <div class="card h-100 shadow-sm text-center">
-                <div class="card-body d-flex flex-column justify-content-center">
-                    <i class="fas fa-newspaper fa-3x mb-3 text-success"></i>
-                    <h5 class="card-title">Haberler</h5>
-                    <p class="card-text">En son anime ve topluluk haberlerini okuyun.</p>
-                    <a href="{{ url_for('news') }}" class="btn btn-success mt-auto">Haberleri Oku</a>
-                </div>
-            </div>
-        </div>
-
-        <!-- Etkinlik Takvimi Kartı -->
-        <div class="col-md-4">
-            <div class="card h-100 shadow-sm text-center">
-                <div class="card-body d-flex flex-column justify-content-center">
-                    <i class="fas fa-calendar-alt fa-3x mb-3 text-warning"></i>
-                    <h5 class="card-title">Etkinlik Takvimi</h5>
-                    <p class="card-text">Gelecek etkinlikleri ve yayın tarihlerini görün.</p>
-                    <a href="{{ url_for('events') }}" class="btn btn-warning mt-auto">Takvime Git</a>
-                </div>
+<div class="hub-container">
+    {% if info and info.image_url %}
+    <div class="hub-hero" style="background-image: url('{{ info.image_url }}');">
+        <div class="hub-hero-overlay">
+            <div class="container text-center">
+                <h1 class="display-3 fw-bold">{{ info.title }}</h1>
             </div>
         </div>
     </div>
+    {% endif %}
 
-    <!-- Son Aktiviteler -->
-    <div class="row mt-5">
-        <!-- Son Konular -->
-        <div class="col-md-6">
-            <h4><i class="fas fa-fire me-2"></i>Son Forum Konuları</h4>
-            <div class="list-group">
-                {% for thread in latest_threads %}
-                    <a href="{{ url_for('community.view_thread', thread_id=thread.id) }}" class="list-group-item list-group-item-action">
-                        <div class="d-flex w-100 justify-content-between">
-                            <h6 class="mb-1">{{ thread.title }}</h6>
-                            <small>{{ thread.timestamp.strftime('%d-%m') }}</small>
+    <div class="hub-content-wrapper">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <div class="hub-content-card">
+                        <div class="card-body ck-content">
+                            {% if info %}
+                                {{ info.content|safe }}
+                            {% else %}
+                                <div class="text-center p-5">
+                                    <h2>Topluluk Merkezine Hoş Geldiniz!</h2>
+                                    <p class="lead text-muted">Burada toplulukla ilgili önemli bilgiler ve duyurular yer alacak.</p>
+                                </div>
+                            {% endif %}
                         </div>
-                        <small class="text-muted">{{ thread.user_username }} tarafından</small>
-                    </a>
-                {% else %}
-                    <p class="text-muted">Henüz konu yok.</p>
-                {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container mt-5">
+        <div class="row g-4">
+            <!-- Forum Kartı -->
+            <div class="col-md-4">
+                <div class="card h-100 hub-feature-card">
+                    <div class="card-body text-center d-flex flex-column align-items-center justify-content-center">
+                        <i class="fas fa-comments fa-3x mb-3"></i>
+                        <h5 class="card-title">Forum</h5>
+                        <p class="card-text">Diğer üyelerle sohbet edin ve tartışmalara katılın.</p>
+                        <a href="{{ url_for('community.index') }}" class="btn btn-outline-light mt-auto">Foruma Git</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Haberler Kartı -->
+            <div class="col-md-4">
+                <div class="card h-100 hub-feature-card">
+                    <div class="card-body text-center d-flex flex-column align-items-center justify-content-center">
+                        <i class="fas fa-newspaper fa-3x mb-3"></i>
+                        <h5 class="card-title">Haberler</h5>
+                        <p class="card-text">En son anime ve topluluk haberlerini okuyun.</p>
+                        <a href="{{ url_for('news') }}" class="btn btn-outline-light mt-auto">Haberleri Oku</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Etkinlik Takvimi Kartı -->
+            <div class="col-md-4">
+                <div class="card h-100 hub-feature-card">
+                    <div class="card-body text-center d-flex flex-column align-items-center justify-content-center">
+                        <i class="fas fa-calendar-alt fa-3x mb-3"></i>
+                        <h5 class="card-title">Etkinlik Takvimi</h5>
+                        <p class="card-text">Gelecek etkinlikleri ve yayın tarihlerini görün.</p>
+                        <a href="{{ url_for('events') }}" class="btn btn-outline-light mt-auto">Takvime Git</a>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <!-- Son Haberler -->
-        <div class="col-md-6">
-            <h4><i class="fas fa-bullhorn me-2"></i>Son Haberler</h4>
-            <div class="list-group">
-                {% for item in latest_news %}
-                    <a href="{{ url_for('view_news', news_id=item.id) }}" class="list-group-item list-group-item-action">
-                        <div class="d-flex w-100 justify-content-between">
-                            <h6 class="mb-1">{{ item.title }}</h6>
-                            <small>{{ item.timestamp.strftime('%d-%m') }}</small>
-                        </div>
-                        <small class="text-muted">{{ item.author.username }} tarafından</small>
-                    </a>
-                {% else %}
-                    <p class="text-muted">Henüz haber yok.</p>
-                {% endfor %}
+        <!-- Son Aktiviteler -->
+        <div class="row mt-5 pt-4">
+            <div class="col-md-6">
+                <h4><i class="fas fa-fire me-2"></i>Son Forum Konuları</h4>
+                <div class="list-group recent-activity-list">
+                    {% for thread in latest_threads %}
+                        <a href="{{ url_for('community.view_thread', thread_id=thread.id) }}" class="list-group-item list-group-item-action">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h6 class="mb-1">{{ thread.title }}</h6>
+                                <small>{{ thread.timestamp.strftime('%d-%m') }}</small>
+                            </div>
+                            <small class="text-muted">{{ thread.user_username }} tarafından</small>
+                        </a>
+                    {% else %}
+                        <p class="text-muted p-3">Henüz konu yok.</p>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="col-md-6">
+                <h4><i class="fas fa-bullhorn me-2"></i>Son Haberler</h4>
+                <div class="list-group recent-activity-list">
+                    {% for item in latest_news %}
+                        <a href="{{ url_for('view_news', news_id=item.id) }}" class="list-group-item list-group-item-action">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h6 class="mb-1">{{ item.title }}</h6>
+                                <small>{{ item.timestamp.strftime('%d-%m') }}</small>
+                            </div>
+                            <small class="text-muted">{{ item.author.username }} tarafından</small>
+                        </a>
+                    {% else %}
+                        <p class="text-muted p-3">Henüz haber yok.</p>
+                    {% endfor %}
+                </div>
             </div>
         </div>
     </div>

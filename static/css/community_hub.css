@@ -1,0 +1,113 @@
+
+/* community_hub.css */
+
+.hub-container {
+    background-color: #141414; /* Match the site's dark theme */
+}
+
+.hub-hero {
+    height: 60vh;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    border-bottom: 5px solid #e50914; /* Primary color accent */
+}
+
+.hub-hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to top, rgba(20, 20, 20, 1) 10%, rgba(20, 20, 20, 0.3) 70%, rgba(20, 20, 20, 0) 100%);
+    display: flex;
+    align-items: flex-end; /* Align content to the bottom */
+    justify-content: center;
+    padding-bottom: 4rem;
+}
+
+.hub-hero .display-3 {
+    color: #ffffff;
+    text-shadow: 2px 2px 15px rgba(0, 0, 0, 0.7);
+    font-weight: 700;
+}
+
+.hub-content-wrapper {
+    margin-top: -80px; /* Pull the content card up over the hero image */
+    position: relative;
+    z-index: 2;
+    padding-bottom: 3rem;
+}
+
+.hub-content-card {
+    background-color: #1c1c1c; /* Lighter dark shade for the card */
+    border-radius: 16px; /* Apple-like rounded corners */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+}
+
+.hub-content-card .card-body {
+    padding: 2.5rem 3rem;
+}
+
+/* CKEditor content needs to match the theme */
+.hub-content-card .ck-content {
+    color: #f5f5f5;
+    line-height: 1.8;
+}
+
+.hub-content-card .ck-content h1, 
+.hub-content-card .ck-content h2, 
+.hub-content-card .ck-content h3 {
+    color: #ffffff;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.hub-content-card .ck-content a {
+    color: #e50914;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.hub-content-card .ck-content a:hover {
+    text-decoration: underline;
+}
+
+/* Feature Cards (News & Events) */
+.hub-feature-card {
+    background-color: #1c1c1c;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hub-feature-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.hub-feature-card .card-body {
+    color: #a0a0a0;
+}
+
+.hub-feature-card .card-title {
+    color: #f5f5f5;
+    font-weight: 600;
+}
+
+.hub-feature-card i {
+    color: #e50914;
+}
+
+.btn-outline-light {
+    border-color: rgba(255, 255, 255, 0.3);
+    color: #f5f5f5;
+}
+
+.btn-outline-light:hover {
+    background-color: #e50914;
+    border-color: #e50914;
+    color: #ffffff;
+}
+
