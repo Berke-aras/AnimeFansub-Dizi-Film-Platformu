@@ -1096,6 +1096,153 @@ def manage_community_members():
                          search_query=search_query,
                          status_filter=status_filter)
 
+@app.route('/admin/community_members/export_excel')
+@login_required
+@strict_admin_required
+@limiter.limit("5 per minute")  # Rate limiting for export
+def export_community_members_excel():
+    """Topluluk üyelerinin verilerini güvenli bir şekilde Excel formatında indir"""
+    try:
+        # IP ve kullanıcı bilgilerini logla (güvenlik için)
+        client_ip = get_remote_address()
+        app.logger.info(f"Excel export requested by user: {current_user.username} (ID: {current_user.id}) from IP: {client_ip}")
+        
+        # Critical action logu
+        log_action('excel_export', f'Topluluk üyeleri Excel export - Admin: {current_user.username}, IP: {client_ip}')
+        
+        # IP-based güvenlik (isteğe bağlı - environment variable ile kontrol)
+        allowed_ips = os.environ.get('ADMIN_ALLOWED_IPS', '').split(',')
+        if allowed_ips and allowed_ips != [''] and client_ip not in allowed_ips:
+            app.logger.warning(f"🚨 Excel export denied for IP: {client_ip}, User: {current_user.username}")
+            flash('Bu işlem için IP adresiniz yetkili değil.', 'error')
+            return redirect(url_for('manage_community_members'))
+        
+        # Workbook oluştur
+        wb = Workbook()
+        
+        # Onaylı üyeler sayfası
+        ws_approved = wb.active
+        ws_approved.title = "Onaylı Üyeler"
+        
+        # Bekleyen üyeler sayfası
+        ws_pending = wb.create_sheet("Bekleyen Başvurular")
+        
+        # Başlık stilleri
+        header_font = Font(bold=True, color="FFFFFF")
+        header_fill = PatternFill(start_color="366092", end_color="366092", fill_type="solid")
+        header_alignment = Alignment(horizontal="center", vertical="center")
+        
+        # Onaylı üyeler için başlıklar
+        approved_headers = [
+            "ID", "Ad", "Soyad", "Kullanıcı Adı", "E-posta", "Öğrenci No",
+            "Telefon", "Doğum Yeri", "Doğum Tarihi", "İkamet", "Sınıf",
+            "Fakülte", "Bölüm", "Tercih Ettiği Birimler", "Kayıt Tarihi", "Sistem Kullanıcı Adı"
+        ]
+        
+        # Bekleyen başvurular için başlıklar
+        pending_headers = [
+            "ID", "Ad", "Soyad", "Kullanıcı Adı", "E-posta", "Öğrenci No",
+            "Telefon", "Doğum Yeri", "Doğum Tarihi", "İkamet", "Sınıf",
+            "Fakülte", "Bölüm", "Tercih Ettiği Birimler", "Başvuru Tarihi"
+        ]
+        
+        # Onaylı üyeler başlıklarını yaz
+        for col_num, header in enumerate(approved_headers, 1):
+            cell = ws_approved.cell(row=1, column=col_num, value=header)
+            cell.font = header_font
+            cell.fill = header_fill
+            cell.alignment = header_alignment
+        
+        # Bekleyen başvurular başlıklarını yaz
+        for col_num, header in enumerate(pending_headers, 1):
+            cell = ws_pending.cell(row=1, column=col_num, value=header)
+            cell.font = header_font
+            cell.fill = header_fill
+            cell.alignment = header_alignment
+        
+        # Onaylı üyelerin verilerini al ve yaz
+        approved_members = CommunityMember.query.options(db.joinedload(CommunityMember.user)).filter_by(is_approved=True).order_by(CommunityMember.registration_date.desc()).all()
+        
+        for row_num, member in enumerate(approved_members, 2):
+            # Güvenlik: Hassas verileri sanitize et
+            ws_approved.cell(row=row_num, column=1, value=member.id)
+            ws_approved.cell(row=row_num, column=2, value=sanitize_input(member.name))
+            ws_approved.cell(row=row_num, column=3, value=sanitize_input(member.surname))
+            ws_approved.cell(row=row_num, column=4, value=sanitize_input(member.username))
+            ws_approved.cell(row=row_num, column=5, value=sanitize_input(member.email))
+            ws_approved.cell(row=row_num, column=6, value=sanitize_input(member.student_id))
+            # Telefon numarasını tam olarak yaz (admin için)
+            ws_approved.cell(row=row_num, column=7, value=sanitize_input(member.phone_number))
+            ws_approved.cell(row=row_num, column=8, value=sanitize_input(member.place_of_birth))
+            ws_approved.cell(row=row_num, column=9, value=member.date_of_birth.strftime('%Y-%m-%d') if member.date_of_birth else '')
+            ws_approved.cell(row=row_num, column=10, value=sanitize_input(member.current_residence))
+            ws_approved.cell(row=row_num, column=11, value=sanitize_input(member.student_class))
+            ws_approved.cell(row=row_num, column=12, value=sanitize_input(member.faculty))
+            ws_approved.cell(row=row_num, column=13, value=sanitize_input(member.department))
+            ws_approved.cell(row=row_num, column=14, value=sanitize_input(member.preferred_units) if member.preferred_units else '')
+            ws_approved.cell(row=row_num, column=15, value=member.registration_date.strftime('%Y-%m-%d %H:%M') if member.registration_date else '')
+            ws_approved.cell(row=row_num, column=16, value=member.user.username if member.user else 'N/A')
+        
+        # Bekleyen başvuruların verilerini al ve yaz
+        pending_members = CommunityMember.query.filter_by(is_approved=False).order_by(CommunityMember.registration_date.desc()).all()
+        
+        for row_num, member in enumerate(pending_members, 2):
+            # Güvenlik: Hassas verileri sanitize et
+            ws_pending.cell(row=row_num, column=1, value=member.id)
+            ws_pending.cell(row=row_num, column=2, value=sanitize_input(member.name))
+            ws_pending.cell(row=row_num, column=3, value=sanitize_input(member.surname))
+            ws_pending.cell(row=row_num, column=4, value=sanitize_input(member.username))
+            ws_pending.cell(row=row_num, column=5, value=sanitize_input(member.email))
+            ws_pending.cell(row=row_num, column=6, value=sanitize_input(member.student_id))
+            # Telefon numarasını tam olarak yaz (admin için)
+            ws_pending.cell(row=row_num, column=7, value=sanitize_input(member.phone_number))
+            ws_pending.cell(row=row_num, column=8, value=sanitize_input(member.place_of_birth))
+            ws_pending.cell(row=row_num, column=9, value=member.date_of_birth.strftime('%Y-%m-%d') if member.date_of_birth else '')
+            ws_pending.cell(row=row_num, column=10, value=sanitize_input(member.current_residence))
+            ws_pending.cell(row=row_num, column=11, value=sanitize_input(member.student_class))
+            ws_pending.cell(row=row_num, column=12, value=sanitize_input(member.faculty))
+            ws_pending.cell(row=row_num, column=13, value=sanitize_input(member.department))
+            ws_pending.cell(row=row_num, column=14, value=sanitize_input(member.preferred_units) if member.preferred_units else '')
+            ws_pending.cell(row=row_num, column=15, value=member.registration_date.strftime('%Y-%m-%d %H:%M') if member.registration_date else '')
+        
+        # Kolon genişliklerini ayarla
+        for ws in [ws_approved, ws_pending]:
+            for column in ws.columns:
+                max_length = 0
+                column_letter = column[0].column_letter
+                for cell in column:
+                    try:
+                        if len(str(cell.value)) > max_length:
+                            max_length = len(str(cell.value))
+                    except:
+                        pass
+                adjusted_width = min(max_length + 2, 50)  # Maksimum 50 karakter
+                ws.column_dimensions[column_letter].width = adjusted_width
+        
+        # Excel dosyasını memory'de oluştur
+        excel_buffer = io.BytesIO()
+        wb.save(excel_buffer)
+        excel_buffer.seek(0)
+        
+        # Dosya adını güvenli şekilde oluştur
+        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+        filename = f"topluluk_uyeleri_{timestamp}.xlsx"
+        
+        # Güvenlik logu
+        app.logger.info(f"Excel export completed: {len(approved_members)} approved members, {len(pending_members)} pending applications exported by {current_user.username}")
+        
+        return send_file(
+            excel_buffer,
+            as_attachment=True,
+            download_name=filename,
+            mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        )
+        
+    except Exception as e:
+        app.logger.error(f"Excel export error: {str(e)}")
+        flash('Excel dosyası oluşturulurken bir hata oluştu.', 'error')
+        return redirect(url_for('manage_community_members'))
+
 @app.route('/admin/community_members/approve/<int:member_id>', methods=['POST'])
 @login_required
 @strict_admin_required
@@ -1204,7 +1351,7 @@ def view_community_member(member_id):
 @app.route('/admin/community_members/export')
 @login_required
 @strict_admin_required
-@limiter.limit("1 per minute")  # Export spam koruması
+@limiter.limit("2 per minute")  # Export spam koruması
 def export_community_members():
     # 🔒 GÜVENLİK: Hassas veriler çıkarıldı, sadece gerekli bilgiler export ediliyor
     
@@ -1232,14 +1379,12 @@ def export_community_members():
         header_fill = PatternFill(start_color="4472C4", end_color="4472C4", fill_type="solid")
         header_alignment = Alignment(horizontal="center", vertical="center")
         
-        # 🔒 GÜVENLİK: Sadece gerekli alanlar - Hassas bilgiler çıkarıldı
+        # ✅ TÜM VERİLER: Admin tarafından talep edilen tüm sütunlar
         headers = [
-            "ID", "Kullanıcı Adı", "Ad", "Soyad", 
-            "Sınıf", "Fakülte", "Bölüm", 
-            "Onay Durumu", "Başvuru Tarihi"
+            "ID", "Ad", "Soyad", "Kullanıcı Adı", "E-posta", "Öğrenci No",
+            "Telefon", "Doğum Yeri", "Doğum Tarihi", "İkamet", "Sınıf",
+            "Fakülte", "Bölüm", "Tercih Ettiği Birimler", "Başvuru Tarihi", "Onay Durumu"
         ]
-        # 🚫 GÜVENLİK İÇİN ÇIKARILAN HASSAS BİLGİLER:
-        # E-posta, Öğrenci No, Telefon, Doğum Yeri, Doğum Tarihi, Mevcut İkamet, Tercih Edilen Birimler
         
         for col, header in enumerate(headers, 1):
             cell = ws.cell(row=1, column=col, value=header)
@@ -1266,18 +1411,24 @@ def export_community_members():
         
         for row, member in enumerate(members, 2):
             ws.cell(row=row, column=1, value=member.id)
-            ws.cell(row=row, column=2, value=member.username)
-            ws.cell(row=row, column=3, value=member.name)
-            ws.cell(row=row, column=4, value=member.surname)
-            # 🔒 E-posta hassas bilgi olduğu için çıkarıldı
-            ws.cell(row=row, column=5, value=member.student_class)
-            ws.cell(row=row, column=6, value=member.faculty)
-            ws.cell(row=row, column=7, value=member.department)
-            ws.cell(row=row, column=8, value="Onaylandı" if member.is_approved else "Beklemede")
-            ws.cell(row=row, column=9, value=member.registration_date.strftime('%d.%m.%Y') if member.registration_date else '')
+            ws.cell(row=row, column=2, value=sanitize_input(member.name))
+            ws.cell(row=row, column=3, value=sanitize_input(member.surname))
+            ws.cell(row=row, column=4, value=sanitize_input(member.username))
+            ws.cell(row=row, column=5, value=sanitize_input(member.email))
+            ws.cell(row=row, column=6, value=sanitize_input(member.student_id))
+            ws.cell(row=row, column=7, value=sanitize_input(member.phone_number))
+            ws.cell(row=row, column=8, value=sanitize_input(member.place_of_birth))
+            ws.cell(row=row, column=9, value=member.date_of_birth.strftime('%Y-%m-%d') if member.date_of_birth else '')
+            ws.cell(row=row, column=10, value=sanitize_input(member.current_residence))
+            ws.cell(row=row, column=11, value=sanitize_input(member.student_class))
+            ws.cell(row=row, column=12, value=sanitize_input(member.faculty))
+            ws.cell(row=row, column=13, value=sanitize_input(member.department))
+            ws.cell(row=row, column=14, value=sanitize_input(member.preferred_units) if member.preferred_units else '')
+            ws.cell(row=row, column=15, value=member.registration_date.strftime('%Y-%m-%d %H:%M') if member.registration_date else '')
+            ws.cell(row=row, column=16, value="Onaylandı" if member.is_approved else "Beklemede")
         
-        # 🔒 GÜVENLİK: Sütun genişliklerini ayarla (hassas bilgiler için alan yok)
-        column_widths = [8, 15, 12, 12, 10, 15, 20, 12, 16]
+        # Sütun genişliklerini ayarla (16 sütun için)
+        column_widths = [8, 12, 12, 15, 25, 12, 15, 15, 12, 15, 10, 20, 25, 20, 18, 12]
         for col, width in enumerate(column_widths, 1):
             ws.column_dimensions[ws.cell(row=1, column=col).column_letter].width = width
         
@@ -1295,8 +1446,8 @@ def export_community_members():
         filename_parts.append(datetime.now().strftime('%Y%m%d_%H%M%S'))
         filename = "_".join(filename_parts) + ".xlsx"
         
-        # Log kaydı - Güvenlik için detaylı
-        log_message = f'🔒 GÜVENLİ EXPORT: Topluluk üyeleri listesi (hassas bilgiler hariç) Excel olarak dışa aktarıldı. Toplam üye: {len(members)}, Kullanıcı: {current_user.username}, IP: {request.remote_addr}'
+        # Log kaydı - Tüm veriler export edildi
+        log_message = f'� FULL EXPORT: Topluluk üyeleri listesi (TÜM VERİLER) Excel olarak dışa aktarıldı. Toplam üye: {len(members)}, Kullanıcı: {current_user.username}, IP: {request.remote_addr}'
         if search_query:
             log_message += f', Arama: "{search_query}"'
         if status_filter:

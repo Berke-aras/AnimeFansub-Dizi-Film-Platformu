@@ -1,0 +1,119 @@
+Kayıt 4:
+  username: burakçelik004
+  password: Test123!
+  password2: Test123!
+  email: burakçelik004@hacettepe.edu.tr
+  name: Burak
+  surname: Çelik
+  place_of_birth: Konya
+  date_of_birth: 2001-07-28
+  current_residence: Mersin
+  student_id: 21150904
+  phone_number: +905674679182
+  student_class: 1. Sınıf
+  faculty: Edebiyat Fakültesi
+  department: Türk Dili ve Edebiyatı
+  preferred_units: ['drawing_unit']
+--------------------------------------------------
+Kayıt 5:
+  username: ayşeyılmaz005
+  password: Test123!
+  password2: Test123!
+  email: ayşeyılmaz005@hacettepe.edu.tr
+  name: Ayşe
+  surname: Yılmaz
+  place_of_birth: Konya
+  date_of_birth: 1999-07-21
+  current_residence: Kayseri
+  student_id: 21163596
+  phone_number: +905494212617
+  student_class: 2. Sınıf
+  faculty: Fen Fakültesi
+  department: İşletme
+  preferred_units: ['ninjutsu_unit']
+--------------------------------------------------
+Kayıt 6:
+  username: aliaydın006
+  password: Test123!
+  password2: Test123!
+  email: aliaydın006@hacettepe.edu.tr
+  name: Ali
+  surname: Aydın
+  place_of_birth: Gaziantep
+  date_of_birth: 2006-04-06
+  current_residence: Ankara
+  student_id: 21140661
+  phone_number: +905465655151
+  student_class: 3. Sınıf
+  faculty: Mühendislik Fakültesi
+  department: Matematik
+  preferred_units: ['drawing_unit']
+--------------------------------------------------
+Kayıt 7:
+  username: zeyneparslan007
+  password: Test123!
+  password2: Test123!
+  email: zeyneparslan007@hacettepe.edu.tr
+  name: Zeynep
+  surname: Arslan
+  place_of_birth: İstanbul
+  date_of_birth: 2005-08-23
+  current_residence: İstanbul
+  student_id: 21175456
+  phone_number: +905242713329
+  student_class: 4. Sınıf
+  faculty: Tıp Fakültesi
+  department: Türk Dili ve Edebiyatı
+  preferred_units: ['social_media_unit']
+--------------------------------------------------
+Kayıt 8:
+  username: emredoğan008
+  password: Test123!
+  password2: Test123!
+  email: emredoğan008@hacettepe.edu.tr
+  name: Emre
+  surname: Doğan
+  place_of_birth: İzmir
+  date_of_birth: 1999-01-16
+  current_residence: Adana
+  student_id: 21199354
+  phone_number: +905671791953
+  student_class: 4. Sınıf
+  faculty: Mühendislik Fakültesi
+  department: Elektrik Mühendisliği
+  preferred_units: ['ninjutsu_unit']
+--------------------------------------------------
+Kayıt 9:
+  username: emreçelik009
+  password: Test123!
+  password2: Test123!
+  email: emreçelik009@hacettepe.edu.tr
+  name: Emre
+  surname: Çelik
+  place_of_birth: İzmir
+  date_of_birth: 2004-11-09
+  current_residence: Gaziantep
+  student_id: 21185929
+  phone_number: +905855079285
+  student_class: 4. Sınıf
+  faculty: İktisadi ve İdari Bilimler Fakültesi
+  department: Fizik
+  preferred_units: ['social_media_unit']
+--------------------------------------------------
+Kayıt 10:
+  username: zeynepkaya010
+  password: Test123!
+  password2: Test123!
+  email: zeynepkaya010@hacettepe.edu.tr
+  name: Zeynep
+  surname: Kaya
+  place_of_birth: Mersin
+  date_of_birth: 2002-04-11
+  current_residence: Adana
+  student_id: 21115162
+  phone_number: +905801904659
+  student_class: 2. Sınıf
+  faculty: Tıp Fakültesi
+  department: Fizik
+  preferred_units: ['ninjutsu_unit']
+--------------------------------------------------
