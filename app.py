@@ -1,9 +1,9 @@
-from flask import Flask, render_template, redirect, url_for, flash, request, session, jsonify
+from flask import Flask, render_template, redirect, url_for, flash, request, session, jsonify, send_file
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user, UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
-from forms import LoginForm, AnimeForm, EpisodeForm, UserForm, EditUserForm, GenreForm, AnimeSearchForm, RegistrationForm, NewsForm, EventForm, CommunityRegistrationForm
+from forms import LoginForm, AnimeForm, EpisodeForm, UserForm, EditUserForm, GenreForm, AnimeSearchForm, RegistrationForm, NewsForm, EventForm, CommunityRegistrationForm, CommunityMemberSearchForm
 from models import db, User, Anime, Episode, Log, Genre, Rating, Notification, News, Event, CommunityInfo, CommunityMember
 from community import community_bp, ForumThread
 import re
@@ -11,6 +11,9 @@ import random
 from functools import wraps
 import requests
 from datetime import datetime
+from openpyxl import Workbook
+from openpyxl.styles import Font, Alignment, PatternFill
+import io
 
 app = Flask(__name__)
 application = app
@@ -765,15 +768,58 @@ def api_events():
         })
     return jsonify(event_list)
 
-@app.route('/admin/community_members')
+@app.route('/admin/community_members', methods=['GET', 'POST'])
 @login_required
 @admin_required
 def manage_community_members():
-    pending_members = CommunityMember.query.filter_by(is_approved=False).all()
-    approved_members = CommunityMember.query.filter_by(is_approved=True).all()
+    form = CommunityMemberSearchForm()
+    
+    # Temel query'ler
+    pending_query = CommunityMember.query.filter_by(is_approved=False)
+    approved_query = CommunityMember.query.filter_by(is_approved=True)
+    
+    # Arama parametreleri
+    search_query = request.args.get('query', '').strip()
+    status_filter = request.args.get('status', '')
+    
+    # Form'dan değerleri al
+    if form.validate_on_submit():
+        search_query = form.query.data.strip() if form.query.data else ''
+        status_filter = form.status.data
+    
+    # Form alanlarını doldur
+    form.query.data = search_query
+    form.status.data = status_filter
+    
+    # Arama filtreleri uygula
+    if search_query:
+        search_filter = (
+            CommunityMember.name.ilike(f'%{search_query}%') |
+            CommunityMember.surname.ilike(f'%{search_query}%') |
+            CommunityMember.faculty.ilike(f'%{search_query}%') |
+            CommunityMember.department.ilike(f'%{search_query}%') |
+            CommunityMember.student_id.ilike(f'%{search_query}%')
+        )
+        pending_query = pending_query.filter(search_filter)
+        approved_query = approved_query.filter(search_filter)
+    
+    # Durum filtresi uygula
+    if status_filter == 'pending':
+        pending_members = pending_query.order_by(CommunityMember.registration_date.desc()).all()
+        approved_members = []
+    elif status_filter == 'approved':
+        pending_members = []
+        approved_members = approved_query.order_by(CommunityMember.registration_date.desc()).all()
+    else:
+        pending_members = pending_query.order_by(CommunityMember.registration_date.desc()).all()
+        approved_members = approved_query.order_by(CommunityMember.registration_date.desc()).all()
+    
     return render_template('admin_community_members.html', 
                          pending_members=pending_members, 
-                         approved_members=approved_members)
+                         approved_members=approved_members,
+                         form=form,
+                         search_query=search_query,
+                         status_filter=status_filter)
 
 @app.route('/admin/community_members/approve/<int:member_id>', methods=['POST'])
 @login_required
@@ -869,7 +915,119 @@ def view_community_member(member_id):
     member = CommunityMember.query.get_or_404(member_id)
     return render_template('view_community_member.html', member=member)
 
+@app.route('/admin/community_members/export')
+@login_required
+@admin_required
+def export_community_members():
+    try:
+        # Arama parametrelerini al
+        search_query = request.args.get('query', '').strip()
+        status_filter = request.args.get('status', '')
+        
+        # Excel dosyası oluştur
+        wb = Workbook()
+        ws = wb.active
+        ws.title = "Topluluk Üyeleri"
+        
+        # Başlık stilleri
+        header_font = Font(bold=True, color="FFFFFF")
+        header_fill = PatternFill(start_color="4472C4", end_color="4472C4", fill_type="solid")
+        header_alignment = Alignment(horizontal="center", vertical="center")
+        
+        # Başlıkları ekle
+        headers = [
+            "ID", "Kullanıcı Adı", "Ad", "Soyad", "E-posta", "Telefon", 
+            "Öğrenci No", "Doğum Yeri", "Doğum Tarihi", "Mevcut İkamet",
+            "Sınıf", "Fakülte", "Bölüm", "Tercih Edilen Birimler", 
+            "Onay Durumu", "Başvuru Tarihi"
+        ]
+        
+        for col, header in enumerate(headers, 1):
+            cell = ws.cell(row=1, column=col, value=header)
+            cell.font = header_font
+            cell.fill = header_fill
+            cell.alignment = header_alignment
+        
+        # Verileri filtrele ve al
+        query = CommunityMember.query
+        
+        # Arama filtreleri uygula
+        if search_query:
+            search_filter = (
+                CommunityMember.name.ilike(f'%{search_query}%') |
+                CommunityMember.surname.ilike(f'%{search_query}%') |
+                CommunityMember.faculty.ilike(f'%{search_query}%') |
+                CommunityMember.department.ilike(f'%{search_query}%') |
+                CommunityMember.student_id.ilike(f'%{search_query}%')
+            )
+            query = query.filter(search_filter)
+        
+        # Durum filtresi uygula
+        if status_filter == 'pending':
+            query = query.filter_by(is_approved=False)
+        elif status_filter == 'approved':
+            query = query.filter_by(is_approved=True)
+        
+        members = query.order_by(CommunityMember.registration_date.desc()).all()
+        
+        for row, member in enumerate(members, 2):
+            ws.cell(row=row, column=1, value=member.id)
+            ws.cell(row=row, column=2, value=member.username)
+            ws.cell(row=row, column=3, value=member.name)
+            ws.cell(row=row, column=4, value=member.surname)
+            ws.cell(row=row, column=5, value=member.email)
+            ws.cell(row=row, column=6, value=member.phone_number)
+            ws.cell(row=row, column=7, value=member.student_id)
+            ws.cell(row=row, column=8, value=member.place_of_birth)
+            ws.cell(row=row, column=9, value=member.date_of_birth.strftime('%d.%m.%Y') if member.date_of_birth else '')
+            ws.cell(row=row, column=10, value=member.current_residence)
+            ws.cell(row=row, column=11, value=member.student_class)
+            ws.cell(row=row, column=12, value=member.faculty)
+            ws.cell(row=row, column=13, value=member.department)
+            ws.cell(row=row, column=14, value=member.preferred_units)
+            ws.cell(row=row, column=15, value="Onaylandı" if member.is_approved else "Beklemede")
+            ws.cell(row=row, column=16, value=member.registration_date.strftime('%d.%m.%Y %H:%M') if member.registration_date else '')
+        
+        # Sütun genişliklerini ayarla
+        column_widths = [8, 15, 12, 12, 25, 15, 12, 15, 12, 15, 10, 15, 20, 25, 12, 16]
+        for col, width in enumerate(column_widths, 1):
+            ws.column_dimensions[ws.cell(row=1, column=col).column_letter].width = width
+        
+        # Dosyayı belleğe kaydet
+        excel_buffer = io.BytesIO()
+        wb.save(excel_buffer)
+        excel_buffer.seek(0)
+        
+        # Dosya adı oluştur (arama parametrelerine göre)
+        filename_parts = ["topluluk_uyeleri"]
+        if search_query:
+            filename_parts.append(f"arama_{search_query.replace(' ', '_')}")
+        if status_filter:
+            filename_parts.append(status_filter)
+        filename_parts.append(datetime.now().strftime('%Y%m%d_%H%M%S'))
+        filename = "_".join(filename_parts) + ".xlsx"
+        
+        # Log kaydı
+        log_message = f'Topluluk üyeleri listesi Excel olarak dışa aktarıldı. Toplam üye: {len(members)}'
+        if search_query:
+            log_message += f', Arama: "{search_query}"'
+        if status_filter:
+            log_message += f', Durum: {status_filter}'
+        log_action('export_community_members', log_message)
+        
+        return send_file(
+            excel_buffer,
+            as_attachment=True,
+            download_name=filename,
+            mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        )
+        
+    except Exception as e:
+        flash(f'Excel dosyası oluşturulurken hata oluştu: {str(e)}', 'error')
+        app.logger.error(f"Excel export error: {str(e)}")
+        return redirect(url_for('manage_community_members'))
+
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5400)
+    app.run(debug=True, host='0.0.0.0', port=5500)
     
     

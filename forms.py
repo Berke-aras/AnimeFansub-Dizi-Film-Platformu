@@ -228,3 +228,10 @@ class CommunityRegistrationForm(FlaskForm):
         # Soyisim sadece harf içermeli
         if not all(c.isalpha() or c.isspace() for c in surname.data):
             raise ValidationError('Soyisim sadece harf ve boşluk içermelidir.')
+
+class CommunityMemberSearchForm(FlaskForm):
+    query = StringField('Ara (Ad, Soyad, Fakülte, Bölüm, Öğrenci No)', validators=[Optional()])
+    status = SelectField('Onay Durumu', 
+                        choices=[('', 'Tümü'), ('pending', 'Beklemede'), ('approved', 'Onaylandı')],
+                        default='')
+    submit = SubmitField('Ara')
