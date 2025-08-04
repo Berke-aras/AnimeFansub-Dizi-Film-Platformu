@@ -16,33 +16,33 @@
                             {{ form.username.label(class="form-control-label") }}
                             {{ form.username(class="form-control") }}
                             {% if form.username.errors %}
-                                <div class="invalid-feedback d-block">
-                                    {% for error in form.username.errors %}
-                                        <span>{{ error }}</span>
-                                    {% endfor %}
-                                </div>
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.username.errors %}
+                                <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
                             {% endif %}
                         </div>
                         <div class="form-group">
                             {{ form.password.label(class="form-control-label") }}
                             {{ form.password(class="form-control") }}
-                             {% if form.password.errors %}
-                                <div class="invalid-feedback d-block">
-                                    {% for error in form.password.errors %}
-                                        <span>{{ error }}</span>
-                                    {% endfor %}
-                                </div>
+                            {% if form.password.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.password.errors %}
+                                <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
                             {% endif %}
                         </div>
                         <div class="form-group">
                             {{ form.confirm_password.label(class="form-control-label") }}
                             {{ form.confirm_password(class="form-control") }}
-                             {% if form.confirm_password.errors %}
-                                <div class="invalid-feedback d-block">
-                                    {% for error in form.confirm_password.errors %}
-                                        <span>{{ error }}</span>
-                                    {% endfor %}
-                                </div>
+                            {% if form.confirm_password.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.confirm_password.errors %}
+                                <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
                             {% endif %}
                         </div>
                         <div class="form-group">

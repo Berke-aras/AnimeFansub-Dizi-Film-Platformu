@@ -12,173 +12,174 @@
                 </div>
                 <div class="card-body">
                     <p class="text-muted mb-4">
-                        Topluluk üyesi olarak forum ve etkinlik takvimlerine erişim kazanacaksınız. 
+                        Topluluk üyesi olarak forum ve etkinlik takvimlerine erişim kazanacaksınız.
                         Başvurunuz admin onayı sonrası aktif olacaktır.
                     </p>
-                    
+
                     <form method="POST">
                         {{ form.hidden_tag() }}
-                        
+
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 {{ form.email.label(class="form-label") }}
                                 {{ form.email(class="form-control") }}
                                 {% if form.email.errors %}
-                                    <div class="text-danger">
-                                        {% for error in form.email.errors %}
-                                            <small>{{ error }}</small>
-                                        {% endfor %}
-                                    </div>
+                                <div class="text-danger">
+                                    {% for error in form.email.errors %}
+                                    <small>{{ error }}</small>
+                                    {% endfor %}
+                                </div>
                                 {% endif %}
                             </div>
-                            
+
                             <div class="col-md-3 mb-3">
                                 {{ form.name.label(class="form-label") }}
                                 {{ form.name(class="form-control") }}
                                 {% if form.name.errors %}
-                                    <div class="text-danger">
-                                        {% for error in form.name.errors %}
-                                            <small>{{ error }}</small>
-                                        {% endfor %}
-                                    </div>
+                                <div class="text-danger">
+                                    {% for error in form.name.errors %}
+                                    <small>{{ error }}</small>
+                                    {% endfor %}
+                                </div>
                                 {% endif %}
                             </div>
-                            
+
                             <div class="col-md-3 mb-3">
                                 {{ form.surname.label(class="form-label") }}
                                 {{ form.surname(class="form-control") }}
                                 {% if form.surname.errors %}
-                                    <div class="text-danger">
-                                        {% for error in form.surname.errors %}
-                                            <small>{{ error }}</small>
-                                        {% endfor %}
-                                    </div>
+                                <div class="text-danger">
+                                    {% for error in form.surname.errors %}
+                                    <small>{{ error }}</small>
+                                    {% endfor %}
+                                </div>
                                 {% endif %}
                             </div>
                         </div>
-                        
+
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 {{ form.place_of_birth.label(class="form-label") }}
                                 {{ form.place_of_birth(class="form-control") }}
                                 {% if form.place_of_birth.errors %}
-                                    <div class="text-danger">
-                                        {% for error in form.place_of_birth.errors %}
-                                            <small>{{ error }}</small>
-                                        {% endfor %}
-                                    </div>
+                                <div class="text-danger">
+                                    {% for error in form.place_of_birth.errors %}
+                                    <small>{{ error }}</small>
+                                    {% endfor %}
+                                </div>
                                 {% endif %}
                             </div>
-                            
+
                             <div class="col-md-6 mb-3">
                                 {{ form.date_of_birth.label(class="form-label") }}
                                 {{ form.date_of_birth(class="form-control") }}
                                 {% if form.date_of_birth.errors %}
-                                    <div class="text-danger">
-                                        {% for error in form.date_of_birth.errors %}
-                                            <small>{{ error }}</small>
-                                        {% endfor %}
-                                    </div>
+                                <div class="text-danger">
+                                    {% for error in form.date_of_birth.errors %}
+                                    <small>{{ error }}</small>
+                                    {% endfor %}
+                                </div>
                                 {% endif %}
                             </div>
                         </div>
-                        
+
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 {{ form.current_residence.label(class="form-label") }}
                                 {{ form.current_residence(class="form-control") }}
                                 {% if form.current_residence.errors %}
-                                    <div class="text-danger">
-                                        {% for error in form.current_residence.errors %}
-                                            <small>{{ error }}</small>
-                                        {% endfor %}
-                                    </div>
+                                <div class="text-danger">
+                                    {% for error in form.current_residence.errors %}
+                                    <small>{{ error }}</small>
+                                    {% endfor %}
+                                </div>
                                 {% endif %}
                             </div>
-                            
+
                             <div class="col-md-6 mb-3">
                                 {{ form.student_id.label(class="form-label") }}
                                 {{ form.student_id(class="form-control") }}
                                 {% if form.student_id.errors %}
-                                    <div class="text-danger">
-                                        {% for error in form.student_id.errors %}
-                                            <small>{{ error }}</small>
-                                        {% endfor %}
-                                    </div>
+                                <div class="text-danger">
+                                    {% for error in form.student_id.errors %}
+                                    <small>{{ error }}</small>
+                                    {% endfor %}
+                                </div>
                                 {% endif %}
                             </div>
                         </div>
-                        
+
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 {{ form.phone_number.label(class="form-label") }}
                                 {{ form.phone_number(class="form-control") }}
                                 {% if form.phone_number.errors %}
-                                    <div class="text-danger">
-                                        {% for error in form.phone_number.errors %}
-                                            <small>{{ error }}</small>
-                                        {% endfor %}
-                                    </div>
+                                <div class="text-danger">
+                                    {% for error in form.phone_number.errors %}
+                                    <small>{{ error }}</small>
+                                    {% endfor %}
+                                </div>
                                 {% endif %}
                             </div>
-                            
+
                             <div class="col-md-6 mb-3">
                                 {{ form.student_class.label(class="form-label") }}
                                 {{ form.student_class(class="form-control") }}
                                 {% if form.student_class.errors %}
-                                    <div class="text-danger">
-                                        {% for error in form.student_class.errors %}
-                                            <small>{{ error }}</small>
-                                        {% endfor %}
-                                    </div>
+                                <div class="text-danger">
+                                    {% for error in form.student_class.errors %}
+                                    <small>{{ error }}</small>
+                                    {% endfor %}
+                                </div>
                                 {% endif %}
                             </div>
                         </div>
-                        
+
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 {{ form.faculty.label(class="form-label") }}
                                 {{ form.faculty(class="form-control") }}
                                 {% if form.faculty.errors %}
-                                    <div class="text-danger">
-                                        {% for error in form.faculty.errors %}
-                                            <small>{{ error }}</small>
-                                        {% endfor %}
-                                    </div>
+                                <div class="text-danger">
+                                    {% for error in form.faculty.errors %}
+                                    <small>{{ error }}</small>
+                                    {% endfor %}
+                                </div>
                                 {% endif %}
                             </div>
-                            
+
                             <div class="col-md-6 mb-3">
                                 {{ form.department.label(class="form-label") }}
                                 {{ form.department(class="form-control") }}
                                 {% if form.department.errors %}
-                                    <div class="text-danger">
-                                        {% for error in form.department.errors %}
-                                            <small>{{ error }}</small>
-                                        {% endfor %}
-                                    </div>
+                                <div class="text-danger">
+                                    {% for error in form.department.errors %}
+                                    <small>{{ error }}</small>
+                                    {% endfor %}
+                                </div>
                                 {% endif %}
                             </div>
                         </div>
-                        
+
                         <div class="mb-3">
                             {{ form.preferred_units.label(class="form-label") }}
-                            <small class="text-muted d-block">Doldurulması zorunlu değildir, birden fazla seçim yapabilirsiniz</small>
+                            <small class="text-muted d-block">Doldurulması zorunlu değildir, birden fazla seçim
+                                yapabilirsiniz</small>
                             {{ form.preferred_units(class="form-select", multiple=True, size=5) }}
                             {% if form.preferred_units.errors %}
-                                <div class="text-danger">
-                                    {% for error in form.preferred_units.errors %}
-                                        <small>{{ error }}</small>
-                                    {% endfor %}
-                                </div>
+                            <div class="text-danger">
+                                {% for error in form.preferred_units.errors %}
+                                <small>{{ error }}</small>
+                                {% endfor %}
+                            </div>
                             {% endif %}
                         </div>
-                        
+
                         <div class="d-grid gap-2">
                             {{ form.submit(class="btn btn-primary") }}
                         </div>
                     </form>
-                    
+
                     <div class="mt-3 text-center">
                         <a href="{{ url_for('register') }}" class="text-muted">Normal kayıt olmak istiyorum</a>
                     </div>

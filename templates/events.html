@@ -11,23 +11,23 @@
 {% block content %}
 {% if current_user.is_authenticated and (current_user.is_admin or current_user.is_community_member) %}
 <div class="container my-5">
-    <div id="calendar-wrapper">
-        <div id="calendar"></div>
-    </div>
+  <div id="calendar-wrapper">
+    <div id="calendar"></div>
+  </div>
 </div>
 {% else %}
 <div class="container my-5">
-    <div class="alert alert-warning text-center">
-        <i class="fas fa-lock fa-3x mb-3"></i>
-        <h4>Etkinlik Takvimi Erişimi Kısıtlı</h4>
-        <p>Etkinlik takvimine erişebilmek için admin yetkisine sahip olmalı veya topluluk üyesi olmalısınız.</p>
-        {% if current_user.is_authenticated %}
-            <a href="{{ url_for('community_register') }}" class="btn btn-primary">Topluluk Üyeliği İçin Başvur</a>
-        {% else %}
-            <a href="{{ url_for('login') }}" class="btn btn-primary me-2">Giriş Yap</a>
-            <a href="{{ url_for('community_register') }}" class="btn btn-outline-primary">Topluluk Üyeliği İçin Başvur</a>
-        {% endif %}
-    </div>
+  <div class="alert alert-warning text-center">
+    <i class="fas fa-lock fa-3x mb-3"></i>
+    <h4>Etkinlik Takvimi Erişimi Kısıtlı</h4>
+    <p>Etkinlik takvimine erişebilmek için admin yetkisine sahip olmalı veya topluluk üyesi olmalısınız.</p>
+    {% if current_user.is_authenticated %}
+    <a href="{{ url_for('community_register') }}" class="btn btn-primary">Topluluk Üyeliği İçin Başvur</a>
+    {% else %}
+    <a href="{{ url_for('login') }}" class="btn btn-primary me-2">Giriş Yap</a>
+    <a href="{{ url_for('community_register') }}" class="btn btn-outline-primary">Topluluk Üyeliği İçin Başvur</a>
+    {% endif %}
+  </div>
 </div>
 {% endif %}
 
@@ -43,20 +43,20 @@
         <h4 id="eventTitle" class="mb-3"></h4>
         <p id="eventDescription" class="mb-4"></p>
         <div class="event-times">
-            <div class="time-block">
-                <i class="fas fa-hourglass-start"></i>
-                <div>
-                    <strong>Başlangıç</strong>
-                    <span id="eventStart"></span>
-                </div>
+          <div class="time-block">
+            <i class="fas fa-hourglass-start"></i>
+            <div>
+              <strong>Başlangıç</strong>
+              <span id="eventStart"></span>
             </div>
-            <div class="time-block">
-                <i class="fas fa-hourglass-end"></i>
-                <div>
-                    <strong>Bitiş</strong>
-                    <span id="eventEnd"></span>
-                </div>
+          </div>
+          <div class="time-block">
+            <i class="fas fa-hourglass-end"></i>
+            <div>
+              <strong>Bitiş</strong>
+              <span id="eventEnd"></span>
             </div>
+          </div>
         </div>
       </div>
     </div>
@@ -69,9 +69,9 @@
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/locales/tr.min.js"></script>
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-  var calendarEl = document.getElementById('calendar');
-  var calendar = new FullCalendar.Calendar(calendarEl, {
+  document.addEventListener('DOMContentLoaded', function () {
+    var calendarEl = document.getElementById('calendar');
+    var calendar = new FullCalendar.Calendar(calendarEl, {
       locale: 'tr',
       initialView: 'dayGridMonth',
       height: 'auto',
@@ -83,28 +83,28 @@ document.addEventListener('DOMContentLoaded', function() {
         right: 'dayGridMonth,timeGridWeek,listWeek'
       },
       buttonText: {
-        today:    'Bugün',
-        month:    'Ay',
-        week:     'Hafta',
-        day:      'Gün',
-        list:     'Liste'
+        today: 'Bugün',
+        month: 'Ay',
+        week: 'Hafta',
+        day: 'Gün',
+        list: 'Liste'
       },
-      eventClick: function(info) {
+      eventClick: function (info) {
         info.jsEvent.preventDefault();
         var event = info.event;
         document.getElementById('eventTitle').textContent = event.title;
         document.getElementById('eventDescription').innerHTML = event.extendedProps.description || 'Açıklama yok.';
-        
+
         const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
         document.getElementById('eventStart').textContent = event.start ? new Date(event.start).toLocaleString('tr-TR', options) : 'Belirtilmemiş';
         document.getElementById('eventEnd').textContent = event.end ? new Date(event.end).toLocaleString('tr-TR', options) : 'Belirtilmemiş';
-        
+
         var modal = new bootstrap.Modal(document.getElementById('eventDetailModal'));
         modal.show();
       }
+    });
+    calendar.render();
   });
-  calendar.render();
-});
 </script>
 {% endif %}
 {% endblock %}

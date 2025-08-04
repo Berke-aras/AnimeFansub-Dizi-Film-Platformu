@@ -45,7 +45,7 @@
                                 </tr>
                             </table>
                         </div>
-                        
+
                         <div class="col-md-6">
                             <h5 class="text-primary">Akademik Bilgiler</h5>
                             <table class="table table-sm">
@@ -73,9 +73,9 @@
                                     <td><strong>Durum:</strong></td>
                                     <td>
                                         {% if member.is_approved %}
-                                            <span class="badge bg-success">Onaylandı</span>
+                                        <span class="badge bg-success">Onaylandı</span>
                                         {% else %}
-                                            <span class="badge bg-warning">Beklemede</span>
+                                        <span class="badge bg-warning">Beklemede</span>
                                         {% endif %}
                                     </td>
                                 </tr>
@@ -88,46 +88,46 @@
                             </table>
                         </div>
                     </div>
-                    
+
                     {% if member.preferred_units %}
                     <div class="mt-4">
                         <h5 class="text-primary">İlgilendiği Birimler</h5>
                         <div class="d-flex flex-wrap gap-2">
                             {% for unit in member.preferred_units.split(',') %}
-                                {% if unit %}
-                                    <span class="badge bg-secondary">
-                                        {% if unit == 'anime_dubbing' %}Anime Dublaj
-                                        {% elif unit == 'translation' %}Çeviri
-                                        {% elif unit == 'editing' %}Editörlük
-                                        {% elif unit == 'timing' %}Timing
-                                        {% elif unit == 'quality_control' %}Kalite Kontrolü
-                                        {% elif unit == 'social_media' %}Sosyal Medya
-                                        {% elif unit == 'graphic_design' %}Grafik Tasarım
-                                        {% elif unit == 'web_development' %}Web Geliştirme
-                                        {% elif unit == 'project_management' %}Proje Yönetimi
-                                        {% else %}{{ unit }}
-                                        {% endif %}
-                                    </span>
+                            {% if unit %}
+                            <span class="badge bg-secondary">
+                                {% if unit == 'anime_dubbing' %}Anime Dublaj
+                                {% elif unit == 'translation' %}Çeviri
+                                {% elif unit == 'editing' %}Editörlük
+                                {% elif unit == 'timing' %}Timing
+                                {% elif unit == 'quality_control' %}Kalite Kontrolü
+                                {% elif unit == 'social_media' %}Sosyal Medya
+                                {% elif unit == 'graphic_design' %}Grafik Tasarım
+                                {% elif unit == 'web_development' %}Web Geliştirme
+                                {% elif unit == 'project_management' %}Proje Yönetimi
+                                {% else %}{{ unit }}
                                 {% endif %}
+                            </span>
+                            {% endif %}
                             {% endfor %}
                         </div>
                     </div>
                     {% endif %}
-                    
+
                     <div class="mt-4">
                         {% if not member.is_approved %}
                         <div class="btn-group" role="group">
-                            <form method="POST" action="{{ url_for('approve_community_member', member_id=member.id) }}" 
-                                  class="d-inline">
-                                <button type="submit" class="btn btn-success" 
-                                        onclick="return confirm('Bu üyeyi onaylamak istediğinizden emin misiniz?')">
+                            <form method="POST" action="{{ url_for('approve_community_member', member_id=member.id) }}"
+                                class="d-inline">
+                                <button type="submit" class="btn btn-success"
+                                    onclick="return confirm('Bu üyeyi onaylamak istediğinizden emin misiniz?')">
                                     Üyeyi Onayla
                                 </button>
                             </form>
-                            <form method="POST" action="{{ url_for('reject_community_member', member_id=member.id) }}" 
-                                  class="d-inline">
-                                <button type="submit" class="btn btn-danger" 
-                                        onclick="return confirm('Bu başvuruyu reddetmek istediğinizden emin misiniz?')">
+                            <form method="POST" action="{{ url_for('reject_community_member', member_id=member.id) }}"
+                                class="d-inline">
+                                <button type="submit" class="btn btn-danger"
+                                    onclick="return confirm('Bu başvuruyu reddetmek istediğinizden emin misiniz?')">
                                     Başvuruyu Reddet
                                 </button>
                             </form>
