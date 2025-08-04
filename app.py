@@ -1,9 +1,10 @@
 from flask import Flask, render_template, redirect, url_for, flash, request, session, jsonify
 from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user, UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 from forms import LoginForm, AnimeForm, EpisodeForm, UserForm, EditUserForm, GenreForm, AnimeSearchForm, RegistrationForm, NewsForm, EventForm
-from models import db, User, Anime, Episode, Log, Genre, Rating, Notification, News, Event
+from models import db, User, Anime, Episode, Log, Genre, Rating, Notification, News, Event, CommunityInfo
 from community import community_bp, ForumThread
 import re
 import random
@@ -19,6 +20,7 @@ app.config['SQLALCHEMY_BINDS'] = {
     'community': 'sqlite:///community.db'
 }
 db.init_app(app)
+migrate = Migrate(app, db)
 
 # Register the community blueprint
 app.register_blueprint(community_bp, url_prefix='/community/forum')
@@ -103,9 +105,10 @@ def fansub_index():
 @app.route('/community')
 @login_required
 def community_hub():
+    info = CommunityInfo.query.first()
     latest_news = News.query.order_by(News.timestamp.desc()).limit(5).all()
     latest_threads = ForumThread.query.order_by(ForumThread.timestamp.desc()).limit(5).all()
-    return render_template('community_hub.html', latest_news=latest_news, latest_threads=latest_threads)
+    return render_template('community_hub.html', info=info, latest_news=latest_news, latest_threads=latest_threads)
 
 @app.route('/humat')
 def humat_index():
@@ -506,7 +509,7 @@ def mark_notifications_as_read():
 # News and Events Routes
 @app.route('/news')
 def news():
-    news_list = News.query.order_by(News.timestamp.desc()).all()
+    news_list = News.query.order_by(News.is_pinned.desc(), News.timestamp.desc()).all()
     return render_template('news.html', news_list=news_list)
 
 @app.route('/news/<int:news_id>')
@@ -525,7 +528,7 @@ def manage_news():
         db.session.commit()
         flash('Haber başarıyla eklendi.', 'success')
         return redirect(url_for('manage_news'))
-    all_news = News.query.order_by(News.timestamp.desc()).all()
+    all_news = News.query.order_by(News.is_pinned.desc(), News.timestamp.desc()).all()
     return render_template('manage_news.html', form=form, all_news=all_news)
 
 @app.route('/admin/news/edit/<int:news_id>', methods=['GET', 'POST'])
@@ -537,6 +540,7 @@ def edit_news(news_id):
     if form.validate_on_submit():
         news_item.title = form.title.data
         news_item.content = form.content.data
+        news_item.is_pinned = form.is_pinned.data
         db.session.commit()
         flash('Haber başarıyla güncellendi.', 'success')
         return redirect(url_for('manage_news'))
@@ -550,6 +554,16 @@ def delete_news(news_id):
     db.session.delete(news_item)
     db.session.commit()
     flash('Haber silindi.', 'success')
+    return redirect(url_for('manage_news'))
+
+@app.route('/admin/news/pin/<int:news_id>', methods=['POST'])
+@login_required
+@admin_required
+def pin_news(news_id):
+    news_item = News.query.get_or_404(news_id)
+    news_item.is_pinned = not news_item.is_pinned
+    db.session.commit()
+    flash('Haberin sabitleme durumu değiştirildi.', 'success')
     return redirect(url_for('manage_news'))
 
 @app.route('/events')
@@ -596,6 +610,19 @@ def delete_event(event_id):
     db.session.commit()
     flash('Etkinlik silindi.', 'success')
     return redirect(url_for('manage_events'))
+
+@app.route('/api/events')
+def api_events():
+    events = Event.query.all()
+    event_list = []
+    for event in events:
+        event_list.append({
+            'title': event.title,
+            'start': event.start_time.isoformat(),
+            'end': event.end_time.isoformat() if event.end_time else None,
+            'url': url_for('edit_event', event_id=event.id) # Etkinlik detayları için bir URL
+        })
+    return jsonify(event_list)
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5400)

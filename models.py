@@ -98,6 +98,7 @@ class News(db.Model):
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     author = db.relationship('User', backref='news_posts')
+    is_pinned = db.Column(db.Boolean, default=False)
 
 class Event(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -107,3 +108,9 @@ class Event(db.Model):
     end_time = db.Column(db.DateTime, nullable=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     author = db.relationship('User', backref='events')
+
+class CommunityInfo(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(200), nullable=False)
+    content = db.Column(db.Text, nullable=False)
+    image_url = db.Column(db.String(200), nullable=True)

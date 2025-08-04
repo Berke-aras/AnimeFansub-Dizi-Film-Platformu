@@ -1,7 +1,7 @@
 
 from flask import render_template, request, redirect, url_for, flash, Blueprint
 from flask_login import current_user, login_required
-from models import db
+from models import db, CommunityInfo
 
 # Blueprint oluşturma
 community_bp = Blueprint('community', __name__,
@@ -41,7 +41,8 @@ class ForumPost(db.Model):
 @login_required
 def index():
     categories = ForumCategory.query.all()
-    return render_template('community_index.html', categories=categories)
+    info = CommunityInfo.query.first()
+    return render_template('community_index.html', categories=categories, info=info)
 
 @community_bp.route('/category/<int:category_id>')
 @login_required
@@ -150,3 +151,29 @@ def delete_post(post_id):
     db.session.commit()
     flash('Mesaj silindi.', 'success')
     return redirect(url_for('community.view_thread', thread_id=thread_id))
+
+@community_bp.route('/admin/community_info', methods=['GET', 'POST'])
+@login_required
+def admin_community_info():
+    # if not current_user.is_admin:
+    #     flash('Bu sayfaya erişim yetkiniz yok.', 'danger')
+    #     return redirect(url_for('community.index'))
+    
+    info = CommunityInfo.query.first()
+    if request.method == 'POST':
+        if not info:
+            info = CommunityInfo(
+                title=request.form['title'],
+                content=request.form['content'],
+                image_url=request.form['image_url']
+            )
+            db.session.add(info)
+        else:
+            info.title = request.form['title']
+            info.content = request.form['content']
+            info.image_url = request.form['image_url']
+        db.session.commit()
+        flash('Topluluk bilgileri güncellendi.', 'success')
+        return redirect(url_for('community.admin_community_info'))
+    
+    return render_template('admin_community_info.html', info=info)

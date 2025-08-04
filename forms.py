@@ -80,8 +80,9 @@ class EditUserForm(FlaskForm):
     submit = SubmitField('Kullanıcıyı Güncelle')
 
 class NewsForm(FlaskForm):
-    title = StringField('Başlık', validators=[DataRequired(), Length(max=200)])
+    title = StringField('Başlık', validators=[DataRequired()])
     content = TextAreaField('İçerik', validators=[DataRequired()])
+    is_pinned = BooleanField('Başa Sabitle')
     submit = SubmitField('Yayınla')
 
 class EventForm(FlaskForm):
