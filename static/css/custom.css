@@ -13,6 +13,11 @@ body {
     padding-top: 70px; /* Sabit navbar için boşluk */
 }
 
+/* Login sayfası için özel body stili */
+body.login-page {
+    padding-top: 0;
+}
+
 /* --- Navbar --- */
 .navbar {
     background-color: rgba(20, 20, 20, 0.7);
