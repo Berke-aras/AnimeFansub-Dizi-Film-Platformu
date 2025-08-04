@@ -1,81 +1,41 @@
+
 {% extends "community_base.html" %}
 
-{% block title %}Topluluk Ana Sayfası{% endblock %}
+{% block title %}Topluluk Forumu{% endblock %}
 
 {% block community_content %}
-<div class="container mt-5">
-    {% if info %}
-    <div class="row mb-5">
-        <div class="col-md-8">
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <h2 class="card-title">{{ info.title }}</h2>
-                    <p class="card-text">{{ info.content }}</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <img src="{{ info.image_url }}" class="img-fluid rounded shadow-sm" alt="Topluluk Resmi">
-        </div>
-    </div>
-    {% endif %}
-
-    <div class="row">
-        <div class="col-md-4">
-            <div class="card shadow-sm h-100">
-                <div class="card-body text-center">
-                    <h3 class="card-title"><i class="fas fa-comments me-2"></i>Forum</h3>
-                    <p class="card-text">Tartışmalara katılın, sorular sorun ve diğer üyelerle etkileşimde bulunun.</p>
-                    <a href="#forum-categories" class="btn btn-primary">Foruma Git</a>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card shadow-sm h-100">
-                <div class="card-body text-center">
-                    <h3 class="card-title"><i class="fas fa-newspaper me-2"></i>Haberler</h3>
-                    <p class="card-text">En son anime ve topluluk haberlerini takip edin.</p>
-                    <a href="{{ url_for('news') }}" class="btn btn-primary">Haberlere Göz At</a>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card shadow-sm h-100">
-                <div class="card-body text-center">
-                    <h3 class="card-title"><i class="fas fa-calendar-alt me-2"></i>Etkinlik Takvimi</h3>
-                    <p class="card-text">Yaklaşan etkinlikleri, yarışmaları ve buluşmaları kaçırmayın.</p>
-                    <a href="{{ url_for('events') }}" class="btn btn-primary">Takvimi Görüntüle</a>
-                </div>
-            </div>
-        </div>
+<div class="forum-container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Topluluk Forumu</h1>
+        {% if current_user.is_authenticated and current_user.can_add_user %}
+            <a href="{{ url_for('community.manage_categories') }}" class="btn btn-primary">Kategorileri Yönet</a>
+        {% endif %}
     </div>
 
-    <div id="forum-categories" class="mt-5">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h1><i class="fas fa-comments me-2"></i>Topluluk Forumu</h1>
-            {% if current_user.is_authenticated and current_user.can_add_user %}
-                <a href="{{ url_for('community.manage_categories') }}" class="btn btn-primary">Kategorileri Yönet</a>
-            {% endif %}
+    <div class="card">
+        <div class="card-header">
+            Kategoriler
         </div>
-
-        <div class="card shadow-sm">
-            <div class="card-header bg-dark text-white">
-                <h4>Kategoriler</h4>
-            </div>
-            <ul class="list-group list-group-flush">
-                {% for category in categories %}
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        <div>
-                            <h5 class="mb-1"><a href="{{ url_for('community.view_category', category_id=category.id) }}" class="text-decoration-none">{{ category.name }}</a></h5>
-                            <p class="mb-1 text-muted">{{ category.description }}</p>
-                        </div>
-                        <span class="badge bg-primary rounded-pill">{{ category.threads|length }} Konu</span>
-                    </li>
-                {% else %}
-                    <li class="list-group-item">Henüz kategori oluşturulmamış.</li>
-                {% endfor %}
-            </ul>
-        </div>
+        <div class="list-group list-group-flush category-list">
+            {% for category in categories %}
+                <div class="category-item">
+                    <div class="category-icon">
+                        <i class="fas fa-comments"></i>
+                    </div>
+                    <div class="category-info">
+                        <h5><a href="{{ url_for('community.view_category', category_id=category.id) }}">{{ category.name }}</a></h5>
+                        <p>{{ category.description }}</p>
+                    </div>
+                    <div class="category-stats">
+                        <div><strong>{{ category.threads|length }}</strong> Konu</div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="list-group-item">
+                    Henüz kategori oluşturulmamış.
+                </div>
+            {% endfor %}
+        </ul>
     </div>
 </div>
 {% endblock %}

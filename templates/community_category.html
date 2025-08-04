@@ -4,7 +4,7 @@
 {% block title %}{{ category.name }}{% endblock %}
 
 {% block community_content %}
-<div class="container mt-5">
+<div class="forum-container">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <nav aria-label="breadcrumb">
@@ -15,26 +15,44 @@
             </nav>
             <h1>{{ category.name }}</h1>
         </div>
-        <a href="{{ url_for('community.new_thread', category_id=category.id) }}" class="btn btn-success"><i class="fas fa-plus me-2"></i>Yeni Konu Aç</a>
+        <a href="{{ url_for('community.new_thread', category_id=category.id) }}" class="btn btn-primary"><i class="fas fa-plus me-2"></i>Yeni Konu Aç</a>
     </div>
 
-    <div class="card shadow-sm">
-        <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
-            <h4>Konular</h4>
+    <div class="card thread-list">
+        <div class="card-header d-none d-md-flex">
+            <div class="col-md-6">Konu</div>
+            <div class="col-md-2 text-center">Cevaplar</div>
+            <div class="col-md-4 text-end">Son Gönderi</div>
         </div>
         <div class="list-group list-group-flush">
             {% for thread in threads %}
-                <a href="{{ url_for('community.view_thread', thread_id=thread.id) }}" class="list-group-item list-group-item-action flex-column align-items-start">
-                    <div class="d-flex w-100 justify-content-between">
-                        <h5 class="mb-1">{{ thread.title }}</h5>
-                        <small class="text-muted">{{ thread.timestamp.strftime('%d-%m-%Y %H:%M') }}</small>
+                <div class="list-group-item thread-item">
+                    <div class="thread-starter-avatar d-none d-md-block">
+                        <i class="fas fa-user-circle"></i>
                     </div>
-                    <p class="mb-1"><strong>{{ thread.user_username }}</strong> tarafından oluşturuldu.</p>
-                    <small class="text-muted">{{ thread.posts|length }} cevap</small>
-                </a>
+                    <div class="thread-info flex-grow-1">
+                        <h5><a href="{{ url_for('community.view_thread', thread_id=thread.id) }}" class="text-decoration-none">{{ thread.title }}</a></h5>
+                        <div class="thread-meta">
+                            <a href="#" class="text-decoration-none">{{ thread.user_username }}</a> tarafından oluşturuldu - {{ thread.timestamp.strftime('%b %d, %Y') }}
+                        </div>
+                    </div>
+                    <div class="thread-stats text-center mx-3">
+                        <div><strong>{{ thread.posts|length }}</strong></div>
+                        <div class="text-muted">Cevap</div>
+                    </div>
+                    <div class="thread-last-post text-end">
+                        {% if thread.posts %}
+                            {% set last_post = thread.posts[-1] %}
+                            <div><a href="{{ url_for('community.view_thread', thread_id=thread.id, _anchor='post-' ~ last_post.id) }}" class="text-decoration-none">{{ last_post.user_username }}</a></div>
+                            <div class="text-muted">{{ last_post.timestamp.strftime('%b %d, %Y %H:%M') }}</div>
+                        {% else %}
+                            <div class="text-muted">Henüz cevap yok</div>
+                        {% endif %}
+                    </div>
+                </div>
             {% else %}
                 <div class="list-group-item">
-                    <p class="mb-0">Bu kategoride henüz hiç konu açılmamış. İlk konuyu sen aç!</p>
+                    <p class="mb-0">Bu kategoride henüz konu yok. İlk konuyu sen aç!</p>
                 </div>
             {% endfor %}
         </div>

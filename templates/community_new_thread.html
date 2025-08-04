@@ -16,21 +16,32 @@
     <h1>Yeni Konu Oluştur</h1>
     <p class="text-muted">Kategori: {{ category.name }}</p>
 
-    <div class="card shadow-sm">
+    <div class="card">
         <div class="card-body">
             <form method="POST" action="{{ url_for('community.new_thread', category_id=category.id) }}">
-                <div class="mb-3">
-                    <label for="title" class="form-label">Konu Başlığı</label>
-                    <input type="text" class="form-control" id="title" name="title" required>
+                <div class="mb-4">
+                    <label for="title" class="form-label fs-5">Konu Başlığı</label>
+                    <input type="text" class="form-control form-control-lg" id="title" name="title" required>
                 </div>
-                <div class="mb-3">
-                    <label for="content" class="form-label">Mesajınız</label>
-                    <textarea class="form-control" id="content" name="content" rows="8" required></textarea>
+                <div class="mb-4">
+                    <label for="content" class="form-label fs-5">Mesajınız</label>
+                    <textarea id="content" name="content"></textarea>
                 </div>
-                <button type="submit" class="btn btn-primary">Konuyu Oluştur</button>
-                <a href="{{ url_for('community.view_category', category_id=category.id) }}" class="btn btn-secondary">İptal</a>
+                <button type="submit" class="btn btn-primary btn-lg">Konuyu Oluştur</button>
+                <a href="{{ url_for('community.view_category', category_id=category.id) }}" class="btn btn-secondary btn-lg">İptal</a>
             </form>
         </div>
     </div>
 </div>
+
+{% block scripts %}
+{{ super() }}
+<script src="https://cdn.ckeditor.com/ckeditor5/35.4.0/classic/ckeditor.js"></script>
+<script>
+    ClassicEditor
+        .create( document.querySelector( '#content' ) )
+        .catch( error => {
+            console.error( error );
+        } );
+</script>
 {% endblock %}
