@@ -1,0 +1,28 @@
+/* ckeditor_content.css */
+
+body {
+    color: #f5f5f5 !important; /* --forum-text-primary */
+    background-color: #1c1c1c !important; /* --forum-card-bg */
+}
+
+p {
+    color: #f5f5f5 !important; /* --forum-text-primary */
+}
+
+span {
+    color: #f5f5f5 !important; /* --forum-text-primary */
+}
+
+div {
+    color: #f5f5f5 !important; /* --forum-text-primary */
+}
+
+/* Ensure headings also have the correct color */
+h1, h2, h3, h4, h5, h6 {
+    color: #f5f5f5 !important; /* --forum-text-primary */
+}
+
+/* Ensure links also have the correct color */
+a {
+    color: #e50914 !important; /* --forum-text-link */
+}

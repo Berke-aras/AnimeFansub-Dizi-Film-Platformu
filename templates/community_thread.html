@@ -95,7 +95,14 @@
 <script>
     ClassicEditor
         .create( document.querySelector( '#content' ), {
-            // CKEditor configuration can go here
+            htmlSupport: {
+                allowOrphanedDom: true,
+                allow: [
+                    { name: /.*/, attributes: true, classes: true, styles: true }
+                ]
+            },
+            extraAllowedContent: '*',
+            contentsCss: ['{{ url_for("static", filename="css/ckeditor_content.css") }}']
         } )
         .catch( error => {
             console.error( error );

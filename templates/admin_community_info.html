@@ -29,9 +29,15 @@
 <script src="https://cdn.ckeditor.com/ckeditor5/35.4.0/classic/ckeditor.js"></script>
 <script>
     ClassicEditor
-        .create( document.querySelector( '#content' ) )
-        .catch( error => {
-            console.error( error );
-        } );
+        .create( document.querySelector( '#content' ), {
+            htmlSupport: {
+                allowOrphanedDom: true,
+                allow: [
+                    { name: /.*/, attributes: true, classes: true, styles: true }
+                ]
+            },
+            extraAllowedContent: '*',
+            contentsCss: ['{{ url_for("static", filename="css/ckeditor_content.css") }}']
+        } )
 </script>
 {% endblock %}

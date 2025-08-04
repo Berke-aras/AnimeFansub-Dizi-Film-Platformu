@@ -127,6 +127,7 @@
     padding: 1.25rem !important;
     border-bottom: 1px solid var(--forum-border-color) !important;
     transition: background-color 0.2s ease !important;
+    background-color: var(--forum-card-bg) !important; /* Ensure background is set */
 }
 
 .forum-container .category-item:hover {
@@ -166,17 +167,30 @@
 
 /* Thread List */
 .forum-container .thread-list .list-group-item {
-    background-color: transparent !important;
+    display: flex !important; /* Ensure flex display */
+    justify-content: space-between !important; /* Distribute items */
+    align-items: center !important; /* Vertically align items */
+    background-color: var(--forum-card-bg) !important; /* Ensure background is set */
     transition: background-color 0.2s ease !important;
+    border-bottom: 1px solid var(--forum-border-color) !important;
 }
 
 .forum-container .thread-list .list-group-item:hover {
     background-color: rgba(229, 9, 20, 0.1) !important;
 }
 
+.forum-container .thread-starter-avatar {
+    flex-shrink: 0 !important;
+    margin-right: 1rem !important;
+}
+
 .forum-container .thread-starter-avatar .fa-user-circle {
     font-size: 2.5rem !important;
     color: var(--forum-text-secondary) !important;
+}
+
+.forum-container .thread-info {
+    flex-grow: 1 !important;
     margin-right: 1rem !important;
 }
 
@@ -199,6 +213,7 @@
     flex-basis: 100px !important;
     text-align: center !important;
     color: var(--forum-text-primary) !important;
+    flex-shrink: 0 !important;
 }
 
 .forum-container .thread-last-post {
@@ -206,6 +221,7 @@
     text-align: right !important;
     font-size: 0.85rem !important;
     color: var(--forum-text-secondary) !important;
+    flex-shrink: 0 !important;
 }
 
 /* Post View */
@@ -267,4 +283,30 @@
 
 .ck-content a:hover {
     text-decoration: underline !important;
+}
+
+/* CKEditor editable area color fix */
+.ck.ck-editor__editable {
+    color: var(--forum-text-primary) !important;
+}
+
+.ck.ck-editor__editable.ck-rounded-corners.ck-editor__editable_inline {
+    color: var(--forum-text-primary) !important;
+}
+
+/* More specific CKEditor content styling */
+.ck-editor__editable.ck-content {
+    color: var(--forum-text-primary) !important;
+}
+
+.ck-editor__editable.ck-content p {
+    color: var(--forum-text-primary) !important;
+}
+
+.ck-editor__editable.ck-content span {
+    color: var(--forum-text-primary) !important;
+}
+
+.ck-editor__editable.ck-content div {
+    color: var(--forum-text-primary) !important;
 }
