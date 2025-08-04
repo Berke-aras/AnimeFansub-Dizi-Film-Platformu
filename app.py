@@ -578,10 +578,12 @@ def events():
 def manage_events():
     form = EventForm()
     if form.validate_on_submit():
+        start_time = datetime.strptime(form.start_time.data, '%Y-%m-%dT%H:%M')
+        end_time = datetime.strptime(form.end_time.data, '%Y-%m-%dT%H:%M') if form.end_time.data else None
         new_event = Event(title=form.title.data, 
                             description=form.description.data, 
-                            start_time=form.start_time.data, 
-                            end_time=form.end_time.data, 
+                            start_time=start_time, 
+                            end_time=end_time, 
                             user_id=current_user.id)
         db.session.add(new_event)
         db.session.commit()
@@ -599,8 +601,8 @@ def edit_event(event_id):
     if form.validate_on_submit():
         event_item.title = form.title.data
         event_item.description = form.description.data
-        event_item.start_time = form.start_time.data
-        event_item.end_time = form.end_time.data
+        event_item.start_time = datetime.strptime(form.start_time.data, '%Y-%m-%dT%H:%M')
+        event_item.end_time = datetime.strptime(form.end_time.data, '%Y-%m-%dT%H:%M') if form.end_time.data else None
         db.session.commit()
         flash('Etkinlik başarıyla güncellendi.', 'success')
         return redirect(url_for('manage_events'))

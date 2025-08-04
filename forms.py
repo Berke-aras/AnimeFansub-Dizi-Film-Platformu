@@ -89,6 +89,6 @@ class NewsForm(FlaskForm):
 class EventForm(FlaskForm):
     title = StringField('Etkinlik Başlığı', validators=[DataRequired(), Length(max=200)])
     description = TextAreaField('Açıklama', validators=[Optional()])
-    start_time = DateTimeField('Başlangıç Zamanı', validators=[DataRequired()], format='%Y-%m-%dT%H:%M')
-    end_time = DateTimeField('Bitiş Zamanı', validators=[Optional()], format='%Y-%m-%dT%H:%M')
+    start_time = StringField('Başlangıç Zamanı', validators=[DataRequired()])
+    end_time = StringField('Bitiş Zamanı', validators=[Optional()])
     submit = SubmitField('Etkinlik Oluştur')

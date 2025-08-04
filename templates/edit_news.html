@@ -18,6 +18,14 @@
                     {{ form.content.label(class="form-label") }}
                     {{ form.content(class="form-control", rows=15) }}
                 </div>
+                <div class="mb-3">
+                    {{ form.image_url.label(class="form-label") }}
+                    {{ form.image_url(class="form-control") }}
+                </div>
+                <div class="mb-3 form-check">
+                    {{ form.is_pinned(class="form-check-input") }}
+                    {{ form.is_pinned.label(class="form-check-label") }}
+                </div>
                 <button type="submit" class="btn btn-primary">Güncelle</button>
                 <a href="{{ url_for('manage_news') }}" class="btn btn-secondary">İptal</a>
             </form>

@@ -54,11 +54,11 @@
                         </div>
                         <div class="mb-3">
                             {{ form.start_time.label(class="form-label") }}
-                            {{ form.start_time(class="form-control") }}
+                            {{ form.start_time(class="form-control", type="datetime-local") }}
                         </div>
                         <div class="mb-3">
                             {{ form.end_time.label(class="form-label") }}
-                            {{ form.end_time(class="form-control") }}
+                            {{ form.end_time(class="form-control", type="datetime-local") }}
                         </div>
                         {{ form.submit(class="btn btn-primary w-100") }}
                     </form>

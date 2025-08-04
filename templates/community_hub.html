@@ -1,31 +1,29 @@
-
 {% extends "base.html" %}
 
 {% block title %}Topluluk Merkezi{% endblock %}
 
 {% block content %}
-<div class="container mt-5 pt-5">
-    {% if info %}
-    <div class="row mb-5 align-items-center">
-        <div class="col-md-4">
-            <img src="{{ info.image_url }}" class="img-fluid rounded shadow-sm" alt="Topluluk Resmi">
-        </div>
-        <div class="col-md-8">
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <h1 class="display-4">{{ info.title }}</h1>
-                    <p class="lead text-muted">{{ info.content }}</p>
-                </div>
-            </div>
+
+{% if info and info.image_url %}
+<div class="community-hero" style="background-image: url('{{ info.image_url }}');">
+    <div class="community-hero-overlay">
+        <div class="container text-center text-white">
+            <h1 class="display-3 fw-bold">{{ info.title }}</h1>
+            <p class="lead fs-4">{{ info.content }}</p>
+            <a href="{{ url_for('community.index') }}" class="btn btn-primary btn-lg mt-3">Forumu Keşfet</a>
         </div>
     </div>
-    {% else %}
+</div>
+{% else %}
+<div class="container mt-5 pt-5">
     <div class="text-center mb-5">
         <h1 class="display-4">Topluluk Merkezine Hoş Geldiniz</h1>
         <p class="lead text-muted">Tartışmalara katılın, son haberleri okuyun ve etkinlikleri takip edin.</p>
     </div>
-    {% endif %}
+</div>
+{% endif %}
 
+<div class="container mt-5">
     <div class="row g-4">
         <!-- Forum Kartı -->
         <div class="col-md-4">

@@ -4,8 +4,14 @@
 
 {% block content %}
 <div class="container mt-5">
-    <h1 class="mb-4">Etkinlik Takvimi</h1>
-    <div id="calendar"></div>
+    <div class="card shadow-sm">
+        <div class="card-header">
+            <h1 class="mb-0">Etkinlik Takvimi</h1>
+        </div>
+        <div class="card-body">
+            <div id="calendar"></div>
+        </div>
+    </div>
 </div>
 {% endblock %}
 
@@ -14,13 +20,20 @@
   document.addEventListener('DOMContentLoaded', function() {
     var calendarEl = document.getElementById('calendar');
     var calendar = new FullCalendar.Calendar(calendarEl, {
-      initialView: 'dayGridMonth',
+      themeSystem: 'bootstrap5',
       locale: 'tr',
+      initialView: 'dayGridMonth',
       events: '{{ url_for("api_events") }}',
       headerToolbar: {
         left: 'prev,next today',
         center: 'title',
         right: 'dayGridMonth,timeGridWeek,timeGridDay'
+      },
+      eventClick: function(info) {
+        info.jsEvent.preventDefault(); // prevent browser navigation
+        if (info.event.url) {
+          window.open(info.event.url, "_self");
+        }
       }
     });
     calendar.render();
