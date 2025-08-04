@@ -3,9 +3,15 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user, UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
+from flask_wtf.csrf import CSRFProtect, validate_csrf
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
+import bleach
+import os
+from dotenv import load_dotenv
 from simple_cache import simple_cache
 from performance_monitor import monitor_performance, time_function
-from forms import LoginForm, AnimeForm, EpisodeForm, UserForm, EditUserForm, GenreForm, AnimeSearchForm, RegistrationForm, NewsForm, EventForm, CommunityRegistrationForm, CommunityMemberSearchForm
+from forms import LoginForm, AnimeForm, EpisodeForm, UserForm, EditUserForm, GenreForm, AnimeSearchForm, RegistrationForm, NewsForm, EventForm, CommunityRegistrationForm, CommunityMemberSearchForm, CategoryForm, DeleteForm
 from models import db, User, Anime, Episode, Log, Genre, Rating, Notification, News, Event, CommunityInfo, CommunityMember, anime_genres
 from community import community_bp, ForumThread
 import re
@@ -19,23 +25,29 @@ import io
 
 app = Flask(__name__)
 application = app
-app.config['SECRET_KEY'] = 'asd*fasd-dsdsaf+fa+fd,aadsf,af,.d,f.daf*f9d88asd7asdf68sdf567as47'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///anime_site.db'
+
+# Load environment variables
+load_dotenv()
+
+# Güvenli konfigürasyon
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev-key-change-in-production')
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('SQLALCHEMY_DATABASE_URI', 'sqlite:///anime_site.db')
 app.config['SQLALCHEMY_BINDS'] = {
-    'community': 'sqlite:///community.db'
+    'community': os.environ.get('SQLALCHEMY_BINDS_COMMUNITY', 'sqlite:///community.db')
 }
 
 # Cache Configuration - Using simple_cache
 # app.config['CACHE_TYPE'] = 'simple'
 # app.config['CACHE_DEFAULT_TIMEOUT'] = 300
 
-# Session Configuration
-app.config['SESSION_COOKIE_SECURE'] = False  # Set to True in production with HTTPS
+# Session Configuration - Environment based güvenlik ayarları
+is_production = not os.environ.get('FLASK_DEBUG', 'False').lower() == 'true'
+app.config['SESSION_COOKIE_SECURE'] = os.environ.get('SESSION_COOKIE_SECURE', str(is_production)).lower() == 'true'
 app.config['SESSION_COOKIE_HTTPONLY'] = True
-app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
-app.config['PERMANENT_SESSION_LIFETIME'] = 1800  # 30 minutes
-app.config['REMEMBER_COOKIE_DURATION'] = 1800  # 30 minutes
-app.config['REMEMBER_COOKIE_SECURE'] = False
+app.config['SESSION_COOKIE_SAMESITE'] = 'Strict'  # CSRF koruması
+app.config['PERMANENT_SESSION_LIFETIME'] = 900  # 15 dakika
+app.config['REMEMBER_COOKIE_DURATION'] = 900  # 15 dakika
+app.config['REMEMBER_COOKIE_SECURE'] = os.environ.get('REMEMBER_COOKIE_SECURE', str(is_production)).lower() == 'true'
 app.config['REMEMBER_COOKIE_HTTPONLY'] = True
 
 # Database optimizations
@@ -47,6 +59,17 @@ app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
 
 db.init_app(app)
 migrate = Migrate(app, db)
+
+# CSRF Protection
+csrf = CSRFProtect(app)
+
+# Rate Limiting
+limiter = Limiter(
+    app=app,
+    key_func=get_remote_address,
+    default_limits=["200 per day", "50 per hour"],
+    storage_uri="memory://"
+)
 
 # Initialize performance monitoring
 monitor_performance(app)
@@ -74,6 +97,26 @@ def admin_required(f):
     def decorated_function(*args, **kwargs):
         if not current_user.is_authenticated or not (current_user.can_add_user or current_user.can_edit or current_user.can_delete or current_user.is_admin):
             flash('Bu sayfayı görüntüleme yetkiniz yok.', 'danger')
+            return redirect(url_for('index'))
+        return f(*args, **kwargs)
+    return decorated_function
+
+def strict_admin_required(f):
+    """Sadece is_admin=True olan kullanıcılar için"""
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not current_user.is_authenticated or not current_user.is_admin:
+            flash('Bu sayfaya sadece adminler erişebilir.', 'danger')
+            return redirect(url_for('index'))
+        return f(*args, **kwargs)
+    return decorated_function
+
+def delete_permission_required(f):
+    """Silme işlemleri için özel yetki kontrolü"""
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not current_user.is_authenticated or not (current_user.can_delete or current_user.is_admin):
+            flash('Bu işlemi gerçekleştirme yetkiniz yok.', 'danger')
             return redirect(url_for('index'))
         return f(*args, **kwargs)
     return decorated_function
@@ -109,6 +152,41 @@ def update_mal_data(anime):
     except requests.exceptions.RequestException as e:
         flash(f'MyAnimeList verileri alınamadı: {e}', 'warning')
 
+def sanitize_input(text):
+    """Kullanıcı girdilerini temizle ve güvenli hale getir"""
+    if not text:
+        return text
+    # HTML taglerini temizle
+    cleaned = bleach.clean(text, tags=[], attributes={}, strip=True)
+    # SQL injection için tehlikeli karakterleri temizle
+    cleaned = re.sub(r'[<>"\';\\]|--', '', cleaned)
+    return cleaned.strip()
+
+def safe_search_filter(query_text, model_class):
+    """SQL Injection'a karşı güvenli arama filtresi"""
+    if not query_text:
+        return None
+    
+    # Sadece alfanumerik karakterler, boşluk ve Türkçe karakterler
+    safe_query = re.sub(r'[^a-zA-ZğüşıöçĞÜŞİÖÇ0-9\s]', '', query_text)
+    safe_query = safe_query.strip()
+    
+    if not safe_query:
+        return None
+    
+    if model_class == CommunityMember:
+        return (
+            model_class.name.ilike(f'%{safe_query}%') |
+            model_class.surname.ilike(f'%{safe_query}%') |
+            model_class.faculty.ilike(f'%{safe_query}%') |
+            model_class.department.ilike(f'%{safe_query}%') |
+            model_class.student_id.ilike(f'%{safe_query}%')
+        )
+    elif model_class == Anime:
+        return model_class.name.ilike(f'%{safe_query}%')
+    
+    return None
+
 def log_action(action, description):
     if current_user.is_authenticated:
         new_log = Log(action=action, description=description, user_id=current_user.id)
@@ -142,9 +220,10 @@ def before_request():
             return redirect(url_for('login'))
 
 @app.route('/register', methods=['GET', 'POST'])
+@limiter.limit("3 per minute")  # Spam kayıt koruması
 def register():
     if current_user.is_authenticated:
-        return redirect(url_for('index'))
+        return redirect(url_for('landing'))
     form = RegistrationForm()
     if form.validate_on_submit():
         try:
@@ -174,7 +253,7 @@ def register():
             session.permanent = True
             
             flash(f'Hesabınız başarıyla oluşturuldu! Hoş geldin, {user.username}!', 'success')
-            return redirect(url_for('index'))
+            return redirect(url_for('landing'))
             
         except Exception as e:
             db.session.rollback()
@@ -190,9 +269,10 @@ def register():
     return render_template('register.html', title='Kayıt Ol', form=form)
 
 @app.route('/community/register', methods=['GET', 'POST'])
+@limiter.limit("2 per minute")  # Topluluk kayıt spam koruması
 def community_register():
     if current_user.is_authenticated:
-        return redirect(url_for('index'))
+        return redirect(url_for('landing'))
     form = CommunityRegistrationForm()
     if form.validate_on_submit():
         try:
@@ -244,7 +324,7 @@ def community_register():
             db.session.commit()
             
             flash('Topluluk üyeliği başvurunuz başarıyla alındı! Başvurunuz onaylandığında sisteme giriş yapabileceksiniz.', 'success')
-            return redirect(url_for('index'))
+            return redirect(url_for('landing'))
             
         except Exception as e:
             db.session.rollback()
@@ -350,9 +430,11 @@ def animes():
     query = Anime.query.options(db.joinedload(Anime.genres))
     
     if form.validate_on_submit() or request.method == 'GET':
-        search_query = form.query.data or request.args.get('query')
+        search_query = sanitize_input(form.query.data or request.args.get('query'))
         if search_query:
-            query = query.filter(Anime.name.ilike(f"%{search_query}%"))
+            safe_filter = safe_search_filter(search_query, Anime)
+            if safe_filter is not None:
+                query = query.filter(safe_filter)
     
     if form.genre.data:
         query = query.join(anime_genres).filter(anime_genres.c.genre_id == int(form.genre.data))
@@ -417,6 +499,7 @@ def manage_genres():
 @login_required
 @admin_required
 def delete_genre(genre_id):
+    validate_csrf(request.form.get('csrf_token'))
     genre = Genre.query.get_or_404(genre_id)
     if genre.name in SPECIAL_GENRES:
         flash(f'"{genre.name}" türü silinemez.', 'danger')
@@ -488,10 +571,11 @@ def anime(anime_id):
     return render_template('anime.html', anime=anime, user_rating=user_rating, is_in_watchlist=is_in_watchlist)
 
 @app.route('/login', methods=['GET', 'POST'])
+@limiter.limit("5 per minute")  # Brute force saldırı koruması
 def login():
     # Zaten giriş yapmış kullanıcıyı anasayfaya yönlendir
     if current_user.is_authenticated:
-        return redirect(url_for('index'))
+        return redirect(url_for('landing'))
         
     form = LoginForm()
     if form.validate_on_submit():
@@ -518,7 +602,7 @@ def login():
             next_page = request.args.get('next')
             if next_page and next_page.startswith('/'):
                 return redirect(next_page)
-            return redirect(url_for('index'))
+            return redirect(url_for('landing'))
         else:
             flash('Giriş başarısız. Lütfen kullanıcı adınızı/e-postanızı ve şifrenizi kontrol edin.', 'danger')
     
@@ -540,7 +624,7 @@ def add_episode(anime_id):
         episode = Episode(number=form.number.data, sources=form.sources.data, anime_id=anime_id)
         db.session.add(episode)
         db.session.commit()
-        anime = Anime.query.get(anime_id)
+        anime = db.session.get(Anime, anime_id)
         # Bildirim gönder
         for user in anime.watchlisted_by:
             notification = Notification(message=f"{anime.name} animesinin {episode.number}. bölümü yayınlandı!", user_id=user.id, anime_id=anime.id)
@@ -556,6 +640,7 @@ def add_episode(anime_id):
 @login_required
 @admin_required
 def delete_anime(anime_id):
+    validate_csrf(request.form.get('csrf_token'))
     if not current_user.can_delete:
         flash('Silme yetkiniz yok!', 'danger')
         return redirect(url_for('admin'))
@@ -573,6 +658,7 @@ def delete_anime(anime_id):
 @login_required
 @admin_required
 def delete_episode(episode_id):
+    validate_csrf(request.form.get('csrf_token'))
     if not current_user.can_delete:
         flash('Bu işlemi gerçekleştirme yetkiniz yok.', 'danger')
         return redirect(url_for('anime', anime_id=Episode.query.get_or_404(episode_id).anime_id))
@@ -677,6 +763,7 @@ def edit_user(user_id):
 
 @app.route('/api/watchlist/<int:anime_id>', methods=['POST'])
 @login_required
+@csrf.exempt  # API endpoint için CSRF exempt
 def toggle_watchlist(anime_id):
     anime = Anime.query.get_or_404(anime_id)
     if anime in current_user.watchlist_animes:
@@ -690,6 +777,7 @@ def toggle_watchlist(anime_id):
 
 @app.route('/api/rate/<int:anime_id>', methods=['POST'])
 @login_required
+@csrf.exempt  # API endpoint için CSRF exempt
 def rate_anime(anime_id):
     anime = Anime.query.get_or_404(anime_id)
     score = request.json.get('score')
@@ -718,6 +806,7 @@ def profile():
 @app.route('/api/anime/<int:anime_id>/genre/add/<int:genre_id>', methods=['POST'])
 @login_required
 @admin_required
+@csrf.exempt  # API endpoint için CSRF exempt
 def add_genre_to_anime(anime_id, genre_id):
     anime = Anime.query.get_or_404(anime_id)
     genre = Genre.query.get_or_404(genre_id)
@@ -729,6 +818,7 @@ def add_genre_to_anime(anime_id, genre_id):
 @app.route('/api/anime/<int:anime_id>/genre/remove/<int:genre_id>', methods=['POST'])
 @login_required
 @admin_required
+@csrf.exempt  # API endpoint için CSRF exempt
 def remove_genre_from_anime(anime_id, genre_id):
     anime = Anime.query.get_or_404(anime_id)
     genre = Genre.query.get_or_404(genre_id)
@@ -741,6 +831,7 @@ def remove_genre_from_anime(anime_id, genre_id):
 @login_required
 @admin_required
 def delete_user(user_id):
+    validate_csrf(request.form.get('csrf_token'))
     user = User.query.get_or_404(user_id)
     if not current_user.can_delete:
         flash('Bu sayfayı görüntüleme yetkiniz yok.', 'danger')
@@ -791,6 +882,7 @@ def get_notifications():
 
 @app.route('/api/notifications/mark_read', methods=['POST'])
 @login_required
+@csrf.exempt  # API endpoint için CSRF exempt
 def mark_notifications_as_read():
     Notification.query.filter_by(user_id=current_user.id, is_read=False).update({'is_read': True})
     db.session.commit()
@@ -903,6 +995,7 @@ def edit_event(event_id):
 @login_required
 @admin_required
 def delete_event(event_id):
+    validate_csrf(request.form.get('csrf_token'))
     event_item = Event.query.get_or_404(event_id)
     db.session.delete(event_item)
     db.session.commit()
@@ -925,7 +1018,7 @@ def api_events():
 
 @app.route('/admin/community_members', methods=['GET', 'POST'])
 @login_required
-@admin_required
+@strict_admin_required
 def manage_community_members():
     form = CommunityMemberSearchForm()
     
@@ -933,30 +1026,25 @@ def manage_community_members():
     pending_query = CommunityMember.query.options(db.joinedload(CommunityMember.user)).filter_by(is_approved=False)
     approved_query = CommunityMember.query.options(db.joinedload(CommunityMember.user)).filter_by(is_approved=True)
     
-    # Arama parametreleri
-    search_query = request.args.get('query', '').strip()
+    # Arama parametreleri - güvenli hale getir
+    search_query = sanitize_input(request.args.get('query', '').strip())
     status_filter = request.args.get('status', '')
     
     # Form'dan değerleri al
     if form.validate_on_submit():
-        search_query = form.query.data.strip() if form.query.data else ''
+        search_query = sanitize_input(form.query.data.strip() if form.query.data else '')
         status_filter = form.status.data
     
     # Form alanlarını doldur
     form.query.data = search_query
     form.status.data = status_filter
     
-    # Arama filtreleri uygula
+    # Arama filtreleri uygula - güvenli şekilde
     if search_query:
-        search_filter = (
-            CommunityMember.name.ilike(f'%{search_query}%') |
-            CommunityMember.surname.ilike(f'%{search_query}%') |
-            CommunityMember.faculty.ilike(f'%{search_query}%') |
-            CommunityMember.department.ilike(f'%{search_query}%') |
-            CommunityMember.student_id.ilike(f'%{search_query}%')
-        )
-        pending_query = pending_query.filter(search_filter)
-        approved_query = approved_query.filter(search_filter)
+        search_filter = safe_search_filter(search_query, CommunityMember)
+        if search_filter is not None:
+            pending_query = pending_query.filter(search_filter)
+            approved_query = approved_query.filter(search_filter)
     
     # Durum filtresi uygula
     if status_filter == 'pending':
@@ -986,8 +1074,9 @@ def manage_community_members():
 
 @app.route('/admin/community_members/approve/<int:member_id>', methods=['POST'])
 @login_required
-@admin_required
+@strict_admin_required
 def approve_community_member(member_id):
+    validate_csrf(request.form.get('csrf_token'))
     member = CommunityMember.query.get_or_404(member_id)
     
     try:
@@ -1027,8 +1116,9 @@ def approve_community_member(member_id):
 
 @app.route('/admin/community_members/reject/<int:member_id>', methods=['POST'])
 @login_required
-@admin_required
+@strict_admin_required
 def reject_community_member(member_id):
+    validate_csrf(request.form.get('csrf_token'))
     member = CommunityMember.query.get_or_404(member_id)
     db.session.delete(member)
     db.session.commit()
@@ -1037,8 +1127,10 @@ def reject_community_member(member_id):
 
 @app.route('/admin/community_members/delete/<int:member_id>', methods=['POST'])
 @login_required
-@admin_required
+@strict_admin_required
+@delete_permission_required
 def delete_community_member(member_id):
+    validate_csrf(request.form.get('csrf_token'))
     if not current_user.can_delete:
         flash('Bu işlemi gerçekleştirme yetkiniz yok.', 'danger')
         return redirect(url_for('manage_community_members'))
@@ -1051,7 +1143,7 @@ def delete_community_member(member_id):
         
         # Eğer topluluk üyesinin bir kullanıcı hesabı varsa, onu da sil
         if member.user_id:
-            user = User.query.get(member.user_id)
+            user = db.session.get(User, member.user_id)
             if user:
                 # Kullanıcıya ait logları temizle (user_id'yi null yap)
                 logs = Log.query.filter_by(user_id=user.id).all()
@@ -1080,18 +1172,27 @@ def delete_community_member(member_id):
 
 @app.route('/admin/community_members/view/<int:member_id>')
 @login_required
-@admin_required
+@strict_admin_required
 def view_community_member(member_id):
     member = CommunityMember.query.get_or_404(member_id)
     return render_template('view_community_member.html', member=member)
 
 @app.route('/admin/community_members/export')
 @login_required
-@admin_required
+@strict_admin_required
+@limiter.limit("1 per minute")  # Export spam koruması
 def export_community_members():
+    # ⚠️ GÜVENLİK UYARISI: Bu fonksiyon kişisel verileri açığa çıkarıyor!
+    # Sadece gerekli durumlarda ve güvenli şekilde kullanılmalı
+    
+    # Admin yetkisi ek kontrolü
+    if not current_user.is_admin:
+        flash('Bu işlem için admin yetkisi gerekiyor.', 'danger')
+        return redirect(url_for('manage_community_members'))
+    
     try:
-        # Arama parametrelerini al
-        search_query = request.args.get('query', '').strip()
+        # Arama parametrelerini al ve güvenli hale getir
+        search_query = sanitize_input(request.args.get('query', '').strip())
         status_filter = request.args.get('status', '')
         
         # Excel dosyası oluştur
@@ -1104,13 +1205,13 @@ def export_community_members():
         header_fill = PatternFill(start_color="4472C4", end_color="4472C4", fill_type="solid")
         header_alignment = Alignment(horizontal="center", vertical="center")
         
-        # Başlıkları ekle
+        # Başlıkları ekle - Güvenlik için hassas bilgileri çıkar
         headers = [
-            "ID", "Kullanıcı Adı", "Ad", "Soyad", "E-posta", "Telefon", 
-            "Öğrenci No", "Doğum Yeri", "Doğum Tarihi", "Mevcut İkamet",
-            "Sınıf", "Fakülte", "Bölüm", "Tercih Edilen Birimler", 
+            "ID", "Kullanıcı Adı", "Ad", "Soyad", "E-posta", 
+            "Öğrenci No", "Sınıf", "Fakülte", "Bölüm", 
             "Onay Durumu", "Başvuru Tarihi"
         ]
+        # Hassas bilgiler çıkarıldı: "Telefon", "Doğum Yeri", "Doğum Tarihi", "Mevcut İkamet", "Tercih Edilen Birimler"
         
         for col, header in enumerate(headers, 1):
             cell = ws.cell(row=1, column=col, value=header)
@@ -1121,16 +1222,11 @@ def export_community_members():
         # Verileri filtrele ve al
         query = CommunityMember.query
         
-        # Arama filtreleri uygula
+        # Arama filtreleri uygula - güvenli şekilde
         if search_query:
-            search_filter = (
-                CommunityMember.name.ilike(f'%{search_query}%') |
-                CommunityMember.surname.ilike(f'%{search_query}%') |
-                CommunityMember.faculty.ilike(f'%{search_query}%') |
-                CommunityMember.department.ilike(f'%{search_query}%') |
-                CommunityMember.student_id.ilike(f'%{search_query}%')
-            )
-            query = query.filter(search_filter)
+            search_filter = safe_search_filter(search_query, CommunityMember)
+            if search_filter is not None:
+                query = query.filter(search_filter)
         
         # Durum filtresi uygula
         if status_filter == 'pending':
@@ -1146,20 +1242,15 @@ def export_community_members():
             ws.cell(row=row, column=3, value=member.name)
             ws.cell(row=row, column=4, value=member.surname)
             ws.cell(row=row, column=5, value=member.email)
-            ws.cell(row=row, column=6, value=member.phone_number)
-            ws.cell(row=row, column=7, value=member.student_id)
-            ws.cell(row=row, column=8, value=member.place_of_birth)
-            ws.cell(row=row, column=9, value=member.date_of_birth.strftime('%d.%m.%Y') if member.date_of_birth else '')
-            ws.cell(row=row, column=10, value=member.current_residence)
-            ws.cell(row=row, column=11, value=member.student_class)
-            ws.cell(row=row, column=12, value=member.faculty)
-            ws.cell(row=row, column=13, value=member.department)
-            ws.cell(row=row, column=14, value=member.preferred_units)
-            ws.cell(row=row, column=15, value="Onaylandı" if member.is_approved else "Beklemede")
-            ws.cell(row=row, column=16, value=member.registration_date.strftime('%d.%m.%Y %H:%M') if member.registration_date else '')
+            ws.cell(row=row, column=6, value=member.student_id)
+            ws.cell(row=row, column=7, value=member.student_class)
+            ws.cell(row=row, column=8, value=member.faculty)
+            ws.cell(row=row, column=9, value=member.department)
+            ws.cell(row=row, column=10, value="Onaylandı" if member.is_approved else "Beklemede")
+            ws.cell(row=row, column=11, value=member.registration_date.strftime('%d.%m.%Y %H:%M') if member.registration_date else '')
         
         # Sütun genişliklerini ayarla
-        column_widths = [8, 15, 12, 12, 25, 15, 12, 15, 12, 15, 10, 15, 20, 25, 12, 16]
+        column_widths = [8, 15, 12, 12, 25, 12, 10, 15, 20, 12, 16]
         for col, width in enumerate(column_widths, 1):
             ws.column_dimensions[ws.cell(row=1, column=col).column_letter].width = width
         
@@ -1225,7 +1316,7 @@ if __name__ == '__main__':
     # Production settings
     import os
     debug_mode = os.environ.get('FLASK_DEBUG', 'False').lower() == 'true'
-    port = int(os.environ.get('PORT', 5007))  # Port 5007 kullan
+    port = int(os.environ.get('PORT', 5011))  # Port 5007 kullan
     app.run(debug=debug_mode, host='0.0.0.0', port=port, threaded=True)
     
     

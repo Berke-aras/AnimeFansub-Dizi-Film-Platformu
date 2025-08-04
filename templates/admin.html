@@ -31,6 +31,7 @@
                 {% if current_user.can_delete %}
                 <form action="{{ url_for('delete_anime', anime_id=anime.id) }}" method="post" class="d-inline"
                     onsubmit="return confirm('Bu animeyi silmek istediğinize emin misiniz?');">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
                     <button type="submit" class="btn btn-sm btn-outline-danger">Sil</button>
                 </form>
                 {% endif %}

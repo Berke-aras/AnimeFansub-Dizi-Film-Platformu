@@ -1,0 +1,4 @@
+# Güvenlik için gerekli paketler
+Flask-WTF>=1.1.1
+Flask-Limiter>=3.3.0
+bleach>=6.0.0

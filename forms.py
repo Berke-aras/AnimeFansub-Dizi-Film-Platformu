@@ -235,3 +235,11 @@ class CommunityMemberSearchForm(FlaskForm):
                         choices=[('', 'Tümü'), ('pending', 'Beklemede'), ('approved', 'Onaylandı')],
                         default='')
     submit = SubmitField('Ara')
+
+class CategoryForm(FlaskForm):
+    name = StringField('Kategori Adı', validators=[DataRequired(), Length(min=2, max=100)])
+    description = TextAreaField('Açıklama', validators=[Optional(), Length(max=500)])
+    submit = SubmitField('Ekle')
+
+class DeleteForm(FlaskForm):
+    submit = SubmitField('Sil')

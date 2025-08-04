@@ -1,7 +1,9 @@
 
 from flask import render_template, request, redirect, url_for, flash, Blueprint
 from flask_login import current_user, login_required
+from flask_wtf.csrf import validate_csrf
 from models import db, CommunityInfo
+from forms import CategoryForm, DeleteForm
 from functools import wraps
 
 # Admin decorator'ı
@@ -98,8 +100,19 @@ def view_thread(thread_id):
 def new_thread(category_id):
     category = ForumCategory.query.get_or_404(category_id)
     if request.method == 'POST':
-        title = request.form['title']
-        content = request.form['content']
+        try:
+            # CSRF token doğrulaması
+            validate_csrf(request.form.get('csrf_token'))
+        except Exception:
+            flash('Güvenlik hatası. Lütfen tekrar deneyin.', 'danger')
+            return redirect(url_for('community.new_thread', category_id=category_id))
+        
+        title = request.form.get('title', '').strip()
+        content = request.form.get('content', '').strip()
+        
+        if not title or not content:
+            flash('Başlık ve içerik boş olamaz.', 'warning')
+            return redirect(url_for('community.new_thread', category_id=category_id))
         
         new_thread = ForumThread(
             title=title, 
@@ -119,8 +132,19 @@ def new_thread(category_id):
 @login_required
 @community_access_required
 def new_post(thread_id):
+    try:
+        # CSRF token doğrulaması
+        validate_csrf(request.form.get('csrf_token'))
+    except Exception:
+        flash('Güvenlik hatası. Lütfen tekrar deneyin.', 'danger')
+        return redirect(url_for('community.view_thread', thread_id=thread_id))
+    
     thread = ForumThread.query.get_or_404(thread_id)
-    content = request.form['content']
+    content = request.form.get('content', '').strip()
+    
+    if not content:
+        flash('Mesaj içeriği boş olamaz.', 'warning')
+        return redirect(url_for('community.view_thread', thread_id=thread_id))
     
     new_post = ForumPost(
         content=content, 
@@ -138,34 +162,52 @@ def new_post(thread_id):
 @login_required
 @admin_required
 def manage_categories():
-    if request.method == 'POST':
-        name = request.form['name']
-        description = request.form['description']
+    form = CategoryForm()
+    
+    if form.validate_on_submit():
+        name = form.name.data.strip()
+        description = form.description.data.strip() if form.description.data else ''
+        
         if not ForumCategory.query.filter_by(name=name).first():
             new_category = ForumCategory(name=name, description=description)
             db.session.add(new_category)
             db.session.commit()
             flash('Yeni kategori eklendi.', 'success')
+            return redirect(url_for('community.manage_categories'))
         else:
             flash('Bu isimde bir kategori zaten var.', 'warning')
     
     categories = ForumCategory.query.all()
-    return render_template('admin_manage_categories.html', categories=categories)
+    return render_template('admin_manage_categories.html', categories=categories, form=form)
 
 @community_bp.route('/admin/delete_category/<int:category_id>', methods=['POST'])
 @login_required
 @admin_required
 def delete_category(category_id):
-    category = ForumCategory.query.get_or_404(category_id)
-    db.session.delete(category)
-    db.session.commit()
-    flash('Kategori silindi.', 'success')
+    try:
+        # CSRF token doğrulaması
+        validate_csrf(request.form.get('csrf_token'))
+        
+        category = ForumCategory.query.get_or_404(category_id)
+        db.session.delete(category)
+        db.session.commit()
+        flash('Kategori silindi.', 'success')
+    except Exception as e:
+        flash('Güvenlik hatası. Lütfen tekrar deneyin.', 'danger')
+    
     return redirect(url_for('community.manage_categories'))
 
 @community_bp.route('/admin/delete_thread/<int:thread_id>', methods=['POST'])
 @login_required
 @admin_required
 def delete_thread(thread_id):
+    try:
+        # CSRF token doğrulaması
+        validate_csrf(request.form.get('csrf_token'))
+    except Exception:
+        flash('Güvenlik hatası. Lütfen tekrar deneyin.', 'danger')
+        return redirect(url_for('community.index'))
+    
     thread = ForumThread.query.get_or_404(thread_id)
     category_id = thread.category_id
     db.session.delete(thread)
@@ -177,6 +219,13 @@ def delete_thread(thread_id):
 @login_required
 @admin_required
 def delete_post(post_id):
+    try:
+        # CSRF token doğrulaması
+        validate_csrf(request.form.get('csrf_token'))
+    except Exception:
+        flash('Güvenlik hatası. Lütfen tekrar deneyin.', 'danger')
+        return redirect(url_for('community.index'))
+    
     post = ForumPost.query.get_or_404(post_id)
     thread_id = post.thread_id
     db.session.delete(post)

@@ -42,6 +42,7 @@
 <div class="container mt-5">
     <h2>Topluluk Bilgilerini Yönet</h2>
     <form method="POST">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
         <div class="mb-3">
             <label for="title" class="form-label">Başlık</label>
             <input type="text" class="form-control" id="title" name="title" value="{{ info.title if info else '' }}">

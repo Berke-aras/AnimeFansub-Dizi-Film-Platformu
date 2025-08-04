@@ -1,6 +1,7 @@
 # Anime Fansub Platform - Performance Optimizasyonları
 
 Bu proje, düşük kaynaklı sunucularda da hızlı çalışacak şekilde optimize edilmiştir.
+.env e bak
 
 ## Yapılan Optimizasyonlar
 

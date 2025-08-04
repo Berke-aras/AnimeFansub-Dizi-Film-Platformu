@@ -98,6 +98,7 @@
                                     <form method="POST"
                                         action="{{ url_for('approve_community_member', member_id=member.id) }}"
                                         class="d-inline">
+                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
                                         <button type="submit" class="btn btn-success btn-sm"
                                             onclick="return confirm('Bu üyeyi onaylamak istediğinizden emin misiniz?')">
                                             Onayla
@@ -106,8 +107,9 @@
                                     <form method="POST"
                                         action="{{ url_for('reject_community_member', member_id=member.id) }}"
                                         class="d-inline">
+                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
                                         <button type="submit" class="btn btn-danger btn-sm"
-                                            onclick="return confirm('Bu başvuruyu reddetmek istediğinizden emin misiniz?')">
+                                            onclick="return confirm('Bu başvuruyu reddetmek istediğinizden emin misiniz?')">>
                                             Reddet
                                         </button>
                                     </form>
@@ -191,6 +193,7 @@
                                 <form method="POST"
                                     action="{{ url_for('delete_community_member', member_id=member.id) }}"
                                     class="d-inline">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
                                     <button type="submit" class="btn btn-danger btn-sm"
                                         onclick="return confirm('Bu topluluk üyesini silmek istediğinizden emin misiniz? Bu işlem geri alınamaz ve ilişkili kullanıcı hesabı da silinecektir.')">
                                         <i class="fas fa-trash"></i> Sil

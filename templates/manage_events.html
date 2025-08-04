@@ -1,4 +1,3 @@
-
 {% extends "base.html" %}
 
 {% block title %}Etkinlikleri Yönet{% endblock %}
@@ -64,12 +63,16 @@
                         <tr>
                             <td>{{ item.title }}</td>
                             <td>{{ item.start_time.strftime('%d-%m-%Y %H:%M') }}</td>
-                            <td>{{ item.end_time.strftime('%d-%m-%Y %H:%M') if item.end_time else 'Belirtilmemiş' }}</td>
+                            <td>{{ item.end_time.strftime('%d-%m-%Y %H:%M') if item.end_time else 'Belirtilmemiş' }}
+                            </td>
                             <td class="text-end">
                                 <a href="{{ url_for('edit_event', event_id=item.id) }}" class="btn btn-sm btn-warning">
                                     <i class="fas fa-edit me-1"></i> Düzenle
                                 </a>
-                                <form action="{{ url_for('delete_event', event_id=item.id) }}" method="POST" class="d-inline" onsubmit="return confirm('Bu etkinliği silmek istediğinizden emin misiniz?');">
+                                <form action="{{ url_for('delete_event', event_id=item.id) }}" method="POST"
+                                    class="d-inline"
+                                    onsubmit="return confirm('Bu etkinliği silmek istediğinizden emin misiniz?');">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
                                     <button type="submit" class="btn btn-sm btn-danger">
                                         <i class="fas fa-trash-alt me-1"></i> Sil
                                     </button>

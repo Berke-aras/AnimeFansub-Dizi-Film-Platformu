@@ -115,6 +115,7 @@
                         <div class="btn-group" role="group">
                             <form method="POST" action="{{ url_for('approve_community_member', member_id=member.id) }}"
                                 class="d-inline">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
                                 <button type="submit" class="btn btn-success"
                                     onclick="return confirm('Bu üyeyi onaylamak istediğinizden emin misiniz?')">
                                     Üyeyi Onayla
@@ -122,6 +123,7 @@
                             </form>
                             <form method="POST" action="{{ url_for('reject_community_member', member_id=member.id) }}"
                                 class="d-inline">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
                                 <button type="submit" class="btn btn-danger"
                                     onclick="return confirm('Bu başvuruyu reddetmek istediğinizden emin misiniz?')">
                                     Başvuruyu Reddet
