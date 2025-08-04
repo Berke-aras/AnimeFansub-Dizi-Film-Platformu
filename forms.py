@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, TextAreaField, SubmitField, BooleanField, SelectField, IntegerField
+from wtforms import StringField, PasswordField, TextAreaField, SubmitField, BooleanField, SelectField, IntegerField, DateTimeField
 from wtforms.validators import DataRequired, Length, Optional, EqualTo, ValidationError
 from wtforms_sqlalchemy.fields import QuerySelectMultipleField
 from models import Genre, User
@@ -78,3 +78,15 @@ class EditUserForm(FlaskForm):
     can_edit = BooleanField('Düzenleme Yetkisi')
     can_add_user = BooleanField('Kullanıcı Ekleme Yetkisi')
     submit = SubmitField('Kullanıcıyı Güncelle')
+
+class NewsForm(FlaskForm):
+    title = StringField('Başlık', validators=[DataRequired(), Length(max=200)])
+    content = TextAreaField('İçerik', validators=[DataRequired()])
+    submit = SubmitField('Yayınla')
+
+class EventForm(FlaskForm):
+    title = StringField('Etkinlik Başlığı', validators=[DataRequired(), Length(max=200)])
+    description = TextAreaField('Açıklama', validators=[Optional()])
+    start_time = DateTimeField('Başlangıç Zamanı', validators=[DataRequired()], format='%Y-%m-%dT%H:%M')
+    end_time = DateTimeField('Bitiş Zamanı', validators=[Optional()], format='%Y-%m-%dT%H:%M')
+    submit = SubmitField('Etkinlik Oluştur')

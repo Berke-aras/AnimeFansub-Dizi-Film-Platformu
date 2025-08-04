@@ -1,0 +1,85 @@
+
+{% extends "community_base.html" %}
+
+{% block title %}{{ thread.title }}{% endblock %}
+
+{% block community_content %}
+<div class="container mt-5">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ url_for('community_hub') }}">Topluluk</a></li>
+            <li class="breadcrumb-item"><a href="{{ url_for('community.index') }}">Forum</a></li>
+            <li class="breadcrumb-item"><a href="{{ url_for('community.view_category', category_id=thread.category.id) }}">{{ thread.category.name }}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ thread.title }}</li>
+        </ol>
+    </nav>
+
+    <h2 class="mb-4">{{ thread.title }}</h2>
+
+    <!-- Ana Konu -->
+    <div class="card mb-3 shadow-sm post-card">
+        <div class="row g-0">
+            <div class="col-md-2 post-user-panel text-center p-3 bg-light">
+                <i class="fas fa-user-circle fa-3x mb-2"></i>
+                <h5>{{ thread.user_username }}</h5>
+                <span class="badge bg-primary">Konu Sahibi</span>
+            </div>
+            <div class="col-md-10">
+                <div class="card-body">
+                    <p class="card-text">{{ thread.content|safe }}</p>
+                </div>
+                <div class="card-footer text-muted d-flex justify-content-between">
+                    <span>Oluşturulma: {{ thread.timestamp.strftime('%d-%m-%Y %H:%M') }}</span>
+                    {% if current_user.is_authenticated and (current_user.id == thread.user_id or current_user.is_admin) %}
+                        <form action="{{ url_for('community.delete_thread', thread_id=thread.id) }}" method="post" onsubmit="return confirm('Bu konuyu silmek istediğinizden emin misiniz?');">
+                            <button type="submit" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i> Sil</button>
+                        </form>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cevaplar -->
+    <h4 class="mb-3">Cevaplar ({{ posts|length }})</h4>
+    {% for post in posts %}
+    <div class="card mb-3 shadow-sm post-card">
+        <div class="row g-0">
+            <div class="col-md-2 post-user-panel text-center p-3 bg-light">
+                <i class="fas fa-user-circle fa-3x mb-2"></i>
+                <h5>{{ post.user_username }}</h5>
+                {# Kullanıcı rütbesi eklenebilir #}
+            </div>
+            <div class="col-md-10">
+                <div class="card-body">
+                    <p class="card-text">{{ post.content|safe }}</p>
+                </div>
+                <div class="card-footer text-muted d-flex justify-content-between">
+                    <span>{{ post.timestamp.strftime('%d-%m-%Y %H:%M') }}</span>
+                    {% if current_user.is_authenticated and (current_user.id == post.user_id or current_user.is_admin) %}
+                        <form action="{{ url_for('community.delete_post', post_id=post.id) }}" method="post" onsubmit="return confirm('Bu cevabı silmek istediğinizden emin misiniz?');">
+                            <button type="submit" class="btn btn-sm btn-outline-danger"><i class="fas fa-trash"></i></button>
+                        </form>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+
+    <!-- Cevap Yazma Formu -->
+    <div class="card mt-4 shadow-sm">
+        <div class="card-header">
+            <h5>Bir Cevap Yaz</h5>
+        </div>
+        <div class="card-body">
+            <form action="{{ url_for('community.new_post', thread_id=thread.id) }}" method="post">
+                <div class="mb-3">
+                    <textarea class="form-control" id="content" name="content" rows="5" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Cevabı Gönder</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

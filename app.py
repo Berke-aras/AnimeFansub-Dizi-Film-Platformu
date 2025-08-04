@@ -2,18 +2,26 @@ from flask import Flask, render_template, redirect, url_for, flash, request, ses
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user, UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
-from forms import LoginForm, AnimeForm, EpisodeForm, UserForm, EditUserForm, GenreForm, AnimeSearchForm, RegistrationForm
-from models import db, User, Anime, Episode, Log, Genre, Rating, Notification
+from forms import LoginForm, AnimeForm, EpisodeForm, UserForm, EditUserForm, GenreForm, AnimeSearchForm, RegistrationForm, NewsForm, EventForm
+from models import db, User, Anime, Episode, Log, Genre, Rating, Notification, News, Event
+from community import community_bp, ForumThread
 import re
 import random
 from functools import wraps
 import requests
+from datetime import datetime
 
 app = Flask(__name__)
 application = app
 app.config['SECRET_KEY'] = 'asd*fasd-dsdsaf+fa+fd,aadsf,af,.d,f.daf*f9d88asd7asdf68sdf567as47'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///anime_site.db'
+app.config['SQLALCHEMY_BINDS'] = {
+    'community': 'sqlite:///community.db'
+}
 db.init_app(app)
+
+# Register the community blueprint
+app.register_blueprint(community_bp, url_prefix='/community/forum')
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -92,9 +100,16 @@ def fansub_index():
     random_animes = random.sample(Anime.query.all(), min(len(Anime.query.all()), 6))
     return render_template('fansub_index.html', hero_animes=hero_animes, editor_picks=editor_picks, personalized_recs=personalized_recs, latest_animes=latest_animes, random_animes=random_animes)
 
+@app.route('/community')
+@login_required
+def community_hub():
+    latest_news = News.query.order_by(News.timestamp.desc()).limit(5).all()
+    latest_threads = ForumThread.query.order_by(ForumThread.timestamp.desc()).limit(5).all()
+    return render_template('community_hub.html', latest_news=latest_news, latest_threads=latest_threads)
+
 @app.route('/humat')
 def humat_index():
-    return render_template('humat_index.html')
+    return redirect(url_for('community_hub'))
 
 @app.route('/animes', methods=['GET', 'POST'])
 def animes():
@@ -488,11 +503,99 @@ def mark_notifications_as_read():
     db.session.commit()
     return jsonify({'status': 'success'})
 
-if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5400)
+# News and Events Routes
+@app.route('/news')
+def news():
+    news_list = News.query.order_by(News.timestamp.desc()).all()
+    return render_template('news.html', news_list=news_list)
 
+@app.route('/news/<int:news_id>')
+def view_news(news_id):
+    news_item = News.query.get_or_404(news_id)
+    return render_template('news_article.html', news_item=news_item)
 
+@app.route('/admin/news', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def manage_news():
+    form = NewsForm()
+    if form.validate_on_submit():
+        new_news = News(title=form.title.data, content=form.content.data, user_id=current_user.id)
+        db.session.add(new_news)
+        db.session.commit()
+        flash('Haber başarıyla eklendi.', 'success')
+        return redirect(url_for('manage_news'))
+    all_news = News.query.order_by(News.timestamp.desc()).all()
+    return render_template('manage_news.html', form=form, all_news=all_news)
 
+@app.route('/admin/news/edit/<int:news_id>', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def edit_news(news_id):
+    news_item = News.query.get_or_404(news_id)
+    form = NewsForm(obj=news_item)
+    if form.validate_on_submit():
+        news_item.title = form.title.data
+        news_item.content = form.content.data
+        db.session.commit()
+        flash('Haber başarıyla güncellendi.', 'success')
+        return redirect(url_for('manage_news'))
+    return render_template('edit_news.html', form=form, news_item=news_item)
+
+@app.route('/admin/news/delete/<int:news_id>', methods=['POST'])
+@login_required
+@admin_required
+def delete_news(news_id):
+    news_item = News.query.get_or_404(news_id)
+    db.session.delete(news_item)
+    db.session.commit()
+    flash('Haber silindi.', 'success')
+    return redirect(url_for('manage_news'))
+
+@app.route('/events')
+def events():
+    event_list = Event.query.order_by(Event.start_time.asc()).all()
+    return render_template('events.html', event_list=event_list)
+
+@app.route('/admin/events', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def manage_events():
+    form = EventForm()
+    if form.validate_on_submit():
+        new_event = Event(title=form.title.data, description=form.description.data, start_time=form.start_time.data, end_time=form.end_time.data, user_id=current_user.id)
+        db.session.add(new_event)
+        db.session.commit()
+        flash('Etkinlik başarıyla eklendi.', 'success')
+        return redirect(url_for('manage_events'))
+    all_events = Event.query.order_by(Event.start_time.desc()).all()
+    return render_template('manage_events.html', form=form, all_events=all_events)
+
+@app.route('/admin/events/edit/<int:event_id>', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def edit_event(event_id):
+    event_item = Event.query.get_or_404(event_id)
+    form = EventForm(obj=event_item)
+    if form.validate_on_submit():
+        event_item.title = form.title.data
+        event_item.description = form.description.data
+        event_item.start_time = form.start_time.data
+        event_item.end_time = form.end_time.data
+        db.session.commit()
+        flash('Etkinlik başarıyla güncellendi.', 'success')
+        return redirect(url_for('manage_events'))
+    return render_template('edit_event.html', form=form, event_item=event_item)
+
+@app.route('/admin/events/delete/<int:event_id>', methods=['POST'])
+@login_required
+@admin_required
+def delete_event(event_id):
+    event_item = Event.query.get_or_404(event_id)
+    db.session.delete(event_item)
+    db.session.commit()
+    flash('Etkinlik silindi.', 'success')
+    return redirect(url_for('manage_events'))
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5400)

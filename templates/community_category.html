@@ -1,0 +1,43 @@
+
+{% extends "community_base.html" %}
+
+{% block title %}{{ category.name }}{% endblock %}
+
+{% block community_content %}
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ url_for('community.index') }}">Forum</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">{{ category.name }}</li>
+                </ol>
+            </nav>
+            <h1>{{ category.name }}</h1>
+        </div>
+        <a href="{{ url_for('community.new_thread', category_id=category.id) }}" class="btn btn-success"><i class="fas fa-plus me-2"></i>Yeni Konu Aç</a>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+            <h4>Konular</h4>
+        </div>
+        <div class="list-group list-group-flush">
+            {% for thread in threads %}
+                <a href="{{ url_for('community.view_thread', thread_id=thread.id) }}" class="list-group-item list-group-item-action flex-column align-items-start">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">{{ thread.title }}</h5>
+                        <small class="text-muted">{{ thread.timestamp.strftime('%d-%m-%Y %H:%M') }}</small>
+                    </div>
+                    <p class="mb-1"><strong>{{ thread.user_username }}</strong> tarafından oluşturuldu.</p>
+                    <small class="text-muted">{{ thread.posts|length }} cevap</small>
+                </a>
+            {% else %}
+                <div class="list-group-item">
+                    <p class="mb-0">Bu kategoride henüz hiç konu açılmamış. İlk konuyu sen aç!</p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,35 @@
+
+{% extends "base.html" %}
+
+{% block title %}Etkinliği Düzenle{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1>Etkinliği Düzenle</h1>
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <form method="POST" action="{{ url_for('edit_event', event_id=event_item.id) }}">
+                {{ form.hidden_tag() }}
+                <div class="mb-3">
+                    {{ form.title.label(class="form-label") }}
+                    {{ form.title(class="form-control") }}
+                </div>
+                <div class="mb-3">
+                    {{ form.description.label(class="form-label") }}
+                    {{ form.description(class="form-control", rows=5) }}
+                </div>
+                <div class="mb-3">
+                    {{ form.start_time.label(class="form-label") }}
+                    {{ form.start_time(class="form-control") }}
+                </div>
+                <div class="mb-3">
+                    {{ form.end_time.label(class="form-label") }}
+                    {{ form.end_time(class="form-control") }}
+                </div>
+                <button type="submit" class="btn btn-primary">Güncelle</button>
+                <a href="{{ url_for('manage_events') }}" class="btn btn-secondary">İptal</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

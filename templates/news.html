@@ -1,0 +1,28 @@
+
+{% extends "base.html" %}
+
+{% block title %}Haberler{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="mb-4">Haberler</h1>
+    <div class="row">
+        {% for news_item in news_list %}
+        <div class="col-md-12">
+            <div class="card mb-4 shadow-sm">
+                <div class="card-body">
+                    <h2 class="card-title">{{ news_item.title }}</h2>
+                    <p class="card-text text-muted">Yayınlanma Tarihi: {{ news_item.timestamp.strftime('%d-%m-%Y') }} | Yazar: {{ news_item.author.username }}</p>
+                    <p class="card-text">{{ news_item.content|truncate(200, True) }}</p>
+                    <a href="{{ url_for('view_news', news_id=news_item.id) }}" class="btn btn-primary">Devamını Oku</a>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="col">
+            <p>Henüz hiç haber yayınlanmamış.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
