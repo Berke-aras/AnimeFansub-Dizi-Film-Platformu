@@ -102,12 +102,22 @@ def admin_required(f):
     return decorated_function
 
 def strict_admin_required(f):
-    """Sadece is_admin=True olan kullanıcılar için"""
+    """Sadece is_admin=True olan kullanıcılar için - Güçlendirilmiş güvenlik"""
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        if not current_user.is_authenticated or not current_user.is_admin:
+        if not current_user.is_authenticated:
+            flash('Bu sayfaya erişmek için giriş yapmanız gerekiyor.', 'danger')
+            return redirect(url_for('login'))
+        
+        if not current_user.is_admin:
+            # Güvenlik logu
+            app.logger.warning(f'🚨 Yetkisiz admin erişim denemesi: Kullanıcı={current_user.username}, IP={request.remote_addr}, URL={request.url}')
+            log_action('unauthorized_admin_access', f'Yetkisiz admin erişim denemesi: {request.url}')
             flash('Bu sayfaya sadece adminler erişebilir.', 'danger')
             return redirect(url_for('index'))
+        
+        # Admin işlem logu
+        app.logger.info(f'🔐 Admin erişimi: Kullanıcı={current_user.username}, IP={request.remote_addr}, URL={request.url}')
         return f(*args, **kwargs)
     return decorated_function
 
@@ -579,10 +589,13 @@ def login():
         
     form = LoginForm()
     if form.validate_on_submit():
-        # Kullanıcı adı veya e-posta ile giriş
+        # Input güvenliği - Sanitize edilmiş veri
+        username_input = sanitize_input(form.username.data.lower().strip())
+        
+        # Kullanıcı adı veya e-posta ile giriş - Güvenli sorgu
         user = User.query.filter(
-            (User.username == form.username.data.lower().strip()) | 
-            (User.email == form.username.data.lower().strip())
+            (User.username == username_input) | 
+            (User.email == username_input)
         ).first()
         
         if user and check_password_hash(user.password, form.password.data):
@@ -590,6 +603,10 @@ def login():
             
             # Session'ı güçlendir
             session.permanent = True
+            
+            # 🔒 GÜVENLİK: Başarılı login logu
+            app.logger.info(f'✅ Başarılı login: Kullanıcı={user.username}, IP={request.remote_addr}, UserAgent={request.headers.get("User-Agent", "Unknown")}')
+            log_action('successful_login', f'Başarılı giriş - IP: {request.remote_addr}')
             
             # Eski cache'leri temizle
             simple_cache.delete('fansub_index_anonymous')
@@ -604,6 +621,13 @@ def login():
                 return redirect(next_page)
             return redirect(url_for('landing'))
         else:
+            # 🔒 GÜVENLİK: Başarısız login logu
+            app.logger.warning(f'❌ Başarısız login denemesi: Username={username_input}, IP={request.remote_addr}, UserAgent={request.headers.get("User-Agent", "Unknown")}')
+            
+            # Rate limiting için ek gecikme
+            import time
+            time.sleep(1)  # Brute force yavaşlatması
+            
             flash('Giriş başarısız. Lütfen kullanıcı adınızı/e-postanızı ve şifrenizi kontrol edin.', 'danger')
     
     return render_template('login.html', form=form)
@@ -1182,13 +1206,16 @@ def view_community_member(member_id):
 @strict_admin_required
 @limiter.limit("1 per minute")  # Export spam koruması
 def export_community_members():
-    # ⚠️ GÜVENLİK UYARISI: Bu fonksiyon kişisel verileri açığa çıkarıyor!
-    # Sadece gerekli durumlarda ve güvenli şekilde kullanılmalı
+    # 🔒 GÜVENLİK: Hassas veriler çıkarıldı, sadece gerekli bilgiler export ediliyor
     
-    # Admin yetkisi ek kontrolü
+    # Çoklu admin kontrolü
     if not current_user.is_admin:
+        log_action('unauthorized_export_attempt', f'Yetkisiz export denemesi: {current_user.username}')
         flash('Bu işlem için admin yetkisi gerekiyor.', 'danger')
         return redirect(url_for('manage_community_members'))
+    
+    # IP loglaması
+    app.logger.warning(f"Community members export requested by {current_user.username} from IP: {request.remote_addr}")
     
     try:
         # Arama parametrelerini al ve güvenli hale getir
@@ -1205,13 +1232,14 @@ def export_community_members():
         header_fill = PatternFill(start_color="4472C4", end_color="4472C4", fill_type="solid")
         header_alignment = Alignment(horizontal="center", vertical="center")
         
-        # Başlıkları ekle - Güvenlik için hassas bilgileri çıkar
+        # 🔒 GÜVENLİK: Sadece gerekli alanlar - Hassas bilgiler çıkarıldı
         headers = [
-            "ID", "Kullanıcı Adı", "Ad", "Soyad", "E-posta", 
-            "Öğrenci No", "Sınıf", "Fakülte", "Bölüm", 
+            "ID", "Kullanıcı Adı", "Ad", "Soyad", 
+            "Sınıf", "Fakülte", "Bölüm", 
             "Onay Durumu", "Başvuru Tarihi"
         ]
-        # Hassas bilgiler çıkarıldı: "Telefon", "Doğum Yeri", "Doğum Tarihi", "Mevcut İkamet", "Tercih Edilen Birimler"
+        # 🚫 GÜVENLİK İÇİN ÇIKARILAN HASSAS BİLGİLER:
+        # E-posta, Öğrenci No, Telefon, Doğum Yeri, Doğum Tarihi, Mevcut İkamet, Tercih Edilen Birimler
         
         for col, header in enumerate(headers, 1):
             cell = ws.cell(row=1, column=col, value=header)
@@ -1241,16 +1269,15 @@ def export_community_members():
             ws.cell(row=row, column=2, value=member.username)
             ws.cell(row=row, column=3, value=member.name)
             ws.cell(row=row, column=4, value=member.surname)
-            ws.cell(row=row, column=5, value=member.email)
-            ws.cell(row=row, column=6, value=member.student_id)
-            ws.cell(row=row, column=7, value=member.student_class)
-            ws.cell(row=row, column=8, value=member.faculty)
-            ws.cell(row=row, column=9, value=member.department)
-            ws.cell(row=row, column=10, value="Onaylandı" if member.is_approved else "Beklemede")
-            ws.cell(row=row, column=11, value=member.registration_date.strftime('%d.%m.%Y %H:%M') if member.registration_date else '')
+            # 🔒 E-posta hassas bilgi olduğu için çıkarıldı
+            ws.cell(row=row, column=5, value=member.student_class)
+            ws.cell(row=row, column=6, value=member.faculty)
+            ws.cell(row=row, column=7, value=member.department)
+            ws.cell(row=row, column=8, value="Onaylandı" if member.is_approved else "Beklemede")
+            ws.cell(row=row, column=9, value=member.registration_date.strftime('%d.%m.%Y') if member.registration_date else '')
         
-        # Sütun genişliklerini ayarla
-        column_widths = [8, 15, 12, 12, 25, 12, 10, 15, 20, 12, 16]
+        # 🔒 GÜVENLİK: Sütun genişliklerini ayarla (hassas bilgiler için alan yok)
+        column_widths = [8, 15, 12, 12, 10, 15, 20, 12, 16]
         for col, width in enumerate(column_widths, 1):
             ws.column_dimensions[ws.cell(row=1, column=col).column_letter].width = width
         
@@ -1268,8 +1295,8 @@ def export_community_members():
         filename_parts.append(datetime.now().strftime('%Y%m%d_%H%M%S'))
         filename = "_".join(filename_parts) + ".xlsx"
         
-        # Log kaydı
-        log_message = f'Topluluk üyeleri listesi Excel olarak dışa aktarıldı. Toplam üye: {len(members)}'
+        # Log kaydı - Güvenlik için detaylı
+        log_message = f'🔒 GÜVENLİ EXPORT: Topluluk üyeleri listesi (hassas bilgiler hariç) Excel olarak dışa aktarıldı. Toplam üye: {len(members)}, Kullanıcı: {current_user.username}, IP: {request.remote_addr}'
         if search_query:
             log_message += f', Arama: "{search_query}"'
         if status_filter:
