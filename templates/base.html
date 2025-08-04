@@ -117,6 +117,7 @@
     {% endblock %}
 
     <main class="flex-fill">
+        {% block flash_messages %}
         {% with messages = get_flashed_messages(with_categories=True) %}
         {% if messages %}
         <div class="container flash-container">
@@ -129,6 +130,7 @@
         </div>
         {% endif %}
         {% endwith %}
+        {% endblock %}
 
         {% block content %}{% endblock %}
     </main>
