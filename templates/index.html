@@ -37,7 +37,7 @@
 </div>
 {% endif %}
 
-<div class="container-fluid content-container">
+<div class="container-fluid content-container mt-5">
 
     <!-- Anime Rafları -->
     {% if editor_picks %}
@@ -49,8 +49,14 @@
                 <a href="{{ url_for('anime', anime_id=anime.id) }}">
                     <img src="{{ anime.cover_image }}" alt="{{ anime.name }}">
                     <div class="card-overlay">
-                        <div class="card-title">{{ anime.name }}</div>
-                        <div class="card-play-icon"><i class="fas fa-play"></i></div>
+                        <div class="card-scores">
+                            <div class="score-badge"><i class="fas fa-star"></i>{{ "%.2f"|format(anime.average_rating) if anime.average_rating else 'N/A' }}</div>
+                            {% if anime.mal_score %}<div class="score-badge mal-score">MAL: {{ anime.mal_score }}</div>{% endif %}
+                        </div>
+                        <div class="card-bottom">
+                            <div class="card-title">{{ anime.name }}</div>
+                            <div class="card-play-icon"><i class="fas fa-play-circle"></i></div>
+                        </div>
                     </div>
                 </a>
             </div>
@@ -68,8 +74,14 @@
                 <a href="{{ url_for('anime', anime_id=anime.id) }}">
                     <img src="{{ anime.cover_image }}" alt="{{ anime.name }}">
                     <div class="card-overlay">
-                        <div class="card-title">{{ anime.name }}</div>
-                        <div class="card-play-icon"><i class="fas fa-play"></i></div>
+                        <div class="card-scores">
+                            <div class="score-badge"><i class="fas fa-star"></i>{{ "%.2f"|format(anime.average_rating) if anime.average_rating else 'N/A' }}</div>
+                            {% if anime.mal_score %}<div class="score-badge mal-score">MAL: {{ anime.mal_score }}</div>{% endif %}
+                        </div>
+                        <div class="card-bottom">
+                            <div class="card-title">{{ anime.name }}</div>
+                            <div class="card-play-icon"><i class="fas fa-play-circle"></i></div>
+                        </div>
                     </div>
                 </a>
             </div>
@@ -87,8 +99,14 @@
                 <a href="{{ url_for('anime', anime_id=anime.id) }}">
                     <img src="{{ anime.cover_image }}" alt="{{ anime.name }}">
                     <div class="card-overlay">
-                        <div class="card-title">{{ anime.name }}</div>
-                        <div class="card-play-icon"><i class="fas fa-play"></i></div>
+                        <div class="card-scores">
+                            <div class="score-badge"><i class="fas fa-star"></i>{{ "%.2f"|format(anime.average_rating) if anime.average_rating else 'N/A' }}</div>
+                            {% if anime.mal_score %}<div class="score-badge mal-score">MAL: {{ anime.mal_score }}</div>{% endif %}
+                        </div>
+                        <div class="card-bottom">
+                            <div class="card-title">{{ anime.name }}</div>
+                            <div class="card-play-icon"><i class="fas fa-play-circle"></i></div>
+                        </div>
                     </div>
                 </a>
             </div>
@@ -106,8 +124,14 @@
                 <a href="{{ url_for('anime', anime_id=anime.id) }}">
                     <img src="{{ anime.cover_image }}" alt="{{ anime.name }}">
                     <div class="card-overlay">
-                        <div class="card-title">{{ anime.name }}</div>
-                        <div class="card-play-icon"><i class="fas fa-play"></i></div>
+                        <div class="card-scores">
+                            <div class="score-badge"><i class="fas fa-star"></i>{{ "%.2f"|format(anime.average_rating) if anime.average_rating else 'N/A' }}</div>
+                            {% if anime.mal_score %}<div class="score-badge mal-score">MAL: {{ anime.mal_score }}</div>{% endif %}
+                        </div>
+                        <div class="card-bottom">
+                            <div class="card-title">{{ anime.name }}</div>
+                            <div class="card-play-icon"><i class="fas fa-play-circle"></i></div>
+                        </div>
                     </div>
                 </a>
             </div>
@@ -117,4 +141,25 @@
     {% endif %}
 
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const shelves = document.querySelectorAll('.anime-shelf');
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
+
+        shelves.forEach(shelf => {
+            observer.observe(shelf);
+        });
+    });
+</script>
 {% endblock %}
