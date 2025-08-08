@@ -1,5 +1,7 @@
 <p align="center"> <img src="https://media1.tenor.com/m/IAkzeTqB_RMAAAAC/rin-tohsaka-carnival-pantasm.gif" alt="Anime Fansub GIF" width="400" /> </p>
 
+## https://humat.fun adresinde en güncel hali bulunmakta. Github sayfası güncel durumda değil maalesef. Projenin karışıklığını azaltıp içindeki önemli verilerimde arınınca yeni veya bu repo üstüne paylaşacağım.
+
 ## AnimeFansub-Dizi-Film Platformu
 
 Anime-Dizi-Film tutkunları için basit ama gerekli özellikleri barındıran bir fansub platformudur. Kullanıcılar, anime serilerini izleyebilir ve bölümler arasında gezinebilirler. Platformda yer alan yönetim paneli ile yeni anime serileri ve bölümleri eklenebilir, platform kolayca yönetilebilir.
